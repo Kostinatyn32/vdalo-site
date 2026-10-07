@@ -19,7 +19,7 @@
  track('page_view');
  let opened=false;
  const trackFormOpen=()=>{if(!opened){track('form_open');opened=true;}};
- document.querySelectorAll('[data-primary]').forEach(link=>link.addEventListener('click',()=>{track('primary_cta_click',{location:link.dataset.location});track('CTA_click',{cta_type:'primary',location:link.dataset.location});trackFormOpen();requestAnimationFrame(()=>form.querySelector('input:not([type=hidden]),select')?.focus({preventScroll:true}));}));
+ document.querySelectorAll('[data-primary]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();track('primary_cta_click',{location:link.dataset.location});track('CTA_click',{cta_type:'primary',location:link.dataset.location});trackFormOpen();history.replaceState(null,'','#lead-form');document.getElementById('lead-form').scrollIntoView({behavior:'auto',block:'start'});form.querySelector('input:not([type=hidden]),select')?.focus({preventScroll:true});}));
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){trackFormOpen();observer.disconnect();}},{threshold:.15});observer.observe(form);}
  document.querySelectorAll('[data-process]').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('[data-process]').forEach(control=>control.setAttribute('aria-pressed',String(control===button)));
