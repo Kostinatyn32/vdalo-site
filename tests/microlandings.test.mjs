@@ -62,11 +62,10 @@ test('commercial values do not activate unapproved experiments',()=>{
   experiments.switchCommercialApproved=true;assert.ok(effective(offers.find(o=>o.id==='switch')).bonus.includes('Перший місяць'));
  }finally{Object.assign(experiments,saved);}
 });
-test('public chooser has four customer intents, without research campaign links',()=>{
+test('public chooser includes every planned funnel exactly once',()=>{
  const html=renderDirectory();
- assert.equal((html.match(/class="directory-card"/g)||[]).length,4);
- for(const route of ['/audit','/trial','/pms-check','/switch'])assert.ok(html.includes(`href="${route}"`));
- for(const route of ['/research','/founding-hotels','/hotel-research'])assert.ok(!html.includes(`href="${route}"`));
+ assert.equal((html.match(/class="directory-card"/g)||[]).length,offers.length);
+ for(const offer of offers)assert.equal(html.split(`href="${offer.route}"`).length-1,1);
 });
 test('survey can be anonymous and does not grant general outreach permission',()=>{
  const raw={...valid('hotel-research'),name:'',property:'',contact:'',rooms:''};
