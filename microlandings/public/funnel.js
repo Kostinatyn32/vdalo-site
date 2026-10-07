@@ -12,13 +12,14 @@
  }catch{}
  window.dataLayer=window.dataLayer||[];
  function track(event,detail={}){
-  const payload={event,brand:'VDALO',offer_id:config.offer_id,landing_route:config.landing_route,preview:form.dataset.ready!=='true',source:current.utm_source||attribution.last_touch?.utm_source||'direct',campaign:current.utm_campaign||attribution.last_touch?.utm_campaign||'',...detail};
+  const last=attribution.last_touch||{},first=attribution.first_touch||{};
+  const payload={event,brand:'VDALO',offer_id:config.offer_id,landing_route:config.landing_route,copy_version:config.copy_version,entry_offer:attribution.entry_offer,preview:form.dataset.ready!=='true',source:last.utm_source||'direct',campaign:last.utm_campaign||'',utm_source:last.utm_source||'',utm_medium:last.utm_medium||'',utm_campaign:last.utm_campaign||'',utm_content:last.utm_content||'',utm_term:last.utm_term||'',message_variant:last.message_variant||'',first_source:first.utm_source||'direct',first_campaign:first.utm_campaign||'',...detail};
   window.dataLayer.push(payload);if(typeof window.vdaloAnalytics==='function'){try{window.vdaloAnalytics(payload);}catch{}}
  }
  track('page_view');
  let opened=false;
  const trackFormOpen=()=>{if(!opened){track('form_open');opened=true;}};
- document.querySelectorAll('[data-primary]').forEach(link=>link.addEventListener('click',()=>{track('primary_cta_click',{location:link.dataset.location});track('CTA_click',{cta_type:'primary',location:link.dataset.location});trackFormOpen();}));
+ document.querySelectorAll('[data-primary]').forEach(link=>link.addEventListener('click',()=>{track('primary_cta_click',{location:link.dataset.location});track('CTA_click',{cta_type:'primary',location:link.dataset.location});trackFormOpen();requestAnimationFrame(()=>form.querySelector('input:not([type=hidden]),select')?.focus({preventScroll:true}));}));
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){trackFormOpen();observer.disconnect();}},{threshold:.15});observer.observe(form);}
  document.querySelectorAll('[data-process]').forEach(button=>button.addEventListener('click',()=>{
   document.querySelectorAll('[data-process]').forEach(control=>control.setAttribute('aria-pressed',String(control===button)));
@@ -54,22 +55,23 @@
   if((needsContact||data.contact)&&!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact)||(/^[+()\d\s.-]+$/.test(data.contact)&&digits>=9&&digits<=15)))errors.contact='Вкажіть коректний телефон або email.';
   if(data.rooms&&!/^[1-9]\d{0,4}$/.test(data.rooms))errors.rooms='Вкажіть кількість номерів від 1 до 99999.';
   showErrors(errors);const status=form.querySelector('.ml-form-status');status.textContent='';
-  if(Object.keys(errors).length){status.textContent='Перевірте позначені поля. Додатковий контекст можна заповнити пізніше.';status.dataset.state='error';track(form.dataset.ready==='true'?'form_error':'form_preview_error',{reason:'validation'});return;}
+  if(Object.keys(errors).length){form.dataset.state='error';status.textContent='Перевірте позначені поля. Додатковий контекст можна заповнити пізніше.';status.dataset.state='error';track(form.dataset.ready==='true'?'form_error':'form_preview_error',{reason:'validation'});return;}
   if(form.dataset.ready!=='true'){
    status.textContent='Поля заповнені коректно. Це перевірка форми: заявку не надіслано, дані нікуди не передані. Приймання заявок підключимо окремо.';
-   status.dataset.state='preview';track('form_preview_validated',{selected_process:data.selected_process||''});return;
+   form.dataset.state='preview';status.dataset.state='preview';track('form_preview_validated',{selected_process:data.selected_process||''});return;
   }
   data.offer_id=config.offer_id;data.attribution=attribution;
   const serialized=JSON.stringify(data);if(serialized!==lastSerialized||!requestId){requestId=crypto.randomUUID();lastSerialized=serialized;}data.submission_id=requestId;
-  const label=submit.innerHTML;submit.disabled=true;submit.textContent='Надсилаємо…';status.dataset.state='loading';form.setAttribute('aria-busy','true');
+  const label=submit.innerHTML;submit.disabled=true;submit.textContent='Надсилаємо…';form.dataset.state='loading';status.dataset.state='loading';form.setAttribute('aria-busy','true');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
   try{
    const response=await fetch(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:controller.signal});
    const result=await response.json();if(!response.ok||result.ok!==true){if(result.errors)showErrors(result.errors);throw new Error(result.message||'Не вдалося підтвердити отримання запиту.');}
    track('form_success',{lead_id:result.leadId,selected_process:data.selected_process||'',has_current_pms:Boolean(data.current_pms)});
-   form.hidden=true;const success=form.parentElement.querySelector('.ml-success');success.hidden=false;success.focus();
-  }catch(error){status.dataset.state='error';status.textContent=error.name==='AbortError'?'Відповідь затримується. Отримання запиту не підтверджено. Спробуйте пізніше.':error.message==='Failed to fetch'?'Немає зв’язку із сервером. Перевірте інтернет.':error.message;track('form_error',{reason:'delivery'});}
+   form.dataset.state='success';form.hidden=true;const success=form.parentElement.querySelector('.ml-success');success.hidden=false;success.focus();
+  }catch(error){form.dataset.state='error';status.dataset.state='error';status.textContent=error.name==='AbortError'?'Відповідь затримується. Отримання запиту не підтверджено. Спробуйте пізніше.':error.message==='Failed to fetch'?'Немає зв’язку із сервером. Перевірте інтернет.':error.message;track('form_error',{reason:'delivery'});}
   finally{clearTimeout(timer);submit.disabled=false;submit.innerHTML=label;form.removeAttribute('aria-busy');}
  });
+ form.dataset.state='idle';
  if(form.dataset.ready!=='true')form.querySelector('fieldset').disabled=false;
 })();

@@ -1,4 +1,8 @@
 export const experiments={
+ trialApproved:false,
+ researchIncentiveApproved:false,
+ researchIncentiveMonths:null,
+ switchCommercialApproved:false,
  trialDays:null,
  researchIncentiveDays:null,
  switchFreeMonthEnabled:false,

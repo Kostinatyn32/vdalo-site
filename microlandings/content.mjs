@@ -1,4 +1,5 @@
 import {conversionCopy} from './conversion-copy.mjs';
+import {copyDirectionV2} from './copy-direction-v2.mjs';
 export const offers=[
  {
  id:'audit',number:'01',route:'/audit',status:'current',title:'Безкоштовний аудит процесів готелю | VDALO',
@@ -106,4 +107,5 @@ export const offers=[
  }
 ];
 offers.forEach(offer=>Object.assign(offer,conversionCopy[offer.id]));
+offers.forEach(offer=>Object.assign(offer,copyDirectionV2[offer.id]));
 export function getOffer(id){return offers.find(offer=>offer.id===id);}

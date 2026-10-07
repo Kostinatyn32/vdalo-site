@@ -4,7 +4,8 @@ import {Readable} from 'node:stream';
 import {existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {offers} from '../microlandings/content.mjs';
-import {renderMicrolanding} from '../microlandings/render.mjs';
+import {renderMicrolanding,renderDirectory,effective} from '../microlandings/render.mjs';
+import {experiments} from '../microlandings/config.mjs';
 import {validateRequest,makePayload,handleFunnelLead} from '../microlandings/leads.mjs';
 
 const valid=id=>({offer_id:id,name:'Тестовий учасник',property:'Тестовий готель',contact:'qa@example.invalid',rooms:'12',current_pms:'Тестова PMS',role:'owner',selected_process:'guest-requests',property_type:'hotel',pms_usage:'pms',pms_satisfaction:'mixed',consent:true});
@@ -27,7 +28,10 @@ for(const offer of offers){
   const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);assert.equal(ids.length,new Set(ids).size);
   assert.ok(html.includes('Перевірити форму'));assert.ok(html.includes('data-ready="false"'));
   assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(!html.includes('\u2014'));
-  assert.equal(Object.keys(validateRequest(valid(offer.id)).errors).length,0);
+ assert.equal(Object.keys(validateRequest(valid(offer.id)).errors).length,0);
+  assert.ok(html.indexOf('ml-results')<html.indexOf('ml-how'));
+  assert.equal((html.match(/data-primary/g)||[]).length,3);
+  assert.ok(html.includes('copy_version'));
  }));
  test(`${offer.id}: unavailable delivery never reports success`,async()=>withEnvironment(false,async()=>{
   const result=await request(valid(offer.id),()=>{throw new Error('Must not send');});assert.equal(result.status,503);assert.equal(result.output.ok,false);
@@ -46,6 +50,23 @@ test('required fields and invalid contact are rejected for every offer',()=>{
   const empty=validateRequest({offer_id:offer.id});assert.ok(Object.keys(empty.errors).length>0);
   const invalid=validateRequest({...valid(offer.id),contact:'not a contact'});assert.ok(invalid.errors.contact);
  });
+});
+test('commercial values do not activate unapproved experiments',()=>{
+ const saved={...experiments};
+ try{
+  Object.assign(experiments,{trialDays:14,researchIncentiveDays:30,researchIncentiveMonths:1,switchFreeMonthEnabled:true});
+  for(const id of ['trial','research','switch'])assert.equal(effective(offers.find(o=>o.id===id)).bonus,undefined);
+  experiments.researchIncentiveApproved=true;
+  assert.ok(effective(offers.find(o=>o.id==='research')).headline.includes('Отримайте місяць'));
+  experiments.trialApproved=true;assert.ok(effective(offers.find(o=>o.id==='trial')).bonus.includes('14'));
+  experiments.switchCommercialApproved=true;assert.ok(effective(offers.find(o=>o.id==='switch')).bonus.includes('Перший місяць'));
+ }finally{Object.assign(experiments,saved);}
+});
+test('public chooser has four customer intents, without research campaign links',()=>{
+ const html=renderDirectory();
+ assert.equal((html.match(/class="directory-card"/g)||[]).length,4);
+ for(const route of ['/audit','/trial','/pms-check','/switch'])assert.ok(html.includes(`href="${route}"`));
+ for(const route of ['/research','/founding-hotels','/hotel-research'])assert.ok(!html.includes(`href="${route}"`));
 });
 test('survey can be anonymous and does not grant general outreach permission',()=>{
  const raw={...valid('hotel-research'),name:'',property:'',contact:'',rooms:''};

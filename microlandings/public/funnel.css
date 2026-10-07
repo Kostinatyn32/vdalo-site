@@ -12,3 +12,5 @@
 @media(max-width:600px){.ml-photo{border-radius:18px 75px 12px 12px}.ml-photo img{height:auto}.ml-photo figcaption{font-size:20px;padding:16px}.ml-product-photo figcaption{font-size:10px}.ml-fit li{font-size:15px;padding:20px}.ml-hero h1{font-size:clamp(42px,12.6vw,55px)}}
 /* Forms must not move while focus/validation is changing. */
 html{scroll-behavior:auto}
+/* Long Ukrainian offer headlines keep their hierarchy on narrow screens. */
+@media(max-width:600px){.microlanding .ml-hero h1{font-size:clamp(34px,10.2vw,44px);line-height:1.12;overflow-wrap:anywhere;}.offer-founding-hotels .ml-hero h1{font-size:clamp(32px,9.6vw,40px);}}
