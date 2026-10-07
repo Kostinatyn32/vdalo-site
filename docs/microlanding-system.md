@@ -2,7 +2,7 @@
 
 ## Стан
 
-Зібрано вісім сторінок у стилі VDALO v3 та каталог `/funnel` для перегляду системи. Це версія для погодження воронки. Форми вимкнені, відповідно до рішення користувача від 07.10.2026: канал заявок і бонусні умови визначаються пізніше.
+Зібрано вісім сторінок у стилі VDALO v3 та каталог `/funnel` для перегляду системи. Це версія для погодження воронки. Надсилання вимкнене, відповідно до рішення користувача від 07.10.2026: канал заявок і бонусні умови визначаються пізніше.
 
 Дизайн: Paper/Plum/Blush/Pink, Playfair Display та Inter, логотипи й фотографії з v3. Один основний офер на кожній сторінці. Каталог призначений для команди; у рекламному повідомленні використовується пряме посилання на конкретну сторінку.
 
@@ -77,7 +77,7 @@ VDALO_FUNNEL_RETENTION=...
 
 За потреби окремих одержувачів: `VDALO_FUNNEL_AUDIT_WEBHOOK_URL`, `VDALO_FUNNEL_RESEARCH_WEBHOOK_URL`, `VDALO_FUNNEL_TRIAL_WEBHOOK_URL`, `VDALO_FUNNEL_SWITCH_WEBHOOK_URL`, `VDALO_FUNNEL_ONE_PROCESS_WEBHOOK_URL`, `VDALO_FUNNEL_PMS_CHECK_WEBHOOK_URL`, `VDALO_FUNNEL_FOUNDING_HOTELS_WEBHOOK_URL`, `VDALO_FUNNEL_HOTEL_RESEARCH_WEBHOOK_URL`.
 
-Без HTTPS-одержувача та погоджених відомостей оператора форма залишається вимкненою. Сервер теж перевіряє цю умову. Успіх показується лише після успішної відповіді webhook.
+Без HTTPS-одержувача та погоджених відомостей оператора надсилання залишається вимкненим. Сервер теж перевіряє цю умову. Успіх показується лише після успішної відповіді webhook.
 
 Payload: `lead_id`, `property_id` (до визначення CRM: null), `offer_id`, `landing_route`, `stage`, `proposed_next_step`, `submitted_at`, `contact`, `qualification`, `attribution`, `permissions`. `room_count` є числом. `current_PMS` і контекст залишаються у qualification. Одержувач має обробляти `Idempotency-Key`, щоб повторний запит не створював дубль.
 
@@ -93,3 +93,6 @@ Payload: `lead_id`, `property_id` (до визначення CRM: null), `offer_
 6. Почати з одного landing + одного offer + двох hooks; результат оцінювати за якісними розмовами, проведеними зустрічами й активаціями.
 
 Поточні сторінки мають унікальні title/description/canonical, один H1 та noindex. Це рішення для етапу погодження. Перед запуском SEO-індексації слід окремо переглянути robots.txt і політику кожного маршруту.
+
+
+Після доопрацювання форми підтримують локальну інтерактивну перевірку без надсилання. Див. microlanding-conversion-review.md.

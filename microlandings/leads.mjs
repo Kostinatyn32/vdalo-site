@@ -54,7 +54,7 @@ function rateExceeded(req){
  const bucket=counters.get(key)||{count:0,until:now+60000};bucket.count++;counters.set(key,bucket);return bucket.count>60;
 }
 const send=(res,status,value)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(value));};
-export async function handleFunnelLead(req,res){
+export async function handleFunnelLead(req,res,{sendRequest=fetch}={}){
  if(req.method!=='POST')return send(res,405,{ok:false,message:'Метод недоступний.'});
  if(!req.headers['content-type']?.startsWith('application/json'))return send(res,415,{ok:false,message:'Непідтримуваний формат.'});
  const origin=req.headers.origin;
@@ -68,7 +68,7 @@ export async function handleFunnelLead(req,res){
   if(Object.keys(errors).length)return send(res,422,{ok:false,errors,message:'Перевірте поля форми.'});
   if(!deliveryReady(offer.id))return send(res,503,{ok:false,message:'Онлайн-запис ще не відкритий. Запит не надіслано.'});
   const config=deliveryConfig(offer.id),payload=makePayload(offer,data,raw);
-  const response=await fetch(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':payload.lead_id,...(config.token?{Authorization:`Bearer ${config.token}`}:{})},body:JSON.stringify(payload),signal:AbortSignal.timeout(10000),redirect:'error'});
+  const response=await sendRequest(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':payload.lead_id,...(config.token?{Authorization:`Bearer ${config.token}`}:{})},body:JSON.stringify(payload),signal:AbortSignal.timeout(10000),redirect:'error'});
   await response.body?.cancel();
   if(!response.ok)return send(res,502,{ok:false,message:'Не вдалося підтвердити отримання запиту. Спробуйте пізніше.'});
   return send(res,200,{ok:true,leadId:payload.lead_id});

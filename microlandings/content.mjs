@@ -1,3 +1,4 @@
+import {conversionCopy} from './conversion-copy.mjs';
 export const offers=[
  {
  id:'audit',number:'01',route:'/audit',status:'current',title:'Безкоштовний аудит процесів готелю | VDALO',
@@ -104,4 +105,5 @@ export const offers=[
  formTitle:'Кілька запитань про вашу роботу.',formIntro:'Без даних гостей, паролів і комерційних секретів. Подальший контакт тільки за вашим вибором.',extra:'survey',crmNext:'research_segment -> opted_in_next_step_only',success:'Відповіді отримано. Подальший контакт відбуватиметься лише відповідно до обраних вами опцій.'
  }
 ];
+offers.forEach(offer=>Object.assign(offer,conversionCopy[offer.id]));
 export function getOffer(id){return offers.find(offer=>offer.id===id);}
