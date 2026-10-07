@@ -38,5 +38,8 @@ const server=http.createServer(async(req,res)=>{
  }catch{return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');}
 });
 // Vercel captures this standard Node.js HTTP server entrypoint.
-server.listen(Number(process.env.PORT||4185),process.env.HOST||'127.0.0.1',()=>console.log('VDALO comparison server started'));
+if(!process.env.VERCEL)server.listen(Number(process.env.PORT||4185),process.env.HOST||'127.0.0.1',()=>console.log('VDALO comparison server started'));
+
+
+export default server;
 
