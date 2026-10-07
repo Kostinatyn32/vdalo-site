@@ -3,6 +3,6 @@
   "framework": null,
   "buildCommand": "",
   "git": { "deploymentEnabled": true },
-  "functions": { "api/index.mjs": { "includeFiles": "versions/**/public/**", "maxDuration": 30 } },
+  "functions": { "api/index.mjs": { "includeFiles": "{versions/**/public/**,microlandings/public/**}", "maxDuration": 30 } },
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
 }

@@ -1,4 +1,7 @@
 import http from 'node:http';
+import {offers} from './microlandings/content.mjs';
+import {renderMicrolanding,renderDirectory,renderFunnelPrivacy} from './microlandings/render.mjs';
+import {handleFunnelLead} from './microlandings/leads.mjs';
 import {renderPage as thirdPage,renderPrivacy as thirdPrivacy} from './versions/v3/render.mjs';
 import {readFile} from 'node:fs/promises';
 import {existsSync} from 'node:fs';
@@ -21,10 +24,19 @@ const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
   const pathname=decodeURIComponent(url.pathname);
+  if(pathname==='/api/funnel/leads')return await handleFunnelLead(req,res);
   if(req.method==='POST' && /^\/api\/leads\/(trial|audit)$/.test(pathname))return leadServer.emit('request',req,res);
   if(!['GET','HEAD'].includes(req.method))return send(res,405,'Метод недоступний.','text/plain; charset=utf-8');
   if(pathname==='/')return send(res,200,choice);
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nDisallow: /\n','text/plain; charset=utf-8');
+  if(pathname==='/funnel')return send(res,200,renderDirectory());
+  if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
+  const offer=offers.find(o=>o.route===pathname||o.route+'/'===pathname);
+  if(offer){if(pathname.endsWith('/')){res.writeHead(307,{Location:offer.route+url.search});return res.end();}return send(res,200,renderMicrolanding(offer));}
+  if(/^\/funnel-assets\/(funnel\.css|funnel\.js)$/.test(pathname)){
+   const filename=path.join(root,'microlandings','public',path.basename(pathname));
+   const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
+  }
   const route=pathname.match(/^\/(v1|v2|v3)(\/.*)?$/);
   if(!route)return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const version=route[1],relative=route[2]||'/';
