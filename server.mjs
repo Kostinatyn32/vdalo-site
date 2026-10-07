@@ -31,7 +31,7 @@ const server=http.createServer(async(req,res)=>{
   if(!route[2]){res.writeHead(307,{Location:`/${version}/`});return res.end();}
   if(relative==='/')return send(res,200,prefix((version==='v1'?firstPage:version==='v2'?secondPage:thirdPage)({origin:'',full:true}),version));
   if(relative==='/privacy')return send(res,200,prefix(version==='v1'?privacyPage():version==='v2'?secondPrivacy():thirdPrivacy(),version));
-  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|styles\.css|design-system-2\.css|dark-edition\.css|polish\.css|refinement\.css|editorial\.css|app\.js)$/.test(relative))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
+  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|styles\.css|design-system-2\.css|dark-edition\.css|polish\.css|refinement\.css|editorial\.css|experience\.css|experience\.js|app\.js)$/.test(relative))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const file=path.join(root,'versions',version,'public',relative.slice(1));
   const data=await readFile(file);
   res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});res.end(req.method==='HEAD'?undefined:data);
