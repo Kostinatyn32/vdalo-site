@@ -1,0 +1,61 @@
+{
+  "brand": {
+    "name": "VDALO",
+    "market": "Ukraine",
+    "tagline": "Керуйте готелем вдало.",
+    "descriptor": "PMS та автоматизація щоденної роботи готелю.",
+    "benefit": "Менше ручної роботи. Більше контролю над готелем."
+  },
+  "colors": {
+    "plum": "#39233E",
+    "pink": "#FF92BD",
+    "blush": "#FFF5F7",
+    "paper": "#FCF9F8",
+    "ink": "#211A22",
+    "deep_plum": "#211622",
+    "plum_700": "#503253",
+    "plum_500": "#76506F",
+    "pink_300": "#FFC4DA",
+    "mist": "#E9DEE3",
+    "white": "#FFFFFF",
+    "success": "#2E7D5B",
+    "warning": "#B5752A",
+    "error": "#B94A5A",
+    "info": "#3E6D9C"
+  },
+  "typography": {
+    "display": "Playfair Display",
+    "display_fallback": "Noto Serif Display, Georgia, serif",
+    "ui": "Inter",
+    "ui_fallback": "system-ui, sans-serif"
+  },
+  "grid": {
+    "desktop_columns": 12,
+    "tablet_columns": 8,
+    "mobile_columns": 4,
+    "spacing_unit_px": 8,
+    "desktop_margin_px": 96,
+    "tablet_margin_px": 48,
+    "mobile_margin_px": 20,
+    "desktop_gutter_px": 24,
+    "tablet_gutter_px": 20,
+    "mobile_gutter_px": 12
+  },
+  "radius": {
+    "card_px": 24,
+    "input_px": 16,
+    "pill_px": 999
+  },
+  "motion": {
+    "ui_ms": "180-240",
+    "reveal_ms": "400-600",
+    "easing": "cubic-bezier(.2,.8,.2,1)",
+    "reduced_motion": true
+  },
+  "logo": {
+    "clear_space": "1x where x is Spark height",
+    "min_wordmark_digital_px": 140,
+    "min_icon_digital_px": 24,
+    "min_wordmark_print_mm": 28
+  }
+}
