@@ -5,6 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {renderPage as firstPage} from './versions/v1/render.mjs';
 import {renderPage as secondPage} from './versions/v2/render.mjs';
+import {privacyPage as secondPrivacy} from './versions/v2/server.mjs';
 import {server as leadServer,privacyPage} from './versions/v1/server.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
@@ -28,7 +29,7 @@ const server=http.createServer(async(req,res)=>{
   const version=route[1],relative=route[2]||'/';
   if(!route[2]){res.writeHead(307,{Location:`/${version}/`});return res.end();}
   if(relative==='/')return send(res,200,prefix((version==='v1'?firstPage:secondPage)({origin:'',full:true}),version));
-  if(relative==='/privacy')return send(res,200,prefix(privacyPage(),version));
+  if(relative==='/privacy')return send(res,200,prefix(version==='v1'?privacyPage():secondPrivacy(),version));
   if(!/^\/(assets\/[a-zA-Z0-9_.-]+|styles\.css|design-system-2\.css|dark-edition\.css|polish\.css|refinement\.css|app\.js)$/.test(relative))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const file=path.join(root,'versions',version,'public',relative.slice(1));
   const data=await readFile(file);
