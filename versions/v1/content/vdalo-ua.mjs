@@ -30,6 +30,10 @@ export const site = {
       "/cases"
     ],
     [
+      "Інструменти",
+      "/tools/"
+    ],
+    [
       "Блог",
       "/blog"
     ]

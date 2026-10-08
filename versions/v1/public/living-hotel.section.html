@@ -1,0 +1,48 @@
+<!-- VDALO · блок «Живий готель» (v3). Вставити одразу після hero. Потрібні living-hotel.css і living-hotel.js -->
+<section class="lh" id="living-hotel" data-mode="chaos" data-size="full" aria-labelledby="lh-title">
+  <div class="lh-copy">
+    <p class="lh-eyebrow" id="lh-eyebrow">Одна ніч вашого готелю</p>
+    <h2 class="lh-title" id="lh-title">Ніч без системи. <em>Встигнете все?</em></h2>
+    <p class="lh-lead" id="lh-lead">Натискайте на проблеми, щоб вирішити їх власноруч, або просто дивіться. Близько 23:45 приїде гість, якому продали вже зайнятий номер.</p>
+    <div class="night" aria-hidden="true">
+      <div class="night-row"><span>22:00</span><b id="lh-clock">22:00</b><span>07:00</span></div>
+      <div class="night-bar"><i id="lh-night"></i></div>
+    </div>
+    <dl class="lh-stats">
+      <div class="lh-stat" id="st-occ"><dt>Заповненість</dt><dd><span data-stat="occ">71</span><small>%</small></dd></div>
+      <div class="lh-stat" id="st-act"><dt>Проблем зараз</dt><dd data-stat="act">0</dd></div>
+      <div class="lh-stat" id="st-loss"><dt>Втрати</dt><dd><span data-stat="loss">0</span><small>грн</small></dd></div>
+      <div class="lh-stat" id="st-wake"><dt>Вас будили</dt><dd data-stat="wake">0</dd></div>
+    </dl>
+    <div class="lh-actions">
+      <button type="button" class="lh-btn lh-btn-primary" id="lh-switch"><span class="switch-dot" aria-hidden="true"></span><span id="lh-switch-text">Увімкнути VDALO</span></button>
+      <button type="button" class="lh-btn lh-btn-ghost" id="lh-cta" data-open="trial" data-mode="start" data-location="living-hotel" hidden>Почати безкоштовно</button>
+    </div>
+    <p class="lh-hint" id="lh-hint" aria-live="polite"></p>
+  </div>
+
+  <div class="lh-stage" id="lh-stage">
+    <svg id="lh-svg" viewBox="0 0 800 840" role="group" aria-label="Готель уночі. Червоні мітки — проблеми, натисніть, щоб вирішити." preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="beamGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FF92BD" stop-opacity="0"/><stop offset=".5" stop-color="#FF92BD" stop-opacity=".5"/><stop offset="1" stop-color="#FF92BD" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="wallShadeL" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".12"/>
+        </linearGradient>
+        <linearGradient id="wallShadeR" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".25"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="phone" aria-label="Телефон власника">
+    <div class="phone-screen">
+      <div class="phone-top"><span id="ph-time">22:00</span><span class="notch"></span><span>5G</span></div>
+      <div class="phone-title" id="ph-title">Ваш телефон</div>
+      <div class="ph-widget" id="ph-widget"></div>
+      <ol class="feed" id="lh-feed" aria-live="polite"></ol>
+    </div>
+  </div>
+</section>

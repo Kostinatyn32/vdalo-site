@@ -92,7 +92,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/privacy') return send(res,200,privacyPage(),'text/html; charset=utf-8');
   if(pathname==='/robots.txt') return send(res,200,origin?`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`:'User-agent: *\nDisallow: /\n','text/plain; charset=utf-8');
   if(pathname==='/sitemap.xml' && origin) return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${escape(origin)}/</loc></url></urlset>`,'application/xml; charset=utf-8');
-  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|integration-channels\.css|refinement\.css|polish\.css|styles\.css|design-system-2\.css|site-config\.js|pricing-core\.js|pricing\.js|app\.js)$/.test(pathname)) return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
+  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|integration-channels\.css|refinement\.css|polish\.css|styles\.css|design-system-2\.css|site-config\.js|pricing-core\.js|pricing\.js|app\.js|living-hotel\.(css|js))$/.test(pathname)) return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const filename=path.join(root,'public',pathname.slice(1));
   const data=await readFile(filename);
   res.writeHead(200,{'Content-Type':mime[path.extname(filename)]||'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':process.env.NODE_ENV==='production'?'public, max-age=300':'no-store'});
