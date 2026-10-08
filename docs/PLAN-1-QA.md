@@ -19,7 +19,7 @@ The first design now serves at `/`. The existing `/funnel` directory and its eig
 | Integrations | Six visible logo examples: Booking.com, Airbnb, Hotels24, Expedia, Agoda and Dobovo. Copy says compatibility is checked per property. |
 | Calendar | Demo dates start from the current date. Booking examples move with the selected week. |
 | Pricing | Calculator, term options, tiers, add-on selection and comparison are present. Main pricing check script passes. |
-| Mobile | Responsive breakpoints, stacked layouts and horizontal calendar and tariff scrolling are in the stylesheet. A 390 px browser emulation was unavailable in this QA session, so visual mobile rendering remains to verify. |
+| Mobile | Checked at 390 px: sections stack, the page has no horizontal overflow, the menu and audit dialog work, and the calendar retains its own horizontal scroll. |
 
 ## Claims review
 
@@ -49,3 +49,11 @@ The audit and implementation dialogs opened during browser QA. The required fiel
 - Local browser review confirmed the home page, visible partner logos, both form modes, and live pricing recalculation.
 - Local console reported no browser errors during the reviewed interactions.
 - Internal hash links resolve. Rendered page copy has no em or en dash characters.
+
+## UX and accessibility review, 2026-10-08
+
+Three passes covered the desktop visual hierarchy, mobile layout at 390 px, and interaction/accessibility states. The first pass found that the new trust strip, problem cards, approach cards, founder panel, onboarding cards and pricing calculator had mobile overrides but no desktop layouts. On desktop, partner logos grew to their intrinsic dimensions and the content blocks fell into unstructured single columns. Added explicit desktop grids, card surfaces, spacing and logo constraints in `versions/v1/public/refinement.css`.
+
+The mobile pass found no document-level horizontal overflow. Verified the menu opens and closes, the audit dialog opens with its required fields and consent checkbox, and calculator inputs update the displayed price and billing total. The 81+ pricing tab and add-on calculator also update correctly. No lead form was submitted; the actual destination remains unconfigured and requires business setup before a real delivery test.
+
+Computed foreground and effective surface colors for visible text on the homepage passed the 4.5:1 normal-text contrast threshold in the reviewed viewport. Increased the minimum tap height for the case link, founder link, billing-period controls and calculator presets to 44 px. Keyboard focus and all deeper section states remain a manual review item.
