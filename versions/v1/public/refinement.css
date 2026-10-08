@@ -267,3 +267,32 @@
 .ds2 .solutions-bottom{margin-top:32px}
 @media(max-width:1100px){.ds2 .solutions-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ds2 .solutions-grid>.solution-card,.ds2 .solutions-grid>.solution-card:nth-child(4),.ds2 .solutions-grid>.solution-card:nth-child(5){grid-column:auto}}
 @media(max-width:767px){.ds2 .solutions-section{padding-block:60px}.ds2 .solutions-heading{grid-template-columns:1fr;gap:14px;margin-bottom:25px}.ds2 .solutions-grid{grid-template-columns:1fr;gap:14px}.ds2 .solutions-grid>.solution-card,.ds2 .solutions-grid>.solution-card:nth-child(4),.ds2 .solutions-grid>.solution-card:nth-child(5){grid-column:auto}.ds2 .solution-card{padding:21px}.ds2 .solution-card h3{font-size:22px}.ds2 .solution-pain,.ds2 .solution-answer p{font-size:15px}.ds2 .solutions-bottom{align-items:stretch;gap:14px}.ds2 .solutions-bottom .button{width:100%;justify-content:center}}
+
+/* Each hotel pain is a standalone image and copy block, followed by its matching module. */
+.ds2 .problem-solution-sequence{background:#fff}
+.ds2 .problem-story{padding-block:42px}
+.ds2 .problem-story-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(28px,5vw,76px)}
+.ds2 .problem-story-copy{min-width:0;max-width:570px}
+.ds2 .problem-story-copy .eyebrow{margin-bottom:16px;color:#87375f}
+.ds2 .problem-story-copy h2{margin:0;color:#39233e;font:800 clamp(32px,4vw,48px)/1.08 'Inter Tight',sans-serif;letter-spacing:-.04em}
+.ds2 .problem-story-copy>.large-copy{margin:18px 0 0;color:#5f5361;font-size:18px;line-height:1.65}
+.ds2 .problem-story-photo{position:relative;min-width:0;margin:0;overflow:hidden;border-radius:20px;background:#f1e8ed;aspect-ratio:3/2}
+.ds2 .problem-story-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.ds2 .problem-story-photo figcaption{position:absolute;right:14px;bottom:14px;left:14px;width:max-content;max-width:calc(100% - 28px);padding:9px 13px;border:1px solid #ffffff80;border-radius:999px;background:#26182de8;color:#fff;font-size:12px;line-height:1.35}
+.ds2 .problem-story--solution{padding-top:32px;padding-bottom:66px;background:#f8f1f5}
+.ds2 .problem-story--solution .problem-story-grid{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr)}
+.ds2 .solution-module-demo{min-width:0;padding:clamp(20px,3vw,36px);border:1px solid #eadde5;border-radius:20px;background:#fff;box-shadow:0 14px 40px #39233e0d}
+.ds2 .solution-module-demo .feature-visual{min-height:190px}
+.ds2 .solution-module-note{margin:18px 0 0;padding-top:14px;border-top:1px solid #eee5eb;color:#6c606d;font-size:12px;line-height:1.55}
+.ds2 .solution-story-copy h2{font-size:clamp(28px,3.3vw,39px)}
+.ds2 .solution-points{display:grid;gap:11px;margin:21px 0 2px;padding:0;list-style:none}
+.ds2 .solution-points li{display:grid;grid-template-columns:20px minmax(0,1fr);align-items:start;gap:10px;color:#514653;font-size:14px;line-height:1.55}
+.ds2 .solution-point-icon{width:18px;height:18px;margin-top:1px;color:#8b3b63}
+.ds2 .problem-story--solution .solution-link{margin-top:17px}
+.ds2 .problem-story:nth-of-type(4n+3) .problem-story-grid,.ds2 .problem-story:nth-of-type(4n+4) .problem-story-grid{direction:rtl}
+.ds2 .problem-story:nth-of-type(4n+3) .problem-story-grid>*,.ds2 .problem-story:nth-of-type(4n+4) .problem-story-grid>*{direction:ltr}
+.ds2 .problem-story--solution:nth-of-type(4n+4){border-bottom:1px solid #eadde5}
+.ds2 .problem-solution-sequence>.solutions-bottom{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-block:8px 58px}
+.ds2 .problem-solution-sequence>.solutions-bottom p{max-width:640px;margin:0;color:#655967;font-size:13px;line-height:1.6}
+@media(max-width:900px){.ds2 .problem-story{padding-block:34px}.ds2 .problem-story-grid,.ds2 .problem-story--solution .problem-story-grid{grid-template-columns:minmax(0,1fr) minmax(0,.9fr);gap:28px}.ds2 .problem-story-copy h2{font-size:36px}.ds2 .problem-story-copy>.large-copy{font-size:16px}.ds2 .solution-module-demo{padding:20px}.ds2 .solution-module-demo .feature-visual{min-height:160px}}
+@media(max-width:767px){.ds2 .problem-story{padding-block:28px}.ds2 .problem-story-grid,.ds2 .problem-story--solution .problem-story-grid{grid-template-columns:1fr;gap:22px;direction:ltr!important}.ds2 .problem-story-photo{order:-1;aspect-ratio:1.45}.ds2 .problem-story-photo figcaption{right:10px;bottom:10px;left:10px;font-size:11px}.ds2 .problem-story-copy{max-width:none}.ds2 .problem-story-copy .eyebrow{margin-bottom:12px}.ds2 .problem-story-copy h2{font-size:32px}.ds2 .problem-story-copy>.large-copy{margin-top:12px;font-size:16px;line-height:1.6}.ds2 .problem-story--solution{padding-top:24px;padding-bottom:38px}.ds2 .problem-story--solution .solution-module-demo{order:-1}.ds2 .solution-module-demo{padding:17px;border-radius:16px}.ds2 .solution-module-demo .feature-visual{min-height:125px}.ds2 .solution-points{gap:9px;margin-top:16px}.ds2 .solution-points li{font-size:14px}.ds2 .problem-solution-sequence>.solutions-bottom{align-items:stretch;flex-direction:column;padding-block:2px 42px}.ds2 .problem-solution-sequence>.solutions-bottom .button{width:100%;justify-content:center}}
