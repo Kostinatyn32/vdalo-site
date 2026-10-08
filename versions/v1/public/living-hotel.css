@@ -115,6 +115,7 @@
 .lh[data-size="half"] .lh-copy{align-self:center}
 .lh[data-size="half"] .lh-stage svg{max-height:min(56svh,560px)}
 @media (max-width:860px){
+.lh{display:none!important}
 .lh,.lh[data-size="half"]{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "stage" "phone";grid-template-rows:auto;min-height:0}
 .lh .lh-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 .lh .lh-stage svg{max-height:none}

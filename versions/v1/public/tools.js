@@ -1,5 +1,5 @@
 (()=>{
-const app=document.querySelector('[data-pms-checklist]');if(!app)return;
+const app=document.querySelector('[data-pms-checklist]');if(app){
 const groups=[
 {name:'Щоденні операції',items:[['Облік номерів і доступності',3,'Живий тест останнього номера'],['Зміни, скасування, переселення',3,'Змінити бронювання з оплатою'],['Housekeeping і статуси номерів',2,'Пройти цикл прибирання'],['Зручність роботи персоналу',2,'Дати завдання новому користувачу'],['Управлінські звіти',2,'Звірити звіт із записами']]},
 {name:'Канали продажу та бронювання',items:[['Потрібні канали продажу',3,'Матриця підтверджених підключень'],['Обробка збоїв синхронізації',3,'Демонстрація помилки та відновлення'],['Пряме бронювання на сайті',2,'Тестове бронювання'],['Платежі й повернення',3,'Підтверджена тестова операція']]},
@@ -27,4 +27,56 @@ app.addEventListener('input',e=>{if(e.target.matches('[data-pms-name]'))state.na
 app.addEventListener('change',e=>{if(e.target.matches('[data-rating]')){state.answers[e.target.dataset.rating]=e.target.value;const c=groups.flatMap(g=>g.items).find(x=>x.id===e.target.dataset.rating.split('|')[1]);if(e.target.value==='na'&&(state.weights[c.id]??c.weight)===3)state.naReason[e.target.dataset.rating]='';save();draw()}if(e.target.matches('[data-weight]')){state.weights[e.target.dataset.weight]=Number(e.target.value);save();draw()}});
 app.addEventListener('click',e=>{if(e.target.closest('[data-tool-start]')){e.preventDefault();document.querySelector('#checklist-start').scrollIntoView({behavior:'smooth'})}if(e.target.closest('[data-begin]'))start();if(e.target.closest('[data-prev]')){state.group=Math.max(0,state.group-1);save();draw()}if(e.target.closest('[data-next]')){send('pms_checklist_group_complete');state.group=Math.min(groups.length-1,state.group+1);save();draw()}if(e.target.closest('[data-finish]'))finish();if(e.target.closest('[data-print]'))window.print();if(e.target.closest('[data-edit]')){$('[data-results]').hidden=true;$('[data-work]').hidden=false;draw();$('[data-work]').scrollIntoView({behavior:'smooth'})}if(e.target.closest('[data-reset]')){if(confirm('Очистити збережені оцінки та примітки в цьому браузері?')){localStorage.removeItem(key);location.reload()}}});
 if(state.started){$$('[data-pms-name]').forEach((el,i)=>el.value=state.names[i]||'');$('[data-hotel]').value=state.hotel||'';$('[data-property]').value=state.property||'';$('[data-rooms]').value=state.rooms||'';$('.checklist-intro').hidden=true;if(state.done)renderResults();else{$('[data-work]').hidden=false;draw()}}
+}
+})();
+
+(()=>{
+const root=document.querySelector('[data-profitability-calculator]');
+if(!root)return;
+const valueFields=[...root.querySelectorAll('[data-profit-value]')];
+const ranges=[...root.querySelectorAll('[data-profit-range]')];
+const status=root.querySelector('[data-profit-status]');
+const currency=new Intl.NumberFormat('uk-UA',{style:'currency',currency:'UAH',maximumFractionDigits:0});
+const decimal=new Intl.NumberFormat('uk-UA',{maximumFractionDigits:1});
+const get=(key)=>Number(root.querySelector(`[data-profit-value="${key}"]`).value);
+const set=(key,value)=>{const field=root.querySelector(`[data-profit-result="${key}"]`);if(field)field.textContent=value};
+function recalculate(){
+ const invalid=valueFields.find(field=>!field.checkValidity());
+ valueFields.forEach(field=>field.setAttribute('aria-invalid',String(!field.checkValidity())));
+ if(invalid){status.textContent='Перевірте значення: кожне поле має бути в зазначених межах.';return}
+ status.textContent='';
+ const rooms=get('rooms'),occupancy=get('occupancy')/100,adr=get('adr'),energyRate=get('energy'),otaShare=get('otaShare')/100,commissionRate=get('otaCommission')/100;
+ const availableRoomNights=rooms*30;
+ const soldRoomNights=availableRoomNights*occupancy;
+ const revenue=soldRoomNights*adr;
+ const commission=revenue*otaShare*commissionRate;
+ const energy=soldRoomNights*energyRate;
+ const remaining=revenue-commission-energy;
+ const revpar=availableRoomNights?revenue/availableRoomNights:0;
+ set('remaining',currency.format(remaining));
+ set('revenue',currency.format(revenue));
+ set('revpar',currency.format(revpar));
+ set('soldNights',decimal.format(soldRoomNights));
+ set('revenueRow',currency.format(revenue));
+ set('commission',currency.format(commission));
+ set('energyCost',currency.format(energy));
+ set('remainingRow',currency.format(remaining));
+ const scale=Math.max(revenue,commission,energy,Math.max(remaining,0),1);
+ [['revenue',revenue],['commission',commission],['energy',energy],['remaining',Math.max(remaining,0)]].forEach(([key,amount])=>{
+  const bar=root.querySelector(`[data-profit-bar="${key}"]`);
+  bar.style.width=`${Math.min(100,Math.max(0,amount/scale*100))}%`;
+ });
+}
+valueFields.forEach(field=>field.addEventListener('input',()=>{
+ const range=root.querySelector(`[data-profit-range="${field.dataset.profitValue}"]`);
+ if(field.checkValidity())range.value=field.value;
+ recalculate();
+}));
+ranges.forEach(range=>range.addEventListener('input',()=>{
+ const field=root.querySelector(`[data-profit-value="${range.dataset.profitRange}"]`);
+ field.value=range.value;
+ field.setAttribute('aria-invalid','false');
+ recalculate();
+}));
+recalculate();
 })();

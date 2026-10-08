@@ -310,5 +310,48 @@
 @media(max-width:767px){.ds2 .hero-v3 .hero-v2-photo figcaption{display:none}}
 .ds2 .hero-v3 .hero-v2-photo>img{object-position:center 38%}@media(max-width:767px){.ds2 .hero-v3 .hero-v2-photo>img{height:auto;aspect-ratio:1.35;object-fit:cover;object-position:center 38%}.ds2 .hero-v3 .hero-v2-photo{overflow:hidden;border-radius:20px}}
 
+/* Mobile heroes use their existing photography as a backdrop. Desktop split layouts stay unchanged. */
+@media(max-width:767px){
+ .ds2 .hero-v3{padding-top:18px}
+ .ds2 .hero-v3 .hero-v2-grid{position:relative;isolation:isolate;display:block;min-height:calc(100svh - 76px);padding:28px 20px 34px;overflow:hidden;border-radius:20px}
+ .ds2 .hero-v3 .hero-v2-photo{position:absolute;z-index:0;inset:0;width:100%;height:100%;min-height:0;margin:0;border-radius:20px}
+ .ds2 .hero-v3 .hero-v2-photo:after{position:absolute;inset:0;content:"";pointer-events:none;background:linear-gradient(90deg,#241326ed 0%,#39233ed9 56%,#39233e92 100%),linear-gradient(0deg,#241326d9 0%,transparent 78%)}
+ .ds2 .hero-v3 .hero-v2-photo>img{width:100%;height:100%;min-height:100%;aspect-ratio:auto;object-fit:cover;object-position:center 38%;filter:brightness(.82)}
+ .ds2 .hero-v3 .hero-v2-photo>.hero-video{display:none}
+ .ds2 .hero-v3 .hero-v2-copy{position:relative;z-index:1}
+ .ds2 .hero-v3 .hero-v2-actions,.ds2 .hero-v3 .hero-v2-note,.ds2 .hero-v3 .hero-reassurance{position:relative;z-index:1}
+ .ds2 .hero-v3 .hero-v2-note{color:#fff7f9}
+ .ds2 .hero-v3 .hero-reassurance{border-color:#fff7f945}
+}
+
+@media(max-width:767px){
+ .ds2{overflow-x:clip}
+ .ds2 .seo-hero{padding:18px 0 28px}
+ .ds2 .seo-hero-grid{position:relative;isolation:isolate;display:block;min-height:calc(100svh - 76px);padding:30px 18px 34px;overflow:hidden;border-radius:20px}
+ .ds2 .seo-hero-copy{position:relative;z-index:1;display:block}
+ .ds2 .seo-hero-copy>.eyebrow{margin-bottom:14px}
+ .ds2 .seo-hero-copy>h1{font-size:clamp(2.2rem,9.7vw,3rem);line-height:1.02;letter-spacing:-.05em}
+ .ds2 .seo-hero-copy>.seo-lead{margin:18px 0 22px;color:#fff7f9;font-size:1rem;line-height:1.55}
+ .ds2 .seo-hero-visual{position:absolute;z-index:0;inset:0;grid-area:auto;width:100%;height:100%;max-height:none;margin:0;aspect-ratio:auto;border-radius:20px;box-shadow:none}
+ .ds2 .seo-hero-visual:after{background:linear-gradient(90deg,#241326ed 0%,#39233edb 56%,#39233e9c 100%),linear-gradient(0deg,#241326d9 0%,transparent 78%)}
+ .ds2 .seo-hero-visual img{width:100%;height:100%;object-fit:cover;object-position:var(--hero-position,center);filter:brightness(.82)}
+ .ds2 .seo-hero-actions{position:relative;z-index:1;display:flex;align-items:stretch;flex-direction:column;gap:16px;margin-top:24px}
+ .ds2 .seo-hero-actions .button{width:100%}
+ .ds2 .seo-hero-actions .button{box-sizing:border-box;padding-inline:12px;gap:8px;white-space:nowrap;font-size:13px}
+ .ds2 .seo-hero-actions .seo-secondary{align-self:flex-start;color:#fff7f9}
+ .ds2 .blog-hero{padding:18px 0 28px}
+ .ds2 .blog-hero-grid{position:relative;isolation:isolate;display:block;min-height:calc(100svh - 76px);padding:30px 20px 34px;overflow:hidden;border-radius:20px}
+ .ds2 .blog-hero-copy{position:relative;z-index:1}
+ .ds2 .blog-hero-visual{position:absolute;z-index:0;inset:0;width:100%;height:100%;margin:0;border-radius:20px}
+ .ds2 .blog-hero-visual:after{position:absolute;inset:0;content:"";background:linear-gradient(90deg,#241326ed 0%,#39233edb 56%,#39233e9c 100%),linear-gradient(0deg,#241326d9 0%,transparent 78%)}
+ .ds2 .blog-hero-visual img{width:100%;height:100%;object-fit:cover;filter:brightness(.82)}
+ .ds2 .blog-hero .blog-cta{position:relative;z-index:1;width:100%;max-width:100%;margin-top:26px}
+ .ds2 .tool-hero{position:relative;isolation:isolate;display:flex;min-height:390px;max-width:none;flex-direction:column;justify-content:center;margin:0 0 26px;padding:28px 22px;overflow:hidden;border-radius:20px;background:linear-gradient(90deg,#241326ed 0%,#39233edb 56%,#39233e9c 100%),url('/v1/assets/hotel-workflow-automation.webp') center/cover no-repeat}
+ .ds2 .tool-kicker{color:#ffacd0}
+ .ds2 .tool-hero h1{color:#fff7f9}
+ .ds2 .tool-hero>p:not(.tool-kicker){color:#f8eaf1;font-size:16px;line-height:1.6}
+}
+@media(max-width:380px){.ds2 .hero-v3 .hero-v2-actions>.button:first-child{gap:8px;padding-inline:12px;font-size:13px;white-space:nowrap}.ds2 .hero-v3 .hero-v2-actions>.button:first-child>span{font-size:13px;white-space:nowrap}}
+
 /* Mobile: skip the tall interactive night scenario and its fixed audit bar. */
 @media(max-width:767px){.ds2 .lh,.ds2 .mobile-cta{display:none!important}}
