@@ -106,7 +106,7 @@ function trustAndFaq() {
 }
 
 export function renderContent({featureVisual}) {
- return `${problemPreview()}${calendar()}${integrations()}${hotelSolutions()}${uniqueApproach()}${products(featureVisual)}${guestJourney()}${rolesAndFit()}${authorSection()}${renderPricing()}${onboardingAndConversion()}${trustAndFaq()}`;
+ return `${integrations()}${calendar()}${hotelSolutions()}${products(featureVisual)}${rolesAndFit()}${guestJourney()}${renderPricing()}${authorSection()}${trustStrip()}${problemPreview()}${uniqueApproach()}${onboardingAndConversion()}${trustAndFaq()}`;
 }
 
 export function renderFooter() {
