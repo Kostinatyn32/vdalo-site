@@ -6,7 +6,7 @@ const assetVersion = name => createHash('sha256').update(readFileSync(new URL(`.
 export const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const e = escape;
 export const button = (kind, text, location, style = '') => `<button class="button ${style}" type="button" data-open="${kind}" data-location="${location}">${e(text)}</button>`;
-const logo = (variant = 'inverse') => `<img src="/assets/vdalo-wordmark-${variant}.svg" width="120" height="26" alt="VDALO" decoding="async">`;
+const logo = (variant = 'soft') => `<img src="/assets/vdalo-wordmark-${variant}.svg" width="120" height="26" alt="VDALO" decoding="async">`;
 function header() {
  return `<a class="skip-link" href="#main">Перейти до змісту</a><header class="header"><div class="wrap header-inner"><a class="brand" href="/" aria-label="VDALO, головна">${logo()}</a><nav id="navigation" aria-label="Головна навігація">${site.navigation.map(([title,url])=>`<a href="${url}">${e(title)}</a>`).join('')}<a class="mobile-audit" href="#audit">Отримати аудит</a></nav><div class="header-actions"><a class="header-phone" data-requires-config="phone" data-config-href="phone" hidden><span data-config-text="phone"></span></a><a class="header-telegram" data-requires-config="telegramUrl" data-config-href="telegramUrl" hidden>Telegram</a>${button('audit','Почати безкоштовно','header','compact')}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Відкрити меню"><span></span><span></span></button></div></div></header>`;
 }

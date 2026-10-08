@@ -46,7 +46,7 @@ if (pricingRoot && core) {
   const totalText=plan.monthly===null?'Індивідуальний розрахунок':`${isFrom?'Від ':''}${money(estimateMonthly)} на місяць`;
   pricingRoot.querySelector('[data-estimate-plan]').textContent=`Тариф ${plan.name} · ${rooms} ${roomLabel(rooms)}`;
   pricingRoot.querySelector('[data-estimate-price]').textContent=totalText;
-  pricingRoot.querySelector('[data-estimate-period-total]').textContent=period==='month'||plan.monthly===null?'':`Платіж за ${periodMonths[period]} ${period==='six'?'місяців':'місяців'}: ${money(periodPlan.total+modules.sum*periodMonths[period])}`;
+  pricingRoot.querySelector('[data-estimate-period-total]').textContent=period==='month'||plan.monthly===null?'':`До сплати за ${periodMonths[period]} місяців: ${money(periodPlan.total+modules.sum*periodMonths[period])}`;
   const details=[...modules.notes];
   if(plan.monthly!==null && periodPlan.monthlyEquivalent!==plan.monthly) details.unshift(`Тариф: ${money(periodPlan.monthlyEquivalent)} на місяць`);
   pricingRoot.querySelector('[data-estimate-breakdown]').textContent=details.length?details.join(' · '):'Базовий тариф. Додаткові модулі не вибрані.';

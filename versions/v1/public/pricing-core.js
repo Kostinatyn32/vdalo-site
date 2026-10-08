@@ -29,7 +29,7 @@
   }
   function apartPrice(units) { return 399 + Math.max(0, Math.floor(Number(units) || 1) - 3) * 79; }
   function applyPeriod(monthly, period = 'month') {
-    const factor = period === 'six' ? 0.95 : period === 'year' ? 11 / 12 : 1;
+    const factor = period === 'six' ? 0.9 : period === 'year' ? 0.75 : 1;
     const months = period === 'six' ? 6 : period === 'year' ? 12 : 1;
     return { monthlyEquivalent: monthly === null ? null : Math.round(monthly * factor), total: monthly === null ? null : Math.round(monthly * factor * months) };
   }
