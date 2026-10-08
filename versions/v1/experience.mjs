@@ -2,6 +2,7 @@ import { solutions } from './content/solutions-ua.mjs';
 import { icon, channelMark, productIcons } from './ui.mjs';
 import { conversion } from './content/conversion-ua.mjs';
 import { site, experience } from './content/vdalo-ua.mjs';
+import { renderPricing } from './pricing.mjs';
 const e=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cta=(kind,text,source,style='',interest='')=>`<button type="button" class="button ${style}" data-open="${kind}" data-location="${source}" ${interest?`data-interest="${e(interest)}"`:''}><span>${e(text)}</span>${icon('arrow','button-arrow')}</button>`;
 const lines=value=>value.split('\n').map(e).join('<br>');
@@ -76,10 +77,10 @@ function trustAndFaq() {
 }
 
 export function renderContent({featureVisual}) {
- return `${problemPreview()}${calendar()}${integrations()}${guestSelfService()}${hotelSolutions()}${products(featureVisual)}${guestJourney()}${rolesAndFit()}${onboardingAndConversion()}${trustAndFaq()}`;
+ return `${problemPreview()}${calendar()}${integrations()}${guestSelfService()}${hotelSolutions()}${products(featureVisual)}${guestJourney()}${rolesAndFit()}${renderPricing()}${onboardingAndConversion()}${trustAndFaq()}`;
 }
 
 export function renderFooter() {
- return `<footer class="footer footer-v2"><div class="wrap footer-v2-grid"><div><a href="/" class="footer-brand" aria-label="VDALO, головна">${brand(280)}</a><p>Система керування готелем<br>та автоматизація щоденних задач.</p></div><div><strong>Продукт</strong><a href="#pms">Календар бронювань</a><a href="#solutions">Задачі та рішення</a><a href="#features">Усі модулі</a><a href="#integrations">Інтеграції</a><a href="#journey">Шлях гостя</a><a href="#roles">Для команди</a></div><div><strong>Почати з VDALO</strong><a href="#trial">Пробний доступ</a><a href="#audit">Безкоштовний аудит</a><a href="#onboarding">Підключення</a><a href="#faq">Запитання й відповіді</a></div></div><div class="wrap footer-bottom"><span>© ${new Date().getUTCFullYear()} VDALO</span><a href="/privacy">Конфіденційність</a><span>Україна / vdalo.tech</span><a href="#main">На початок</a></div></footer>`;
+ return `<footer class="footer footer-v2"><div class="wrap footer-v2-grid"><div><a href="/" class="footer-brand" aria-label="VDALO, головна">${brand(280)}</a><p>Система керування готелем<br>та автоматизація щоденних задач.</p></div><div><strong>Продукт</strong><a href="#pms">Календар бронювань</a><a href="#solutions">Задачі та рішення</a><a href="#features">Усі модулі</a><a href="#integrations">Інтеграції</a><a href="#journey">Шлях гостя</a><a href="#roles">Для команди</a></div><div><strong>Почати з VDALO</strong><a href="#pricing">Тарифи та модулі</a><a href="#trial">Пробний доступ</a><a href="#audit">Безкоштовний аудит</a><a href="#onboarding">Підключення</a><a href="#faq">Запитання й відповіді</a></div></div><div class="wrap footer-bottom"><span>© ${new Date().getUTCFullYear()} VDALO</span><a href="/privacy">Конфіденційність</a><span>Україна / vdalo.tech</span><a href="#main">На початок</a></div></footer>`;
 }
 

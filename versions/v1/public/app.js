@@ -140,6 +140,10 @@ if('IntersectionObserver' in window) {
  if(hero&&sticky) new IntersectionObserver(entries=>sticky.classList.toggle('visible',!entries[0].isIntersecting),{threshold:0}).observe(hero);
  const features=document.querySelector('#features');
  if(features) {const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){track('feature_section_view');observer.disconnect();}},{threshold:.05});observer.observe(features);}
+ const pricing=document.querySelector('#pricing');
+ if(pricing) {const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){track('pricing_section_view');observer.disconnect();}},{threshold:.05});observer.observe(pricing);}
+ const addons=document.querySelector('#pricing-addons');
+ if(addons) {const observer=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){track('pricing_addons_view');observer.disconnect();}},{threshold:.05});observer.observe(addons);}
 }
 
 // Product and role exploration only changes the explanatory page state.

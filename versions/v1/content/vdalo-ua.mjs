@@ -18,6 +18,10 @@ export const site = {
       "#integrations"
     ],
     [
+      "Тарифи",
+      "#pricing"
+    ],
+    [
       "Рішення",
       "#solutions"
     ],
@@ -37,7 +41,7 @@ export const site = {
     "trialIncludedModules": null,
     "trialSignupMode": "lead-form",
     "auditEnabled": true,
-    "pricingPublic": false,
+    "pricingPublic": true,
     "plans": [],
     "customerProofEnabled": false,
     "caseStudies": [],
@@ -351,7 +355,7 @@ export const site = {
     ],
     [
       "Скільки коштує VDALO?",
-      "Вартість залежить від вашого об’єкта, потрібних модулів та інтеграцій. Запросіть пробний доступ або аудит: спочатку погодимо обсяг підключення, після чого можна обговорити вартість."
+      "Пакети для готелів починаються від 390 грн на місяць, для апартаментів від 399 грн. Вартість підключення та додаткових модулів залежить від об’єкта. Перегляньте тарифи й модулі на цій сторінці."
     ]
   ],
   "forms": {
