@@ -15,7 +15,7 @@ The first design now serves at `/`. The existing `/funnel` directory and its eig
 | Main CTA | Get a free audit |
 | Secondary CTA | Discuss VDALO implementation |
 | Form | Audit and implementation modes open separately. Required name, property, contact and consent fields are present. Optional context is collapsed. |
-| Analytics | CTA locations and UTM fields are retained by the existing event and lead flow. No contact details are sent as analytics events. |
+| Analytics | Provider neutral events and CTA locations are pushed to `dataLayer`. UTM fields are included in the lead payload. No analytics provider or tag manager is configured in this repository. No contact details are sent as analytics events. |
 | Integrations | Six visible logo examples: Booking.com, Airbnb, Hotels24, Expedia, Agoda and Dobovo. Copy says compatibility is checked per property. |
 | Calendar | Demo dates start from the current date. Booking examples move with the selected week. |
 | Pricing | Calculator, term options, tiers, add-on selection and comparison are present. Main pricing check script passes. |
@@ -34,6 +34,7 @@ The audit and implementation dialogs opened during browser QA. The required fiel
 ## Remaining business inputs
 
 - Configure the lead destination and test a real accepted request.
+- Connect the approved analytics provider or tag manager to the existing `dataLayer` event hook.
 - Confirm whether a trial is available and its duration, card requirement and conditions.
 - Confirm supported integration methods for each named channel before describing them as connected.
 - Supply verified contact details, legal operator details, and data retention policy.
@@ -48,4 +49,3 @@ The audit and implementation dialogs opened during browser QA. The required fiel
 - Local browser review confirmed the home page, visible partner logos, both form modes, and live pricing recalculation.
 - Local console reported no browser errors during the reviewed interactions.
 - Internal hash links resolve. Rendered page copy has no em or en dash characters.
-
