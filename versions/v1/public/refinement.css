@@ -235,3 +235,9 @@
  .dark-edition .dark-hero-content{padding-bottom:40px}.ds2 .hero-v3 .hero-v2-actions .button,.dark-edition .dark-hero-actions .button{font-size:13px}
 }
 @media(min-width:1024px){.header-phone:not([hidden]),.header-telegram:not([hidden]){display:inline-flex;align-items:center}.header-actions{gap:14px}}
+/* Keep the primary hero CTA label and arrow in separate, non-overlapping flex items. */
+.ds2 .hero-v3 .hero-v2-actions>.button:first-child{grid-column:1/-1;justify-self:start;display:inline-flex;align-items:center;justify-content:center;gap:12px;width:max-content;max-width:100%;box-sizing:border-box}
+.ds2 .hero-v3 .hero-v2-actions>.button:first-child>span{flex:0 1 auto;min-width:0;white-space:nowrap;text-align:center}
+.ds2 .hero-v3 .hero-v2-actions>.button:first-child>.button-arrow{display:block;flex:0 0 17px;width:17px;height:17px;margin:0}
+@media(max-width:767px){.ds2 .hero-v3 .hero-v2-actions>.button:first-child{width:100%;justify-self:stretch}}
+@media(max-width:380px){.ds2 .hero-v3 .hero-v2-actions>.button:first-child{width:100%;white-space:normal}.ds2 .hero-v3 .hero-v2-actions>.button:first-child>span{white-space:normal}}
