@@ -1,3 +1,29 @@
+const cfg = key => key.split('.').reduce((value, part) => value?.[part], window.VDALO_CONFIG || {}) ?? null;
+window.VDALO_CFG = cfg;
+const configured = value => value !== null && value !== undefined && String(value).trim() !== '' && !String(value).trim().startsWith('TODO');
+document.querySelectorAll('[data-config-text]').forEach(node => { const value=cfg(node.dataset.configText);if(configured(value))node.textContent=String(value); });
+document.querySelectorAll('[data-config-href]').forEach(node => { const key=node.dataset.configHref;const value=cfg(key);let href=value;if(configured(value)&&key==='phone'&&!String(value).startsWith('tel:'))href=`tel:${value}`;if(configured(value)&&key==='email'&&!String(value).startsWith('mailto:'))href=`mailto:${value}`;let valid=false;try{const url=new URL(href,location.href);valid=['https:','mailto:','tel:'].includes(url.protocol);}catch{}node.hidden=!configured(value)||!valid;if(!node.hidden)node.href=String(href); });
+document.querySelectorAll('[data-config-src]').forEach(node=>{const value=cfg(node.dataset.configSrc);let valid=false;try{const url=new URL(value,location.href);valid=url.protocol==='https:'||url.pathname.startsWith('/v1/assets/');}catch{}node.hidden=!configured(value)||!valid;if(!node.hidden){node.src=String(value);const fallback=node.parentElement?.querySelector('[data-author-fallback]');if(fallback)fallback.hidden=true;}});
+document.querySelectorAll('[data-requires-config]').forEach(node => { node.hidden=!configured(cfg(node.dataset.requiresConfig)); });
+document.querySelectorAll('[data-config-integrations]').forEach(list => {
+ const types={api:'API',ical:'iCal',soon:'Незабаром'};
+ list.replaceChildren(...(cfg('integrations')||[]).filter(item=>item?.name&&item?.logo).map(item=>{const li=document.createElement('li');li.className='logo-tile';const img=document.createElement('img');img.src=item.logo;img.alt=item.name;img.loading='lazy';img.decoding='async';li.append(img);if(types[item.type]){const note=document.createElement('small');note.textContent=types[item.type];li.append(note);}return li;}));
+});
+document.querySelectorAll('[data-legal-details]').forEach(node => {
+ const values=['legalName','legalCode','legalAddress'].map(key=>cfg(key)).filter(configured);
+ node.hidden=values.length===0;
+ node.replaceChildren(...values.map((value,index)=>{const span=document.createElement('span');span.textContent=String(value);if(index)span.prepend(document.createTextNode(' · '));return span;}));
+});
+document.querySelectorAll('[data-config-faq-extra]').forEach(list=>{
+ const entries=cfg('faqExtra');
+ if(!Array.isArray(entries))return;
+ list.replaceChildren(...entries.filter(item=>(item?.question||item?.q)&&(item?.answer||item?.a)).map((item,index)=>{const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=String(item.question||item.q);const plus=document.createElement('span');plus.setAttribute('aria-hidden','true');plus.textContent='+';summary.append(plus);const answer=document.createElement('p');answer.textContent=String(item.answer||item.a);details.dataset.faq=`extra-${index}`;details.append(summary,answer);return details;}));
+});
+const floatingContacts=document.querySelector('[data-floating-contact]');
+if(floatingContacts){
+ const links=[['phone','Подзвонити','tel:'],['email','Email','mailto:'],['telegramUrl','Telegram',''],['viberUrl','Viber','']].flatMap(([key,label,prefix])=>{const value=cfg(key);if(!configured(value))return [];let href=String(value);if(prefix&&!href.startsWith(prefix))href=prefix+href;try{if(!['https:','tel:','mailto:'].includes(new URL(href,location.href).protocol))return [];}catch{return [];}const anchor=document.createElement('a');anchor.href=href;anchor.textContent=label;return [anchor];});
+ if(links.length){const button=document.createElement('button');button.type='button';button.textContent='Написати нам';button.setAttribute('aria-expanded','false');const menu=document.createElement('div');menu.className='floating-contact-menu';menu.hidden=true;menu.append(...links);button.addEventListener('click',()=>{const expanded=button.getAttribute('aria-expanded')!=='true';button.setAttribute('aria-expanded',String(expanded));menu.hidden=!expanded;});floatingContacts.hidden=false;floatingContacts.append(button,menu);}
+}
 document.querySelector('.menu-toggle')?.addEventListener('click', event => {
  const control = event.currentTarget;
  const expanded = control.getAttribute('aria-expanded') !== 'true';
@@ -21,11 +47,28 @@ const track = (event, properties={}) => {
 };
 track('page_view',{path:location.pathname});
 let opener=null;
-function openForm(kind,source,interest='') {
+function openForm(kind,source,interest='',mode='start') {
  const dialog=document.querySelector(`#${kind}-dialog`);
  if(!dialog) return;
  opener=document.activeElement;
  const form=dialog.querySelector('form');
+ form.hidden=false;form.reset();form.removeAttribute('aria-busy');form.dataset.autoInterest='';dialog.querySelector('.form-success').hidden=true;dialog.querySelector('.selected-interest').hidden=true;dialog.querySelector('.form-status').textContent='';
+ for(const error of form.querySelectorAll('.field-error'))error.textContent='';
+ for(const field of form.querySelectorAll('[aria-invalid]'))field.removeAttribute('aria-invalid');
+ const formMode=kind==='trial'&&mode==='implementation'?'implementation':'start';
+ dialog.dataset.mode=formMode;form.dataset.mode=formMode;form.elements.mode.value=formMode;
+ if(kind==='trial') {
+  const implementation=formMode==='implementation';
+  dialog.querySelector(`#${kind}-title`).textContent=implementation?'Обговорімо впровадження у вашому готелі.':'Почнімо з вашого готелю.';
+  dialog.querySelector('[data-dialog-intro]').textContent=implementation?'Розкажіть, якими інструментами користуєтесь і що потрібно налаштувати.':'Уточнимо задачі об’єкта й погодимо формат наступного кроку.';
+  const pms=form.querySelector('.trial-pms-field');
+  if(implementation)form.querySelector('.form-grid').append(pms);else form.querySelector('.form-optional').insertBefore(pms,form.querySelector('.form-optional').firstChild);
+  const button=form.querySelector('[type=submit]');button.dataset.label=implementation?'Надіслати запит на обговорення':'Надіслати запит';button.textContent=button.dataset.label;
+  const estimate=window.VDALO_CURRENT_ESTIMATE;
+  const estimateBlock=dialog.querySelector('[data-estimate-summary]');
+  if(estimate&&source.includes('pricing')) {const text=`${estimate.plan}, ${estimate.rooms} номерів, ${Math.round(estimate.estimateMonthly).toLocaleString('uk-UA')} грн на місяць${estimate.modules.length?`, модулі: ${estimate.modules.join(', ')}`:''}`;estimateBlock.hidden=false;dialog.querySelector('[data-estimate-summary-text]').textContent=text;form.elements.estimate.value=JSON.stringify(estimate);if(!interest)interest=`Розрахунок: ${text}`;form.elements.units.value=String(estimate.rooms);}
+  else {estimateBlock.hidden=true;form.elements.estimate.value='';}
+ }
  if(interest && (!form.elements.pain.value || form.elements.pain.value===form.dataset.autoInterest)) {
   const value=`Хочу перевірити сценарій: ${interest}`;
   form.elements.pain.value=value;
@@ -40,7 +83,8 @@ function openForm(kind,source,interest='') {
  requestAnimationFrame(()=>dialog.querySelector('input:not([type=checkbox])').focus());
 }
 function closeForm(dialog) { dialog.close(); }
-document.querySelectorAll('[data-open]').forEach(control=>control.addEventListener('click',()=>openForm(control.dataset.open,control.dataset.location,control.dataset.interest)));
+document.querySelectorAll('[data-open]').forEach(control=>control.addEventListener('click',()=>openForm(control.dataset.open,control.dataset.location,control.dataset.interest,control.dataset.mode)));
+document.querySelectorAll('a[href="#pricing-addons"]').forEach(link=>link.addEventListener('click',()=>{const disclosure=document.querySelector('#pricing-addons details');if(disclosure)disclosure.open=true;}));
 document.querySelectorAll('.lead-dialog').forEach(dialog=>{
  dialog.querySelectorAll('[data-close]').forEach(control=>control.addEventListener('click',()=>closeForm(dialog)));
  dialog.addEventListener('click',event=>{
@@ -54,6 +98,7 @@ function validate(kind,data) {
  const errors={};
  if(data.name.length<2) errors.name='Вкажіть ваше ім’я.';
  if(data.property.length<2) errors.property='Вкажіть назву об’єкта.';
+ if(kind==='trial'&&!data.units) errors.units='Вкажіть кількість номерів або юнітів.';
  const digits=data.contact.replace(/\D/g,'').length;
  if(!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact) || (/^[+()\d\s.-]+$/.test(data.contact) && digits>=9 && digits<=15))) errors.contact='Вкажіть коректний телефон або email.';
  if(data.units && !/^[1-9]\d{0,4}$/.test(data.units)) errors.units='Вкажіть кількість номерів або юнітів від 1 до 99999.';
@@ -93,7 +138,7 @@ document.querySelectorAll('form[data-kind]').forEach(form=>{
   const submit=form.querySelector('[type=submit]');
   if(submit.disabled) return;
   const raw=Object.fromEntries(new FormData(form));
-  const data={...raw,name:(raw.name||'').trim(),property:(raw.property||'').trim(),contact:(raw.contact||'').trim(),units:raw.units||'',consent:raw.consent==='on',utm:{}};
+  const data={...raw,name:(raw.name||'').trim(),property:(raw.property||'').trim(),contact:(raw.contact||'').trim(),units:raw.units||'',mode:kind==='trial'?(raw.mode==='implementation'?'implementation':'start'):'',estimate:raw.estimate||'',consent:raw.consent==='on',utm:{}};
   const params=new URLSearchParams(location.search);
   for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']) if(params.get(key)) data.utm[key]=params.get(key).slice(0,150);
   const errors=validate(kind,data);
@@ -183,11 +228,22 @@ if(calendarNode) {
  let week=0;
  let channel='all';
  let selectedId=null;
+ const monthNames=['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+ const startDate=new Date();startDate.setHours(0,0,0,0);
+ const baseline=new Date(2026,9,6);
+ const dateLabel=date=>`${date.getDate()} ${monthNames[date.getMonth()]}`;
+ const dateRange=(from,to)=>from.getMonth()===to.getMonth()&&from.getFullYear()===to.getFullYear()?`${from.getDate()} до ${to.getDate()} ${monthNames[to.getMonth()]} ${to.getFullYear()}`:`${from.getDate()} ${monthNames[from.getMonth()]} до ${to.getDate()} ${monthNames[to.getMonth()]} ${to.getFullYear()}`;
+ const shiftedReservation=(item,weekIndex)=>{
+  const parse=value=>{const [day,month]=value.split(' ');return new Date(2026,monthNames.indexOf(month),Number(day));};
+  const days=Math.round((startDate-baseline)/86400000)+weekIndex*7;
+  const arrival=parse(item.arrival),departure=parse(item.departure);arrival.setDate(arrival.getDate()+days);departure.setDate(departure.getDate()+days);
+  return {arrival:dateLabel(arrival),departure:dateLabel(departure)};
+ };
  const clearDetails=()=>{
   selectedId=null;
   details.replaceChildren();
   const symbol=document.createElement('span');symbol.className='detail-symbol';symbol.setAttribute('aria-hidden','true');symbol.textContent='+';
-  const copy=document.createElement('div');const title=document.createElement('strong');title.textContent='Оберіть бронювання у шахматці.';
+  const copy=document.createElement('div');const title=document.createElement('strong');title.textContent='Оберіть бронювання у календарі.';
   const note=document.createElement('p');note.textContent='Побачте зв’язок дат, номера, каналу та статусу.';copy.append(title,note);details.append(symbol,copy);
  };
  const selectReservation=item=>{
@@ -198,7 +254,8 @@ if(calendarNode) {
   const copy=document.createElement('div');const title=document.createElement('strong');title.textContent=`${item.label} / ${item.status}`;
   const note=document.createElement('p');note.textContent=item.note;copy.append(title,note);
   const record=document.createElement('div');record.className='detail-record';
-  for(const [label,value] of [['Заїзд',item.arrival],['Виїзд',item.departure]]) {const field=document.createElement('div');field.textContent=label;const strong=document.createElement('strong');strong.textContent=value;field.append(strong);record.append(field);}
+  const dates=shiftedReservation(item,week);
+  for(const [label,value] of [['Заїзд',dates.arrival],['Виїзд',dates.departure]]) {const field=document.createElement('div');field.textContent=label;const strong=document.createElement('strong');strong.textContent=value;field.append(strong);record.append(field);}
   details.append(room,copy,record);
   track('calendar_reservation_view',{sample_id:item.id});
  };
@@ -224,11 +281,14 @@ if(calendarNode) {
    const button=document.createElement('button');button.type='button';button.className=`reservation ${item.channel}`;
    button.style.gridColumn=`${item.start+2} / span ${item.nights}`;button.style.gridRow=String(item.room+2);
    button.dataset.reservation=item.id;button.dataset.channel=item.channel;button.setAttribute('aria-pressed','false');
-   button.setAttribute('aria-label',`${item.label}, номер ${calendar.rooms[item.room][0]}, ${item.arrival} до ${item.departure}`);
+   const dates=shiftedReservation(item,week);
+   button.setAttribute('aria-label',`${item.label}, номер ${calendar.rooms[item.room][0]}, ${dates.arrival} до ${dates.departure}`);
    const name=document.createElement('span');name.textContent=item.label;const state=document.createElement('small');state.textContent=item.status;button.append(name,state);grid.append(button);
   });
-  document.querySelectorAll('[data-day]').forEach(day=>day.textContent=String(6+week*7+Number(day.dataset.day)));
-  document.getElementById('calendar-period').textContent=week===0?'06-12 жовтня 2026':'13-19 жовтня 2026';
+  const weekStart=new Date(startDate);weekStart.setDate(weekStart.getDate()+week*7);
+  document.querySelectorAll('[data-day]').forEach(day=>{const date=new Date(weekStart);date.setDate(date.getDate()+Number(day.dataset.day));day.textContent=String(date.getDate());const weekday=day.parentElement.querySelector('[data-day-weekday]');weekday.textContent=new Intl.DateTimeFormat('uk-UA',{weekday:'short'}).format(date).replace('.','');});
+  const weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+6);
+  document.getElementById('calendar-period').textContent=dateRange(weekStart,weekEnd);
   document.querySelector('[data-week=previous]').disabled=week===0;
   document.querySelector('[data-week=next]').disabled=week===calendar.weeks.length-1;
   clearDetails();bindReservations();applyFilter();
@@ -242,7 +302,7 @@ if(calendarNode) {
   week=Math.max(0,Math.min(calendar.weeks.length-1,week+(button.dataset.week==='next'?1:-1)));
   showWeek();track('calendar_week_change',{week});
  }));
- bindReservations();
+ showWeek();
 }
 
 if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches) {

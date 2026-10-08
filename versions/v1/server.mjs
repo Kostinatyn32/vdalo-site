@@ -26,10 +26,11 @@ function send(res, status, data, type='application/json; charset=utf-8') {
 const text = (v, max=150) => typeof v==='string' ? v.trim().slice(0,max) : '';
 export function validateLead(kind, raw) {
  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { errors:{ form:'Перевірте дані форми.' } };
- const data = { name:text(raw.name,100), property:text(raw.property), contact:text(raw.contact,180), units:text(raw.units,6), pms:text(raw.pms), pain:text(raw.pain,1000), consent:raw.consent===true };
+ const data = { name:text(raw.name,100), property:text(raw.property), contact:text(raw.contact,180), units:text(raw.units,6), pms:text(raw.pms), pain:text(raw.pain,1000), mode:kind==='trial'&&raw.mode==='implementation'?'implementation':kind==='trial'?'start':'', estimate:kind==='trial'?text(raw.estimate,1200):'', consent:raw.consent===true };
  const errors = {};
  if (data.name.length<2) errors.name='Вкажіть ваше ім’я.';
  if (data.property.length<2) errors.property='Вкажіть назву об’єкта.';
+ if (kind==='trial'&&!data.units) errors.units='Вкажіть кількість номерів або юнітів.';
  if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact) || (/^[+()\d\s.-]+$/.test(data.contact) && data.contact.replace(/\D/g,'').length>=9 && data.contact.replace(/\D/g,'').length<=15))) errors.contact='Вкажіть коректний телефон або email.';
  if (data.units && !/^[1-9]\d{0,4}$/.test(data.units)) errors.units='Вкажіть кількість номерів або юнітів від 1 до 99999.';
  if (!data.consent) errors.consent='Потрібна ваша згода на використання контактів для відповіді.';
@@ -90,7 +91,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/privacy') return send(res,200,privacyPage(),'text/html; charset=utf-8');
   if(pathname==='/robots.txt') return send(res,200,origin?`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`:'User-agent: *\nDisallow: /\n','text/plain; charset=utf-8');
   if(pathname==='/sitemap.xml' && origin) return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${escape(origin)}/</loc></url></urlset>`,'application/xml; charset=utf-8');
-  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|integration-channels\.css|refinement\.css|refinement\.css|polish\.css|styles\.css|design-system-2\.css|app\.js)$/.test(pathname)) return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
+  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|integration-channels\.css|refinement\.css|polish\.css|styles\.css|design-system-2\.css|site-config\.js|pricing-core\.js|pricing\.js|app\.js)$/.test(pathname)) return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const filename=path.join(root,'public',pathname.slice(1));
   const data=await readFile(filename);
   res.writeHead(200,{'Content-Type':mime[path.extname(filename)]||'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':process.env.NODE_ENV==='production'?'public, max-age=300':'no-store'});
