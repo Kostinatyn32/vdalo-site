@@ -85,6 +85,7 @@ function openForm(kind,source,interest='',mode='start') {
 function closeForm(dialog) { dialog.close(); }
 document.querySelectorAll('[data-open]').forEach(control=>control.addEventListener('click',()=>openForm(control.dataset.open,control.dataset.location,control.dataset.interest,control.dataset.mode)));
 document.querySelectorAll('a[href="#pricing-addons"]').forEach(link=>link.addEventListener('click',()=>{const disclosure=document.querySelector('#pricing-addons details');if(disclosure)disclosure.open=true;}));
+document.querySelectorAll('.addons-calc-link').forEach(link=>link.addEventListener('click',()=>{const modulePicker=document.querySelector('.calculator-modules');if(modulePicker)modulePicker.open=true;}));
 document.querySelectorAll('.lead-dialog').forEach(dialog=>{
  dialog.querySelectorAll('[data-close]').forEach(control=>control.addEventListener('click',()=>closeForm(dialog)));
  dialog.addEventListener('click',event=>{

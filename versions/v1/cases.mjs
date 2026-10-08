@@ -74,15 +74,15 @@ function pageShell(content, {title, description, canonical, type}) {
 }
 
 export function renderCaseList() {
- const title = 'Кейси vdalo.tech | Досвід готелів';
- const description = 'Практичні приклади, як готелі використовують vdalo.tech для роботи з гостями та щоденними процесами.';
+ const title = 'Кейси автоматизації готелів | VDALO';
+ const description = 'Кейси автоматизації готелів: приклади роботи з vdalo.tech, зміни в процесах рецепції та розрахунок вартості для готелів в Україні.';
  const content = `<section class="case-index-hero"><div class="wrap"><p class="eyebrow">ВДАЛІ РІШЕННЯ / КЕЙСИ</p><h1>Як готелі прибирають рутину</h1><p class="case-index-lead">Практичні приклади роботи з vdalo.tech та зміни у щоденних процесах готелю.</p></div></section><section class="section case-index-list"><div class="wrap"><article class="case-card"><div class="case-card-copy"><p class="eyebrow">ГОТЕЛЬ У НІМЕЧЧИНІ</p><h2>${e(caseStudy.title)}</h2><p class="case-card-metric">у 13 разів дешевше</p><p>${e(caseStudy.cardLead)}</p><a class="button dark" href="${slug}">Читати кейс <span aria-hidden="true">→</span></a></div><div class="case-card-side" aria-hidden="true"><span>20 000 грн</span><i>↓</i><strong>1 500 грн</strong><small>витрати на місяць</small></div></article></div></section>`;
  return pageShell(content, {title, description, canonical:`${origin}/cases`, type:'CollectionPage'});
 }
 
 export function renderHotelReceptionCase() {
- const title = `${caseStudy.title} | Кейси vdalo.tech`;
- const description = 'Як готель у Німеччині перевів вечірнє заселення та типові запитання гостей в автоматичний режим.';
+ const title = 'Вечірня рецепція готелю: кейс автоматизації | VDALO';
+ const description = 'Кейс готелю у Німеччині: як vdalo.tech підтримує вечірнє заселення й відповіді на типові запитання, щоб окрема вечірня ставка стала непотрібною.';
  const metrics = caseStudy.metrics.map(([value,label]) => `<article class="case-metric"><strong>${e(value)}</strong><span>${e(label)}</span></article>`).join('');
  const implemented = caseStudy.implemented.map(([heading,copy]) => `<li><strong>${e(heading)}.</strong> ${e(copy)}</li>`).join('');
  const content = `<article class="hotel-case">

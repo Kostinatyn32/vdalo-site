@@ -18,7 +18,7 @@ export const processes=[
 ];
 export const crmStages=['NEW','CONTACTED','ENGAGED','DECISION_MAKER_FOUND','QUALIFIED','OFFER_ACCEPTED','BOOKED','HELD_OR_ACTIVATED','PILOT','COMMERCIAL','WON','LOST','LATER','DO_NOT_CONTACT'];
 export const settings={
- canonicalOrigin:'https://www.vdalo.tech',
+ canonicalOrigin:'https://vdalo.tech',
  analyticsVersion:'1.0',
  submissionPath:'/api/funnel/leads',
 };
