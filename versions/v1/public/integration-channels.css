@@ -1,0 +1,17 @@
+.ds2 .integration-flow{width:100%;max-width:none;margin:0}
+.ds2 .integration-list-label{margin:0 0 12px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.12em}
+.ds2 .integration-channels{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.ds2 .integration-channels li{min-width:0;min-height:78px;padding:12px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px #39233e08}
+.ds2 .integration-channels .channel-logo{width:100%;height:40px;object-fit:contain}
+.ds2 .integration-connector{height:38px}
+.ds2 .integration-hub{padding:18px 22px;border-radius:12px}
+.ds2 .integration-hub strong{font-size:25px}
+.ds2 .integration-direct-note{display:flex;align-items:center;gap:10px;margin-top:24px;padding:13px 16px;border-left:2px solid var(--pink);background:#39233e06;font-size:13px;font-weight:600}
+.ds2 .integration-direct-note span{color:#a54975}
+.ds2 .integration-footnote{max-width:600px;color:var(--muted)}
+.ds2 .integration-footnote summary{min-height:40px;display:flex;align-items:center;gap:10px;font-size:11px;line-height:1.5;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ds2 .integration-footnote summary span{font-size:15px;text-decoration:none}
+.ds2 .integration-footnote[open] summary span{transform:rotate(45deg)}
+.ds2 .integration-footnote p{max-width:520px;padding:0 18px 8px 0;font-size:11px;line-height:1.65}
+@media(max-width:1050px){.ds2 .integrations-layout{grid-template-columns:1fr;gap:36px}.ds2 .integration-flow{max-width:680px}}
+@media(max-width:560px){.ds2 .integration-channels{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ds2 .integration-channels li{min-height:70px;padding:10px}.ds2 .integration-hub strong{font-size:22px}.ds2 .integration-direct-note{font-size:12px}.ds2 .integration-bottom{align-items:flex-start;flex-direction:column}}
