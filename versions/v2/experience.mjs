@@ -7,7 +7,7 @@ const cta=(kind,text,source,style='',interest='')=>`<button type="button" class=
 const lines=value=>value.split('\n').map(e).join('<br>');
 const title=(value,accent=false)=>value.split('\n').map((line,i,all)=>accent&&i===all.length-1?`<span class="accent">${e(line)}</span>`:e(line)).join('<br>');
 const label=text=>`<p class="eyebrow">${e(text.replace(/^\d+ \/ /,''))}</p>`;
-const brand=(width=140)=>`<img src="/assets/vdalo-original-pink.png" width="${width}" height="${Math.round(width/3)}" alt="VDALO®">`;
+const brand=(width=140)=>`<img src="/assets/vdalo-canonical.png" width="${width}" height="${Math.round(width/3)}" alt="VDALO®" decoding="async">`;
 
 export function renderHero() {
  return `<section class="hero-v2 dark-hero" aria-labelledby="hero-title"><div class="dark-hero-media"><img src="/assets/hero-hotel.webp" width="1122" height="1402" alt="Сучасний готельний номер у вечірньому світлі" fetchpriority="high"></div><div class="wrap dark-hero-content">${label(conversion.hero.eyebrow)}<h1 id="hero-title">Готель працює<br><span>вдало.</span></h1><p class="dark-hero-description">${e(conversion.hero.description)}</p><div class="dark-hero-actions">${cta('trial','Запросити пробний доступ','hero')}${cta('audit','Безкоштовний аудит','hero','outline')}</div><p class="dark-hero-note">${e(conversion.hero.nextStep)}</p><a class="dark-hero-scroll" href="#pms">Ваша щоденна PMS <span aria-hidden="true">↓</span></a></div><div class="dark-hero-rail wrap"><span>ВЛАСНА PMS</span><span>УСІ КАНАЛИ В ОДНІЙ СИСТЕМІ</span><span>АВТОМАТИЗАЦІЯ ПІД КЛЮЧ</span></div></section>`;

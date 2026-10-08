@@ -27,6 +27,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/cases/' || pathname==='/cases/hotel-ai-reception/') {res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/cases')return send(res,200,prefix(renderCaseList(),'v1'));
   if(pathname==='/cases/hotel-ai-reception')return send(res,200,prefix(renderHotelReceptionCase(),'v1'));
+  if(pathname==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
   if(pathname==='/')return send(res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'));
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
   if(pathname==='/sitemap.xml')return send(res,200,'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://vdalo.tech/cases</loc></url><url><loc>https://vdalo.tech/cases/hotel-ai-reception</loc></url></urlset>','application/xml; charset=utf-8');
