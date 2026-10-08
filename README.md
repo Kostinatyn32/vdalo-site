@@ -1,12 +1,12 @@
-# VDALO comparison site
+# VDALO site
 
-One repository and Vercel project, with `/v1/` and `/v2/`. The root is a design comparison page. `/v3/` is reserved in the presentation until the third design is created. No public deployment or DNS change has been made by preparing these files.
+The root (`/`) serves the selected first design. `/v1/` remains available as an alias. Alternate designs are preserved locally in `design-archive/alternate-versions/` and are not served as public pages. Funnels remain available at `/funnel` and their individual offer routes.
 
 Run locally: `npm start` (port 4185). No npm dependencies.
 
-Vercel: Node.js 24, standard `server.mjs` entrypoint, no static build. Public assets are bundled and served by the allowlisted router. Comparison pages stay noindex until the final design is selected.
+Vercel: Node.js 24, standard `server.mjs` entrypoint, no static build. Public assets are bundled and served by the allowlisted router.
 
-Automatic Git deployments are disabled with `git.deploymentEnabled=false` while the third design is being prepared. Enable this when publication is authorized. The cloud project and Git repository can be connected without publishing unfinished designs.
+Git deployments are enabled for the connected Vercel project.
 
 Domain: attach `vdalo.tech` and `www.vdalo.tech` to this project after a successful deployment. Use only the DNS values shown by that exact Vercel project. In EuroDNS, change only matching web records; retain MX, SPF, DKIM and other unrelated records. Domain registration stays at EuroDNS.
 

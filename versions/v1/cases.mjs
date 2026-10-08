@@ -68,8 +68,8 @@ function pageShell(content, {title, description, canonical, type}) {
  let html = renderPage({origin, full:true});
  html = html.replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main">${content}</main>`);
  html = html.replace(/<link rel="stylesheet" href="\/design-system-2\.css[^>]*>/, match => `${match}<link rel="stylesheet" href="/cases.css">`);
- html = html.replace(/<nav id="navigation"[\s\S]*?<\/nav>/, nav => nav.replace(/href="#([^\"]+)"/g, 'href="/v1/#$1"'));
- html = html.replace(/<footer[\s\S]*?<\/footer>/, footer => footer.replace(/href="#([^\"]+)"/g, 'href="/v1/#$1"'));
+ html = html.replace(/<nav id="navigation"[\s\S]*?<\/nav>/, nav => nav.replace(/href="#([^\"]+)"/g, 'href="/#$1"'));
+ html = html.replace(/<footer[\s\S]*?<\/footer>/, footer => footer.replace(/href="#([^\"]+)"/g, 'href="/#$1"'));
  return meta(html, title, description, canonical, type || 'WebPage');
 }
 
@@ -96,7 +96,7 @@ export function renderHotelReceptionCase() {
    <section class="case-section case-economics" id="ukraine-calculation"><p class="eyebrow">05 / ПРИКЛАД РОЗРАХУНКУ</p><h2>Скільки це для готелю в Україні</h2><div class="case-prose"><div class="case-table-wrap"><table><thead><tr><th scope="col"></th><th scope="col">Адміністратор</th><th scope="col">vdalo.tech</th></tr></thead><tbody><tr><th scope="row">На місяць</th><td>20 000 грн</td><td>1 500 грн</td></tr><tr><th scope="row">На рік</th><td>240 000 грн</td><td>18 000 грн</td></tr></tbody></table></div><p>За умови, що одна ставка більше не потрібна, різниця між наведеними сумами становить 18 500 грн на місяць або 222 000 грн на рік.</p><p>Якщо система дозволяє прибрати дві ставки, різниця становить 38 500 грн на місяць або 462 000 грн на рік.</p><p class="case-footnote">Це арифметичний приклад на основі вказаних сум. Фактичний результат залежить від процесів і витрат конкретного готелю.</p></div></section>
    <blockquote class="case-quote"><p>«Ресепшен не зник. Зникла рутина, за яку готель платив щомісяця».</p></blockquote>
   </div>
-  <section class="case-cta"><div class="wrap"><div><p class="eyebrow">ВДАЛО / НАСТУПНИЙ КРОК</p><h2>Скільки ви платите за рутину на рецепції?</h2><p>Покажемо, яку частину роботи адміністраторів можна передати vdalo.tech у вашому готелі.</p></div><a class="button dark" href="/v1/#pricing">Переглянути тарифи <span aria-hidden="true">→</span></a></div></section>
+  <section class="case-cta"><div class="wrap"><div><p class="eyebrow">ВДАЛО / НАСТУПНИЙ КРОК</p><h2>Скільки ви платите за рутину на рецепції?</h2><p>Покажемо, яку частину роботи адміністраторів можна передати vdalo.tech у вашому готелі.</p></div><a class="button dark" href="/#pricing">Переглянути тарифи <span aria-hidden="true">→</span></a></div></section>
  </article>`;
  return pageShell(content, {title, description, canonical:`${origin}${slug}`, type:'Article'});
 }
