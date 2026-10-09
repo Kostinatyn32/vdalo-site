@@ -15,6 +15,7 @@ import {server as leadServer,privacyPage} from './versions/v1/server.mjs';
 import {renderCaseList,renderCase,caseSlugs} from './versions/v1/cases.mjs';
 import {renderBlogPage} from './versions/v1/blog.mjs';
 import {renderEditorialArticle,editorialArticles} from './versions/v1/article-library.mjs';
+import {renderSecondPassArticle,secondPassArticles} from './versions/v1/article-second-pass.mjs';
 import {renderPmsArticle,pmsArticle} from './versions/v1/article-pms.mjs';
 import {renderPmsChoiceArticle,pmsChoiceArticle} from './versions/v1/article-pms-choice.mjs';
 import {renderToolsIndex,renderPmsChecklist,renderHotelProfitabilityCalculator} from './versions/v1/tools.mjs';
@@ -87,6 +88,8 @@ const server=http.createServer(async(req,res)=>{
   if(pathname===pmsArticle.slug)return send(res,200,prefix(renderPmsArticle(),'v1'));
   if(editorialArticles.some(article=>pathname===`${article.slug}/`)){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(editorialArticles.some(article=>article.slug===pathname))return send(res,200,prefix(renderEditorialArticle(pathname),'v1'));
+  if(secondPassArticles.some(article=>pathname===`${article.slug}/`)){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(secondPassArticles.some(article=>article.slug===pathname))return send(res,200,prefix(renderSecondPassArticle(pathname),'v1'));
   if(seoRoutes().includes(pathname))return send(res,200,prefix(renderSeoPage(pathname),'v1'));
   if(seoRoutes().includes(pathname.slice(0,-1))&&pathname.endsWith('/')){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
@@ -94,7 +97,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
   if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
-  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
+  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),...secondPassArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
