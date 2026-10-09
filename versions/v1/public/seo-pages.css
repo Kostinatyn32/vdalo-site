@@ -12,3 +12,13 @@
 .seo-hero-visual img{object-position:var(--hero-position,center)}
 @media(max-width:850px){.seo-hero-grid{grid-template-areas:"copy" "visual" "actions";grid-template-rows:auto;row-gap:26px}.seo-hero-visual{width:100%;max-height:none}.seo-hero-actions{align-items:center}}
 @media(max-width:600px){.seo-hero-grid{display:grid;grid-template-areas:"copy" "visual" "actions";grid-template-rows:auto;row-gap:0}.seo-hero-copy{display:block}.seo-hero-copy>.eyebrow{margin-bottom:14px}.seo-hero-copy>h1{margin-bottom:0;font-size:clamp(2.2rem,9.7vw,3rem);line-height:1.02;letter-spacing:-.05em}.seo-hero-copy>.seo-lead{margin:18px 0 22px;font-size:1rem;line-height:1.55}.seo-hero-visual{aspect-ratio:1.42;max-height:none;margin:0 0 22px}.seo-hero-actions{align-items:stretch;flex-direction:column;gap:18px}.seo-hero-actions .button{width:100%}.seo-hero-actions .seo-secondary{align-self:flex-start}.seo-hero-visual.seo-hero-portrait{aspect-ratio:1.2;max-height:none}}
+
+/* Keep each supporting page's next step beside its explanation, on every viewport. */
+.seo-hero-grid{grid-template-areas:none;grid-template-rows:auto;row-gap:0;column-gap:clamp(36px,6vw,88px)}
+.seo-hero-copy,.seo-hero-visual,.seo-hero-actions{grid-area:auto}
+.seo-hero-copy>.seo-hero-actions{margin-top:24px;gap:12px 20px}
+.seo-hero-actions .seo-secondary{min-height:48px;display:inline-flex;align-items:center}
+@media(min-width:601px){.seo-hero{padding:clamp(64px,7vw,100px) 0 64px}}
+@media(min-width:851px){.seo-hero h1{max-width:760px;font-size:clamp(2.4rem,4.4vw,4rem);line-height:1.02}}
+@media(max-width:850px){.seo-hero-grid{grid-template-areas:none;grid-template-rows:auto;row-gap:28px}.seo-hero h1{font-size:clamp(2.5rem,7vw,4rem)}.seo-hero-visual{width:100%;max-height:none}}
+@media(max-width:600px){.seo-hero-grid{display:grid;grid-template-areas:none;grid-template-rows:auto;row-gap:26px}.seo-hero-copy{display:block}.seo-hero-copy>.eyebrow{margin-bottom:14px}.seo-hero-copy>h1{margin-bottom:0;font-size:clamp(2.2rem,9.7vw,3rem);line-height:1.02;letter-spacing:-.05em}.seo-hero-copy>.seo-lead{margin:18px 0 0;font-size:1rem;line-height:1.55}.seo-hero-copy>.seo-hero-actions{margin-top:20px;align-items:stretch;flex-direction:column;gap:12px}.seo-hero-copy>.seo-hero-actions .button{width:100%}.seo-hero-copy>.seo-hero-actions .seo-secondary{align-self:flex-start}.seo-hero-visual{aspect-ratio:1.42;max-height:none;margin:0}.seo-hero-visual.seo-hero-portrait{aspect-ratio:1.2;max-height:none}}

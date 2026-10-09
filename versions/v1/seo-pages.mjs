@@ -1,5 +1,6 @@
 import {renderPage,escape} from './render.mjs';
 import {renderPricing} from './pricing.mjs';
+import {assetVersion} from './assets.mjs';
 
 const e=escape;
 const origin='https://vdalo.tech';
@@ -95,7 +96,7 @@ const articleRelatedRoutes=new Set(['/solutions','/integrations','/pricing','/ho
 function articleBridge(){return `<section class="seo-section seo-article-bridge"><div class="seo-content"><p class="eyebrow">ПОЯСНЮЄМО ПРОСТО</p><div class="seo-article-bridge-card"><div><h2>Що таке PMS для готелю?</h2><p>Розібрали основні функції системи, її відмінності від інших інструментів і запитання, які варто поставити перед вибором.</p></div><a href="/blog/shcho-take-pms-dlya-gotelyu">Читати статтю <span aria-hidden="true">↗</span></a></div></div></section>`;}
 function pageContent(config,pathname){
  const body=config.sections.map(([eyebrow,title,html])=>section(eyebrow,title,html)).join('');
- return `<section class="seo-hero"><div class="seo-wrap seo-hero-grid"><div class="seo-hero-copy"><p class="eyebrow">${e(config.eyebrow||'VDALO / ДЛЯ ГОТЕЛЮ')}</p><h1>${e(config.h1)}</h1><p class="seo-lead">${e(config.lead)}</p></div><figure class="seo-hero-visual${config.heroPortrait?' seo-hero-portrait':''}" style="--hero-position:${e(config.heroPosition||'center')}"><img src="/assets/${e(config.heroImage)}" width="${e(config.heroWidth||1536)}" height="${e(config.heroHeight||1024)}" alt="${e(config.heroAlt)}" title="${e(config.heroAlt)}" fetchpriority="high"></figure><div class="seo-hero-actions">${auditButton(config.heroCta||'Обговорити мій процес',config.heroKind||'audit')}<a class="seo-secondary" href="/solutions">Переглянути можливості <span aria-hidden="true">↗</span></a></div></div></section><div class="seo-wrap">${body}${articleRelatedRoutes.has(pathname)?articleBridge():''}${config.extra||''}</div>`;
+ return `<section class="seo-hero"><div class="seo-wrap seo-hero-grid"><div class="seo-hero-copy"><p class="eyebrow">${e(config.eyebrow||'VDALO / ДЛЯ ГОТЕЛЮ')}</p><h1>${e(config.h1)}</h1><p class="seo-lead">${e(config.lead)}</p><div class="seo-hero-actions">${auditButton(config.heroCta||'Обговорити мій процес',config.heroKind||'audit')}<a class="seo-secondary" href="/solutions">Переглянути можливості <span aria-hidden="true">↗</span></a></div></div><figure class="seo-hero-visual${config.heroPortrait?' seo-hero-portrait':''}" style="--hero-position:${e(config.heroPosition||'center')}"><img src="/assets/${e(config.heroImage)}" width="${e(config.heroWidth||1536)}" height="${e(config.heroHeight||1024)}" alt="${e(config.heroAlt)}" title="${e(config.heroAlt)}" fetchpriority="high"></figure></div></section><div class="seo-wrap">${body}${articleRelatedRoutes.has(pathname)?articleBridge():''}${config.extra||''}</div>`;
 }
 
 export function seoRoutes(){return Object.keys(pages);}
@@ -113,7 +114,7 @@ export function renderSeoPage(pathname){
   .replace(/<link rel="canonical" href="[^"]*">/,`<link rel="canonical" href="${canonical}">`)
   .replace(/<meta property="og:url" content="[^"]*">/,`<meta property="og:url" content="${canonical}">`)
   .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/,`<script type="application/ld+json">${graph}</script>`)
-  .replace('</head>','<link rel="stylesheet" href="/seo-pages.css"></head>')
+  .replace('</head>',`<link rel="stylesheet" href="/seo-pages.css?v=${assetVersion('seo-pages.css')}"></head>`)
   .replace(/<nav id="navigation"[\s\S]*?<\/nav>/,nav=>nav.replace(/href="#([^"]+)"/g,'href="/#$1"'))
   .replace(/<footer[\s\S]*?<\/footer>/,footer=>footer.replace(/href="#([^"]+)"/g,'href="/#$1"'));
  return html;

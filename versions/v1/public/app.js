@@ -7,7 +7,7 @@ document.querySelectorAll('[data-config-src]').forEach(node=>{const value=cfg(no
 document.querySelectorAll('[data-requires-config]').forEach(node => { node.hidden=!configured(cfg(node.dataset.requiresConfig)); });
 document.querySelectorAll('[data-config-integrations]').forEach(list => {
  const types={api:'API',ical:'iCal',soon:'Незабаром'};
- list.replaceChildren(...(cfg('integrations')||[]).filter(item=>item?.name&&item?.logo).map(item=>{const li=document.createElement('li');li.className='logo-tile';const img=document.createElement('img');img.src=item.logo;img.alt=item.name;img.loading='lazy';img.decoding='async';li.append(img);if(types[item.type]){const note=document.createElement('small');note.textContent=types[item.type];li.append(note);}return li;}));
+ list.replaceChildren(...(cfg('integrations')||[]).filter(item=>item?.name&&item?.logo).map(item=>{const li=document.createElement('li');li.className='logo-tile';const img=document.createElement('img');img.src=item.logo;img.alt=item.name;img.width=150;img.height=40;img.loading='lazy';img.decoding='async';li.append(img);if(types[item.type]){const note=document.createElement('small');note.textContent=types[item.type];li.append(note);}return li;}));
 });
 document.querySelectorAll('[data-legal-details]').forEach(node => {
  const values=['legalName','legalCode','legalAddress'].map(key=>cfg(key)).filter(configured);
@@ -98,8 +98,6 @@ document.querySelectorAll('.lead-dialog').forEach(dialog=>{
 function validate(kind,data) {
  const errors={};
  if(data.name.length<2) errors.name='Вкажіть ваше ім’я.';
- if(data.property.length<2) errors.property='Вкажіть назву об’єкта.';
- if(kind==='trial'&&!data.units) errors.units='Вкажіть кількість номерів або юнітів.';
  const digits=data.contact.replace(/\D/g,'').length;
  if(!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact) || (/^[+()\d\s.-]+$/.test(data.contact) && digits>=9 && digits<=15))) errors.contact='Вкажіть коректний телефон або email.';
  if(data.units && !/^[1-9]\d{0,4}$/.test(data.units)) errors.units='Вкажіть кількість номерів або юнітів від 1 до 99999.';
