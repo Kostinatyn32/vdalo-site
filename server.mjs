@@ -12,8 +12,9 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {renderPage as firstPage} from './versions/v1/render.mjs';
 import {server as leadServer,privacyPage} from './versions/v1/server.mjs';
-import {renderCaseList,renderHotelReceptionCase} from './versions/v1/cases.mjs';
+import {renderCaseList,renderCase,caseSlugs} from './versions/v1/cases.mjs';
 import {renderBlogPage} from './versions/v1/blog.mjs';
+import {renderEditorialArticle,editorialArticles} from './versions/v1/article-library.mjs';
 import {renderPmsArticle,pmsArticle} from './versions/v1/article-pms.mjs';
 import {renderPmsChoiceArticle,pmsChoiceArticle} from './versions/v1/article-pms-choice.mjs';
 import {renderToolsIndex,renderPmsChecklist,renderHotelProfitabilityCalculator} from './versions/v1/tools.mjs';
@@ -25,11 +26,19 @@ import {renderOfferPage,renderRefundPage} from './versions/v1/legal.mjs';
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
 const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4'};
+const gtmHead=`<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PKDT7MMT');</script>`;
+const gtmBody=`<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PKDT7MMT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+function withTagManager(html){
+ const withHead=html.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
+ return withHead.replace(/<body(?:\s[^>]*)?>/i,opening=>opening+gtmBody);
+}
 function send(res,status,text,type='text/html; charset=utf-8'){
- res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(text);
+ const body=type.toLowerCase().startsWith('text/html')?withTagManager(text):text;
+ res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(body);
 }
 function sendCompressed(req,res,status,data,type,cache='no-store'){
- const body=Buffer.isBuffer(data)?data:Buffer.from(data);
+ const source=type.toLowerCase().startsWith('text/html')?withTagManager(Buffer.isBuffer(data)?data.toString('utf8'):data):data;
+ const body=Buffer.isBuffer(source)?source:Buffer.from(source);
  const compressed=body.length>=1024&&/\bgzip\b/.test(req.headers['accept-encoding']||'');
  res.writeHead(status,{'Content-Type':type,'Cache-Control':cache,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY','Vary':'Accept-Encoding',...(compressed?{'Content-Encoding':'gzip'}:{})});
  if(req.method==='HEAD')return res.end();
@@ -60,9 +69,10 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/api/tools/pms-report')return await handlePmsReport(req,res);
   if(req.method==='POST' && /^\/api\/leads\/(trial|audit)$/.test(pathname))return leadServer.emit('request',req,res);
   if(!['GET','HEAD'].includes(req.method))return send(res,405,'Метод недоступний.','text/plain; charset=utf-8');
-  if(pathname==='/cases/' || pathname==='/cases/hotel-ai-reception/') {res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/cases/hotel-ai-reception'||pathname==='/cases/hotel-ai-reception/') {res.writeHead(308,{Location:`/cases/night-self-checkin-germany${url.search}`,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/cases/' || caseSlugs.some(slug=>pathname===`${slug}/`)) {res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/cases')return send(res,200,prefix(renderCaseList(),'v1'));
-  if(pathname==='/cases/hotel-ai-reception')return send(res,200,prefix(renderHotelReceptionCase(),'v1'));
+  if(caseSlugs.includes(pathname))return send(res,200,prefix(renderCase(pathname.slice('/cases/'.length)),'v1'));
   if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://vdalo.tech'}),'v1'));
   if(pathname==='/tools'){res.writeHead(308,{Location:'/tools/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/tools/')return send(res,200,prefix(renderToolsIndex(),'v1'));
@@ -75,6 +85,8 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/blog/' ){res.writeHead(308,{Location:'/blog'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname===pmsArticle.slug+'/'){res.writeHead(308,{Location:pmsArticle.slug+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname===pmsArticle.slug)return send(res,200,prefix(renderPmsArticle(),'v1'));
+  if(editorialArticles.some(article=>pathname===`${article.slug}/`)){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(editorialArticles.some(article=>article.slug===pathname))return send(res,200,prefix(renderEditorialArticle(pathname),'v1'));
   if(seoRoutes().includes(pathname))return send(res,200,prefix(renderSeoPage(pathname),'v1'));
   if(seoRoutes().includes(pathname.slice(0,-1))&&pathname.endsWith('/')){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
@@ -82,7 +94,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
   if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
-  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases','/cases/hotel-ai-reception','/blog',pmsArticle.slug,pmsChoiceArticle.slug,'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
+  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}

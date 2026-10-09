@@ -1,103 +1,34 @@
 import {renderPage, escape} from './render.mjs';
 
-const e = escape;
-const origin = 'https://vdalo.tech';
-const slug = '/cases/hotel-ai-reception';
+const e=escape, origin='https://vdalo.tech';
+const cases=[
+ {slug:'guest-services-glamping',title:'Як персональна сторінка допомогла гостям частіше замовляти послуги',short:'Глемпінг у Чехії',lead:'Гості й раніше хотіли чан, сауну та сніданок. Персональний каталог зробив замовлення простішим, а частка замовлень зросла.',image:'/assets/case-glamping-services.jpg',alt:'Тераса глемпінгу з чаном і сніданком у вечірньому світлі',metrics:[['5% → 48%','замовлення чану або сауни'],['5% → 42%','замовлення сніданків'],['12 600+ €','модельний додатковий оборот на рік']],sections:[['Як було','Щоб замовити чан, сауну чи сніданок, гість писав у Booking або Airbnb, чекав на відповідь і домовлявся про час. Частина гостей не проходила цей шлях. За даними власника, чан або сауну замовляли приблизно 5% гостей; сніданки — близько 5%.' ],['Що змінили','Кожен гість отримує персональне посилання на сторінку з послугами, фотографіями, цінами, вибором дня та кошиком. Запит надходить команді, а оплата відбувається на місці. На сторінці можна переглянути статус запиту.' ],['Що змінилося','За даними системи, частка гостей, які замовляють чан або сауну, зросла приблизно до 48%, а сніданки — до 42%. Спрощення замовлення прибрало листування як обов’язковий крок між бажанням гостя та заявкою.' ]],method:'Оцінка 12 600+ € — це модель додаткового обороту, а не прибутку. У розрахунку використано 5 будиночків, середнє завантаження 50%, середнє проживання 2 ночі, тарифи послуг 30 € за чан/сауну та 10 € за сніданок на особу. Модель порівнює замовлення до й після за незмінної кількості бронювань. Результат залежить від фактичного завантаження, складу гостей і собівартості послуг.',links:['/solutions','/registration']},
+ {slug:'direct-bookings-calendar',title:'2–5 прямих бронювань на день: як броні одразу потрапляють у календар',short:'Глемпінг у Чехії',lead:'Віджет на сайті приймає бронювання, а команда бачить їх у спільному календарі без ручного перенесення.',image:'/assets/article-direct-booking.jpg',alt:'Ноутбук із календарем бронювань на стійці рецепції готелю',metrics:[['2–5','прямих бронювань на день за даними об’єкта'],['Одразу','бронювання з віджета з’являється у календарі'],['Без копіювання','адміністратор не переносить ці броні вручну']],sections:[['Проблема','Коли гість домовляється телефоном або електронною поштою, працівнику потрібно створити бронювання вручну. Додаткова дія займає час і створює ще одне місце для помилки.' ],['Рішення','На сайті об’єкта встановили модуль бронювання. Гість обирає дати й параметри, а створене бронювання надходить до робочого календаря. За матеріалами об’єкта, він отримує 2–5 прямих бронювань на день.' ],['Що варто знати про синхронізацію','Календарі Booking.com та Airbnb у цьому сценарії синхронізуються через iCal. Така синхронізація може мати затримку. Вона знижує потребу в ручному оновленні, але не дає підстав обіцяти миттєве оновлення або повне усунення овербукінгу. Для миттєвої синхронізації потрібне окреме підключення Channel Manager, сумісного з каналами об’єкта.' ]],method:'Кількість прямих бронювань наведена за даними власника об’єкта. Вона не означає, що кожне бронювання було б здійснене через OTA, і не дорівнює гарантованій економії на комісії. Комісійний ефект потрібно рахувати за фактичним тарифом каналу та джерелом кожної броні.',links:['/hotel-booking-calendar','/integrations']},
+ {slug:'hotel-booking-reconciliation',title:'Як система прибрала ручну звірку виплат і документів',short:'Глемпінг, резорт і хостел у Чехії',lead:'Після автоматизації документів окрема людина перестала виконувати цю роботу. Контрольна вибірка зійшлася до цента.',image:'/assets/case-finance-reconciliation.jpg',alt:'Робочий стіл бухгалтера готелю з документами, калькулятором і ноутбуком',metrics:[['18 виплат','Booking у контрольній вибірці'],['57 бронювань','зіставлено з документами'],['0 розбіжностей','суми звірено до цента']],sections:[['Як працювали раніше','Виплати Booking та Airbnb надходили однією сумою за кілька бронювань за вирахуванням комісії. Документи складали в таблицях, звіряли з банківськими надходженнями й визначали, яка з двох компаній мала отримати кошти.' ],['Що налаштували','Для бронювання формувався документ у серії відповідної компанії. Виплати та бронювання зіставлялися, а для чеського бухгалтера готували пакет електронних фактур у форматі ISDOC.' ],['Результат','У контрольній вибірці 18 виплат охопили 57 бронювань: кожному відповідала одна фактура, розбіжностей у сумах не було. За червень бухгалтер отримав один файл із 26 електронними фактурами. Власник підтвердив, що окрема людина більше не виконує цю ручну роботу.' ]],method:'ISDOC — формат, використаний у чеському процесі цього об’єкта. Це не опис готової функції для українського податкового обліку. На час підготовки матеріалу документи для українського сценарію перебували в роботі; тому кейс не є податковою рекомендацією.',links:['/hotel-operations','/registration']},
+ {slug:'night-self-checkin-germany',title:'Нічне заселення без чергового адміністратора: готель у Німеччині',short:'Міський готель у Німеччині · 31 номер',lead:'Гості продовжили заселятися після закриття рецепції, а готель підключив цифровий сценарій поруч зі старою системою.',image:'/assets/case-night-reception.jpg',alt:'Нічний хол готелю з гостем біля зони самостійного отримання ключа',metrics:[['1–2','нічні заселення за добу'],['31','номер у готелі'],['Поруч','із наявною системою бронювання']],sections:[['До змін','Рецепція зачинялася о 18:00 у будні та о 15:00 у вихідні. Пізній гість телефонував, чекав або ризикував не заселитися. Наявна програма не підтримувала потрібний сценарій.' ],['Як працює заселення','Біля входу розмістили QR-код. Гість із бронюванням переходить на персональну сторінку, проходить реєстрацію з телефона й отримує номер та код від ключниці. Вільні ключі готель готує заздалегідь. Дані про бронювання надходять зі старої системи, яку не довелося одразу замінювати.' ],['Результат','За даними готелю, щоночі так заселяються один-два гості. Персонал не має бути на місці лише для передавання ключа, а гість може пройти узгоджений сценарій пізніше за години роботи рецепції.' ]],method:'Опис публікується без назви готелю за згодою власника. Це приклад роботи конкретного об’єкта; доступність такого процесу залежить від замків, ключниці, джерела бронювання та локальних вимог до реєстрації гостей. Згенерована обкладинка є ілюстрацією, а не фотографією цього готелю.',links:['/hotel-check-in','/registration']},
+ {slug:'hotel-data-migration',title:'Як перенесли історію готелю за сім років і звірили дані',short:'Міський готель у Німеччині · 31 номер',lead:'Перехід не починався з чистого аркуша: команда імпортувала історичні дані й перевірила результат проти старої системи.',image:'/assets/article-pms-migration.jpg',alt:'Ноутбук із таблицями до й після міграції даних у готелі',metrics:[['18 475','бронювань'],['33 059','рахунків з грудня 2018 року'],['0','розбіжностей у контрольній звірці']],sections:[['Чого боявся готель','У старій програмі з 2018 року накопичилися бронювання, рахунки, дані гостей, ставки ПДВ та історія постійних клієнтів. Власник не хотів втратити ці записи під час переходу.' ],['Що перенесли','Імпортували дані старої системи, зокрема історію ставок ПДВ. У робочий період нова система працювала поруч зі старою та отримувала її зміни, щоб не зупиняти готель і не дублювати введення вручну.' ],['Перевірка результату','У контрольній звірці суми рядків послуг зійшлися до цента. Перевірку виконали для 18 475 бронювань, 33 059 рахунків, 31 номера та 7 категорій.' ]],method:'Показники стосуються одного готелю й його імпортованих даних. Вони не гарантують аналогічний обсяг або нуль розбіжностей в іншому проєкті: результат залежить від якості джерела, структури даних, правил мапінгу та контрольної звірки. Публікується без назви за згодою готелю.',links:['/integrations','/registration']},
+ {slug:'booking-widget-study-2118',title:'2 118 об’єктів: 87% малих готелів продають без онлайн-системи',short:'Дослідження сайтів об’єктів · 4 області України',lead:'Ми перевірили публічні сайти 2 118 готелів, садиб і баз відпочинку. У матеріалі пояснюємо, що саме рахували, а чого ці дані не доводять.',image:'/assets/case-hotel-market-research.jpg',alt:'Нічний робочий стіл із мапою та ноутбуком для аналізу сайтів готелів',metrics:[['2 118','об’єктів зібрано'],['4 області','Львівська, Закарпатська, Одеська, Івано-Франківська'],['87%','без видимого модуля бронювання у вибірці малих готелів']],sections:[['Що перевіряли','Для кожного знайденого об’єкта переглядали публічний сайт і фіксували, чи є на ньому модуль онлайн-бронювання. Загалом зібрали 2 118 готелів, садиб і баз відпочинку з Google Maps та Hotels24. Точна кількість номерів була відома для 1 196 об’єктів.' ],['Що показали результати','У вихідному дослідженні зазначено, що серед малих готелів на 4–40 номерів модуль онлайн-бронювання було видно лише у 13%; звідси заголовок про 87% без такого модуля. За групами розміру модуль було видно у 3% об’єктів на 1–3 номери, 7% на 4–10, 18% на 11–20, 28% на 21–40 і 50% на 41+ номерів. Серед котеджів, садиб і B&B він був видимий у 5 з 446 сайтів.' ],['Як читати ці цифри','Дослідження оцінює лише публічно помітний модуль на сайті. Воно не перевіряє наявність PMS, бронювання телефоном чи через OTA, і не доводить, що об’єкт узагалі не приймає онлайн-бронювання. Результат описує чотири області й вибірку з каталогів, а не всі об’єкти України.' ]],method:'У збереженому описі дослідження є загальна кількість 2 118, число об’єктів із відомою кількістю номерів (1 196), результати за розмірними групами та група 5/446, але немає окремого знаменника для підгрупи 4–40 номерів. Перед використанням 87% у рекламі або як репрезентативної оцінки всього ринку потрібно звірити цей знаменник із первинною таблицею. Генерована обкладинка — редакційна ілюстрація, не зображення фактичного збору даних.',links:['/tools','/blog']}
+];
 
-const caseStudy = {
- title: 'Вечірній ресепшен без окремого адміністратора',
- lead: 'Готель у Німеччині тримав окрему людину на вечірню зміну, щоб видавати ключі та відповідати на однакові запитання. Тепер цю роботу виконує vdalo.tech, а окрема вечірня ставка більше не потрібна.',
- cardLead: 'Готель у Німеччині передав vdalo.tech вечірнє заселення та відповіді на типові запитання. Окрема вечірня ставка більше не потрібна.',
- metrics: [
-  ['20 000 грн → 1 500 грн', 'Витрати на місяць'],
-  ['У 13 разів', 'Дешевше за окремого адміністратора'],
-  ['222 000 грн', 'Розрахункова економія на рік'],
-  ['4 → 3', 'Адміністратори в штаті, з планом скоротити до 2']
- ],
- situation: [
-  'Щовечора приблизно з 16:00 до 19:00 на рецепції мала бути людина. Для цього власник тримав окремого працівника. Інколи на вечір доводилося залишатися й штатним адміністраторам.',
-  'Робота була рутинною і повторювалася щодня.'
- ],
- situationTasks: [
-  'Зустріти гостя, назвати номер, видати ключ або код від кодової скриньки.',
-  'Пояснити, де парковка і як пройти до номера.',
-  'Відповісти на ті самі запитання, які ставить майже кожен гість.'
- ],
- implemented: [
-  ['Онлайн-реєстрація', 'Гість заздалегідь заповнює дані та передає документи без паперу й черги.'],
-  ['Доступ без людини', 'Гість автоматично отримує номер кімнати й код доступу.'],
-  ['Адміністратор на основі ШІ', 'Відповідає на типові запитання про парковку, Wi-Fi, розташування номера та правила проживання.'],
-  ['Пам’ять про гостя', 'Система зберігає зазначені вподобання, наприклад тихий номер або певний вид, щоб наступного разу запропонувати відповідний варіант.']
- ],
- results: [
-  'Окрема вечірня ставка на рецепції більше не потрібна.',
-  'У штаті 3 адміністратори замість 4. У планах скоротити штат до 2.',
-  'Адміністратори працюють у першу зміну приблизно до 15:00 і більше не залишаються на вечір.',
-  'Документи гостей збираються в системі, а не вручну, тож стало менше ручної роботи й помилок.'
- ],
- guestChanges: [
-  'Гість може заселитися у зручний для себе час і не чекати адміністратора.',
-  'Відповіді на прості запитання доступні одразу.',
-  'Адміністратори, які залишилися в команді, мають більше часу на живе спілкування з гостями замість видавання ключів.'
- ]
-};
-
-function list(items) { return `<ul>${items.map(item => `<li>${e(item)}</li>`).join('')}</ul>`; }
-function meta(html, title, description, canonical, type) {
- const structured = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': type,
-  name: title,
-  headline: title,
-  description,
-  url: canonical,
-  inLanguage: 'uk',
-  publisher: {'@type':'Organization', name:'vdalo.tech'}
- }).replace(/</g, '\\u003c');
- html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${e(title)}</title>`)
-  .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${e(description)}">`)
-  .replace(/<meta name="robots" content="[^"]*">/, '<meta name="robots" content="index,follow">')
-  .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${e(title)}">`)
-  .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${e(description)}">`)
-  .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${canonical}">`)
-  .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${canonical}">`)
-  .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, `<script type="application/ld+json">${structured}</script>`);
- return html;
+function meta(html,{title,description,canonical,type='Article',image}){
+ const graph=[{'@type':type,'headline':title,'name':title,description,url:canonical,inLanguage:'uk',datePublished:'2026-10-09',dateModified:'2026-10-09',image:`${origin}/v1${image}`,'publisher':{'@type':'Organization',name:'VDALO',url:origin},'author':{'@type':'Person',name:'Олег Степенєв'},'mainEntityOfPage':{'@type':'WebPage','@id':canonical}}, {'@type':'BreadcrumbList','itemListElement':[{'@type':'ListItem',position:1,name:'Головна',item:origin},{'@type':'ListItem',position:2,name:'Кейси',item:`${origin}/cases`},{'@type':'ListItem',position:3,name:title,item:canonical}]}];
+ const schema=JSON.stringify({'@context':'https://schema.org','@graph':graph}).replace(/</g,'\\u003c');
+ return html.replace(/<title>[\s\S]*?<\/title>/,`<title>${e(title)}</title>`).replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${e(description)}">`).replace(/<meta name="robots" content="[^"]*">/,'<meta name="robots" content="index,follow">').replace(/<meta property="og:title" content="[^"]*">/,`<meta property="og:title" content="${e(title)}">`).replace(/<meta property="og:description" content="[^"]*">/,`<meta property="og:description" content="${e(description)}">`).replace(/<meta property="og:url" content="[^"]*">/,`<meta property="og:url" content="${canonical}">`).replace(/<link rel="canonical" href="[^"]*">/,`<link rel="canonical" href="${canonical}">`).replace('</head>',`<meta property="og:type" content="article"><meta property="og:image" content="${origin}/v1${image}"><meta property="og:image:alt" content="${e(description)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${e(title)}"><meta name="twitter:description" content="${e(description)}"><meta name="twitter:image" content="${origin}/v1${image}"></head>`).replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/,`<script type="application/ld+json">${schema}</script>`);
 }
-function pageShell(content, {title, description, canonical, type}) {
- let html = renderPage({origin, full:true});
- html = html.replace(/<main id="main">[\s\S]*?<\/main>/, `<main id="main">${content}</main>`);
- html = html.replace(/<link rel="stylesheet" href="\/design-system-2\.css[^>]*>/, match => `${match}<link rel="stylesheet" href="/cases.css">`);
- html = html.replace(/<nav id="navigation"[\s\S]*?<\/nav>/, nav => nav.replace(/href="#([^\"]+)"/g, 'href="/#$1"'));
- html = html.replace(/<footer[\s\S]*?<\/footer>/, footer => footer.replace(/href="#([^\"]+)"/g, 'href="/#$1"'));
- return meta(html, title, description, canonical, type || 'WebPage');
+function shell(content,seo){let html=renderPage({origin,full:true});html=html.replace(/<main id="main">[\s\S]*?<\/main>/,`<main id="main">${content}</main>`).replace(/<link rel="stylesheet" href="\/design-system-2\.css[^>]*>/,m=>`${m}<link rel="stylesheet" href="/cases.css">`);html=html.replace(/<nav id="navigation"[\s\S]*?<\/nav>/,nav=>nav.replace(/href="#([^"]+)"/g,'href="/#$1"')).replace(/<footer[\s\S]*?<\/footer>/,foot=>foot.replace(/href="#([^"]+)"/g,'href="/#$1"'));return meta(html,seo)}
+function card(c){return `<article class="case-card"><div class="case-card-copy"><p class="eyebrow">${e(c.short)}</p><h2>${e(c.title)}</h2><p class="case-card-metric">${e(c.metrics[0][0])}</p><p>${e(c.lead)}</p><a class="button dark" href="/cases/${c.slug}">Читати кейс <span aria-hidden="true">→</span></a></div><figure class="case-card-side case-card-image"><img src="${c.image}" width="1536" height="1024" alt="${e(c.alt)}" loading="lazy"></figure></article>`}
+export function renderCaseList(){
+ const title='Кейси автоматизації готелів: приклади й результати | VDALO',description='Практичні кейси готелів: додаткові продажі, прямі бронювання, фінанси, нічне заселення, міграція даних і дослідження сайтів.';
+ const content=`<section class="case-index-hero"><div class="wrap"><p class="eyebrow">ВДАЛІ РІШЕННЯ / КЕЙСИ</p><h1>Як готелі прибирають щоденну рутину</h1><p class="case-index-lead">Реальні сценарії, дані об’єктів і прозорі примітки до розрахунків. Кожен кейс пояснює контекст, зміни та межі результату.</p></div></section><section class="section case-index-list"><div class="wrap case-index-cards">${cases.map(card).join('')}</div></section>`;
+ return shell(content,{title,description,canonical:`${origin}/cases`,type:'CollectionPage',image:cases[0].image});
 }
-
-export function renderCaseList() {
- const title = 'Кейси автоматизації готелів | VDALO';
- const description = 'Кейси автоматизації готелів: приклади роботи з vdalo.tech, зміни в процесах рецепції та розрахунок вартості для готелів в Україні.';
- const content = `<section class="case-index-hero"><div class="wrap"><p class="eyebrow">ВДАЛІ РІШЕННЯ / КЕЙСИ</p><h1>Як готелі прибирають рутину</h1><p class="case-index-lead">Практичні приклади роботи з vdalo.tech та зміни у щоденних процесах готелю.</p></div></section><section class="section case-index-list"><div class="wrap"><article class="case-card"><div class="case-card-copy"><p class="eyebrow">ГОТЕЛЬ У НІМЕЧЧИНІ</p><h2>${e(caseStudy.title)}</h2><p class="case-card-metric">у 13 разів дешевше</p><p>${e(caseStudy.cardLead)}</p><a class="button dark" href="${slug}">Читати кейс <span aria-hidden="true">→</span></a></div><div class="case-card-side case-card-image"><img src="/assets/hotel-evening-self-check-in-case.webp" width="1536" height="1024" alt="Гість забирає ключ зі скриньки під час вечірнього заселення в готелі" title="Вечірнє самостійне заселення гостя в готелі"><div class="case-card-image-metric"><span>20 000 грн</span><i>↓</i><strong>1 500 грн</strong><small>витрати на місяць</small></div></div></article></div></section>`;
- return pageShell(content, {title, description, canonical:`${origin}/cases`, type:'CollectionPage'});
+export function renderCase(slug){
+ const c=cases.find(item=>item.slug===slug);if(!c)return '';
+ const canonical=`${origin}/cases/${c.slug}`,title=`${c.title} | Кейс VDALO`,description=c.lead;
+ const metrics=c.metrics.map(([value,label])=>`<article class="case-metric"><strong>${e(value)}</strong><span>${e(label)}</span></article>`).join('');
+ const sections=c.sections.map(([heading,copy],i)=>{const label=c.slug==='booking-widget-study-2118'?(i===1?'РЕЗУЛЬТАТИ':'ІНТЕРПРЕТАЦІЯ'):(i===0?'КОНТЕКСТ':i===1?'ЩО ЗМІНИЛИ':'РЕЗУЛЬТАТ');return `<section class="case-section" id="section-${i+1}"><p class="eyebrow">0${i+1} / ${label}</p><h2>${e(heading)}</h2><div class="case-prose"><p>${e(copy)}</p></div></section>`}).join('');
+ const content=`<article class="hotel-case"><header class="hotel-case-hero"><div class="wrap"><a class="case-back" href="/cases">← Усі кейси</a><p class="eyebrow">КЕЙС / ${e(c.short.toLocaleUpperCase('uk'))}</p><h1>${e(c.title)}</h1><p class="case-lead">${e(c.lead)}</p></div></header><figure class="hotel-case-cover"><img src="${c.image}" width="1536" height="1024" alt="${e(c.alt)}" fetchpriority="high"><figcaption>Редакційна ілюстрація до кейсу VDALO</figcaption></figure><section class="case-metrics-section"><div class="wrap"><div class="case-metrics">${metrics}</div></div></section><div class="wrap case-article-body">${sections}<section class="case-section" id="method"><p class="eyebrow">ПРИМІТКА ДО ДАНИХ</p><h2>Метод і межі висновку</h2><div class="case-prose"><p>${e(c.method)}</p></div></section><nav class="case-related" aria-label="Пов’язані матеріали"><h2>Далі за темою</h2>${c.links.map((href,i)=>`<a href="${href}">${href==='/registration'?'Обговорити процеси готелю':href==='/blog'?'Статті для готельєрів':href==='/tools'?'Інструменти VDALO':href==='/integrations'?'Інтеграції':href==='/hotel-check-in'?'Заселення гостей':href==='/hotel-booking-calendar'?'Календар бронювань':'Операції готелю'} <span aria-hidden="true">↗</span></a>`).join('')}</nav></div><section class="case-cta"><div class="wrap"><div><p class="eyebrow">ВДАЛО / НАСТУПНИЙ КРОК</p><h2>Подивімося, що можна спростити у вашому готелі</h2><p>Обговоримо конкретний процес і перевіримо, які модулі підходять вашому об’єкту.</p></div><a class="button dark" href="/registration">Обговорити процеси <span aria-hidden="true">→</span></a></div></section></article>`;
+ return shell(content,{title,description,canonical,type:'Article',image:c.image});
 }
-
-export function renderHotelReceptionCase() {
- const title = 'Вечірня рецепція готелю: кейс автоматизації | VDALO';
- const description = 'Кейс готелю у Німеччині: як vdalo.tech підтримує вечірнє заселення й відповіді на типові запитання, щоб окрема вечірня ставка стала непотрібною.';
- const metrics = caseStudy.metrics.map(([value,label]) => `<article class="case-metric"><strong>${e(value)}</strong><span>${e(label)}</span></article>`).join('');
- const implemented = caseStudy.implemented.map(([heading,copy]) => `<li><strong>${e(heading)}.</strong> ${e(copy)}</li>`).join('');
- const content = `<article class="hotel-case">
-  <header class="hotel-case-hero"><div class="wrap"><a class="case-back" href="/cases">← Усі кейси</a><p class="eyebrow">КЕЙС / ГОТЕЛЬ У НІМЕЧЧИНІ</p><h1>${e(caseStudy.title)}</h1><p class="case-lead">${e(caseStudy.lead)}</p></div></header>
-  <figure class="hotel-case-cover"><img src="/assets/hotel-evening-self-check-in-case.webp" width="1536" height="1024" alt="Вечірнє заселення до готелю без очікування адміністратора" title="Кейс: вечірнє заселення гостя у готелі" fetchpriority="high"></figure>
-  <section class="case-metrics-section"><div class="wrap"><div class="case-metrics">${metrics}</div><p class="case-footnote">Розрахунок для готелю в Україні: зарплата адміністратора 20 000 грн на місяць, vdalo.tech 1 500 грн на місяць. Порівняння не враховує податки та інші витрати на персонал.</p></div></section>
-  <div class="wrap case-article-body">
-   <section class="case-section" id="situation"><p class="eyebrow">01 / ДО ВПРОВАДЖЕННЯ</p><h2>Ситуація</h2><div class="case-prose"><p>${e(caseStudy.situation[0])}</p><p>${e(caseStudy.situation[1])}</p>${list(caseStudy.situationTasks)}<p>Цю повторювану роботу можна було передати системі.</p></div></section>
-   <section class="case-section" id="implementation"><p class="eyebrow">02 / НАЛАШТУВАННЯ</p><h2>Що ми зробили</h2><div class="case-prose"><p>Підключили vdalo.tech і перевели вечірню роботу рецепції в автоматичний режим:</p><ul>${implemented}</ul></div></section>
-   <section class="case-section" id="results"><p class="eyebrow">03 / ЗМІНИ В РОБОТІ</p><h2>Результат</h2><div class="case-prose">${list(caseStudy.results)}</div></section>
-   <section class="case-section" id="guest-experience"><p class="eyebrow">04 / ДОСВІД ГОСТЯ</p><h2>Що змінилося для гостей</h2><div class="case-prose"><p>Гості отримали більше свободи під час заселення, а команда може приділити більше уваги особистому спілкуванню.</p>${list(caseStudy.guestChanges)}</div></section>
-   <section class="case-section case-economics" id="ukraine-calculation"><p class="eyebrow">05 / ПРИКЛАД РОЗРАХУНКУ</p><h2>Скільки це для готелю в Україні</h2><div class="case-prose"><div class="case-table-wrap"><table><thead><tr><th scope="col"></th><th scope="col">Адміністратор</th><th scope="col">vdalo.tech</th></tr></thead><tbody><tr><th scope="row">На місяць</th><td>20 000 грн</td><td>1 500 грн</td></tr><tr><th scope="row">На рік</th><td>240 000 грн</td><td>18 000 грн</td></tr></tbody></table></div><p>За умови, що одна ставка більше не потрібна, різниця між наведеними сумами становить 18 500 грн на місяць або 222 000 грн на рік.</p><p>Якщо система дозволяє прибрати дві ставки, різниця становить 38 500 грн на місяць або 462 000 грн на рік.</p><p class="case-footnote">Це арифметичний приклад на основі вказаних сум. Фактичний результат залежить від процесів і витрат конкретного готелю.</p></div></section>
-   <blockquote class="case-quote"><p>«Ресепшен не зник. Зникла рутина, за яку готель платив щомісяця».</p></blockquote>
-  </div>
-  <section class="case-cta"><div class="wrap"><div><p class="eyebrow">ВДАЛО / НАСТУПНИЙ КРОК</p><h2>Скільки ви платите за рутину на рецепції?</h2><p>Покажемо, яку частину роботи адміністраторів можна передати vdalo.tech у вашому готелі.</p></div><a class="button dark" href="/#pricing">Переглянути тарифи <span aria-hidden="true">→</span></a></div></section>
- </article>`;
- return pageShell(content, {title, description, canonical:`${origin}${slug}`, type:'Article'});
-}
+export const caseSlugs=cases.map(c=>`/cases/${c.slug}`);
+export const caseData=cases;
