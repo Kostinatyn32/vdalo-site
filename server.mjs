@@ -4,6 +4,8 @@ import {renderMicrolanding,renderDirectory,renderFunnelPrivacy} from './microlan
 import {renderSmsGo} from './microlandings/sms-go.mjs';
 import {renderSmsTrial} from './microlandings/sms-trial.mjs';
 import {handleFunnelLead} from './microlandings/leads.mjs';
+import {renderVideoLanding,renderCalculator,assetNames} from './microlandings/top5.mjs';
+import {handleTop5Lead} from './microlandings/top5-leads.mjs';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {gzipSync} from 'node:zlib';
@@ -23,6 +25,7 @@ import {handlePmsReport} from './versions/v1/pms-report.mjs';
 import {renderSeoPage,seoRoutes} from './versions/v1/seo-pages.mjs';
 import {homeCssBundle,siteCssBundle} from './versions/v1/assets.mjs';
 import {renderOfferPage,renderRefundPage} from './versions/v1/legal.mjs';
+import {renderAuthorPage} from './versions/v1/author-page.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
@@ -61,20 +64,29 @@ function sendVideo(req,res,data){
  res.writeHead(status,{'Content-Type':'video/mp4','Content-Length':body.length,'Cache-Control':'public, max-age=86400','X-Content-Type-Options':'nosniff','Accept-Ranges':'bytes',...(status===206?{'Content-Range':`bytes ${start}-${end}/${size}`}:{})});
  res.end(req.method==='HEAD'?undefined:body);
 }
-function prefix(html,version){return html.replace(/\b(src|href|action)="\/([^\"]*)"/g,(match,attribute,path)=>{if(path.startsWith('/')||path.startsWith('v1/')||path.startsWith('v2/')||path.startsWith('v3/'))return match;if(attribute==='href'&&(/^(?:$|#|privacy(?:\/|$)|offer(?:\/|$)|refunds?(?:\/|$)|cases(?:\/|$)|blog(?:\/|$)|tools(?:\/|$)|solutions(?:\/|$)|integrations(?:\/|$)|pricing(?:\/|$)|hotel-booking-calendar(?:\/|$)|hotel-check-in(?:\/|$)|hotel-operations(?:\/|$)|guest-communication(?:\/|$)|hotel-automation(?:\/|$)|about(?:\/|$)|contact(?:\/|$)|registration(?:\/|$))/.test(path)))return match;return `${attribute}="/${version}/${path}"`;});}
+function prefix(html,version){return html.replace(/\b(src|href|action)="\/([^\"]*)"/g,(match,attribute,path)=>{if(path.startsWith('/')||path.startsWith('v1/')||path.startsWith('v2/')||path.startsWith('v3/'))return match;if(attribute==='href'&&(/^(?:$|#|privacy(?:\/|$)|offer(?:\/|$)|refunds?(?:\/|$)|cases(?:\/|$)|blog(?:\/|$)|authors(?:\/|$)|tools(?:\/|$)|solutions(?:\/|$)|integrations(?:\/|$)|pricing(?:\/|$)|hotel-booking-calendar(?:\/|$)|hotel-check-in(?:\/|$)|hotel-operations(?:\/|$)|guest-communication(?:\/|$)|hotel-automation(?:\/|$)|about(?:\/|$)|contact(?:\/|$)|registration(?:\/|$))/.test(path)))return match;return `${attribute}="/${version}/${path}"`;});}
 const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
   const pathname=decodeURIComponent(url.pathname);
   if(pathname==='/api/funnel/leads')return await handleFunnelLead(req,res);
+  if(pathname==='/api/funnels/top5')return await handleTop5Lead(req,res);
   if(pathname==='/api/tools/pms-report')return await handlePmsReport(req,res);
   if(req.method==='POST' && /^\/api\/leads\/(trial|audit)$/.test(pathname))return leadServer.emit('request',req,res);
   if(!['GET','HEAD'].includes(req.method))return send(res,405,'Метод недоступний.','text/plain; charset=utf-8');
+  if(/^\/k[1-5]$/.test(pathname))return send(res,200,await renderCalculator(url.searchParams,pathname));
+  if(/^\/k[1-5]\/$/.test(pathname)){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/k'||pathname==='/k/')return send(res,200,await renderCalculator(url.searchParams,'/k1'));
+  if(/^\/(?:go\/)?(?:[1-9]|[1-5]\d)\/?$/.test(pathname))return send(res,200,await renderVideoLanding(url.searchParams,pathname));
+  if(pathname==='/go/index.html')return send(res,200,await renderVideoLanding(url.searchParams,'/53'));
+  if(pathname==='/k/index.html')return send(res,200,await renderCalculator(url.searchParams,'/k1'));
   if(pathname==='/cases/hotel-ai-reception'||pathname==='/cases/hotel-ai-reception/') {res.writeHead(308,{Location:`/cases/night-self-checkin-germany${url.search}`,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/cases/' || caseSlugs.some(slug=>pathname===`${slug}/`)) {res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/cases')return send(res,200,prefix(renderCaseList(),'v1'));
   if(caseSlugs.includes(pathname))return send(res,200,prefix(renderCase(pathname.slice('/cases/'.length)),'v1'));
   if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://vdalo.tech'}),'v1'));
+  if(pathname==='/authors/oleh-stepeniev/'){res.writeHead(308,{Location:'/authors/oleh-stepeniev'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/authors/oleh-stepeniev')return send(res,200,prefix(renderAuthorPage(),'v1'));
   if(pathname==='/tools'){res.writeHead(308,{Location:'/tools/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/tools/')return send(res,200,prefix(renderToolsIndex(),'v1'));
   if(pathname==='/tools/pms-checklist'){res.writeHead(308,{Location:'/tools/pms-checklist/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
@@ -97,12 +109,18 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
   if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
-  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),...secondPassArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
+  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/authors/oleh-stepeniev','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),...secondPassArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/go')return send(res,200,renderSmsGo(url.searchParams));
   if(pathname==='/go/trial')return send(res,200,renderSmsTrial(url.searchParams));
+  const top5Asset=pathname.match(/^\/sms-trial-assets\/top5\/([a-zA-Z0-9_.-]+)$/);
+  if(top5Asset&&assetNames.has(top5Asset[1])){
+   const filename=path.join(root,'microlandings','public','top5',top5Asset[1]),data=await readFile(filename);
+   if(pathname.endsWith('.mp4'))return sendVideo(req,res,data);
+   res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
+  }
   if(pathname==='/sms-trial-assets/sms-documents-tourist-levy.mp4'){
    const data=await readFile(path.join(root,'microlandings','public','sms-documents-tourist-levy.mp4'));return sendVideo(req,res,data);
   }
@@ -123,7 +141,7 @@ const server=http.createServer(async(req,res)=>{
   if(version!=='v1' && !(version==='v3' && (/^\/assets\/[a-zA-Z0-9_.-]+$/.test(relative)||relative==='/editorial.css')))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   if(version==='v1' && relative==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'',full:true}),'v1'),'text/html; charset=utf-8');
   if(version==='v1' && relative==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
-  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|blog\.css|tools\.(?:css|js)|seo-pages\.css|integration-channels\.css|pricing\.(?:css|js)|pricing-core\.js|site-config\.js|styles\.css|site\.css|home\.css|design-system-2\.css|dark-edition\.css|polish\.css|refinement\.css|cases\.css|editorial\.css|experience\.css|experience\.js|app\.js|living-hotel(?:-mobile|-dispatch)?\.(?:css|js))$/.test(relative))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
+  if(!/^\/(assets\/[a-zA-Z0-9_.-]+|author-page\.css|blog\.css|tools\.(?:css|js)|seo-pages\.css|integration-channels\.css|pricing\.(?:css|js)|pricing-core\.js|site-config\.js|styles\.css|site\.css|home\.css|design-system-2\.css|dark-edition\.css|polish\.css|refinement\.css|cases\.css|editorial\.css|experience\.css|experience\.js|app\.js|living-hotel(?:-mobile|-dispatch)?\.(?:css|js))$/.test(relative))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
   const file=path.join(root,'versions',version,'public',relative.slice(1));
   const bundle=version==='v1'&&relative==='/home.css'?homeCssBundle:version==='v1'&&relative==='/site.css'?siteCssBundle:null;
   const data=bundle?Buffer.from(bundle.css):await readFile(file);

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VDALO — керуйте готелем вдало</title>
+<meta name="description" content="Бронювання, заселення, чеки й прибирання — на автоматі. 20 секунд, щоб побачити, як це працює.">
+<meta name="theme-color" content="#39233E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@700;800&display=swap">
+<style>
+
+/* ---------- landing /go ---------- */
+:root{--plum:#39233E;--plum-2:#2D1A31;--pink:#FF92BD;--pink-l:#FFE1EC;--text:#FFF5F7;--muted:rgba(255,245,247,.68);--line:rgba(255,245,247,.16);--ok:#5CC898;
+  --display:"Inter Tight","Inter",Arial,sans-serif;--body:"Inter",Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--plum-2);color:var(--text);font-family:var(--body)}
+button,input{font:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
+.go{min-height:100svh;height:100svh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px));
+  background:radial-gradient(110% 60% at 90% 0%,#4C3052 0%,transparent 62%),var(--plum-2)}
+.go-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.go-logo{font:800 20px/1 var(--display);letter-spacing:-.03em;display:flex;align-items:center;gap:7px;color:var(--text);text-decoration:none}
+.go-logo i{width:9px;height:9px;border-radius:50%;background:var(--pink)}
+.go-price{font:600 12.5px/1 var(--body);padding:8px 12px;border-radius:999px;background:rgba(255,146,189,.14);color:var(--pink-l);border:1px solid rgba(255,146,189,.35);white-space:nowrap}
+.go-video{min-height:0;display:grid;place-items:center;position:relative;container-type:size}
+.go-video .vdv{width:min(100cqw,calc(100cqh * 9 / 16));height:auto;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.go-right{display:contents}
+.go-replay{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(28,16,32,.75);color:var(--text);font-size:12.5px;cursor:pointer;backdrop-filter:blur(6px)}
+.go.is-ended .go-replay{display:inline-flex}
+.go-cta{display:grid;gap:8px;justify-items:center}
+.go-btn{width:100%;max-width:440px;min-height:54px;border-radius:999px;border:1.5px solid var(--pink);background:transparent;color:var(--pink-l);font:700 16px/1.2 var(--body);cursor:pointer;transition:background .35s,color .35s,transform .2s}
+.go.is-ended .go-btn,.go-btn.is-hot{background:var(--pink);color:var(--plum);animation:go-pulse 1.6s ease-in-out infinite}
+.go-btn:active{transform:scale(.98)}
+@keyframes go-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,146,189,.55)}50%{box-shadow:0 0 0 12px rgba(255,146,189,0)}}
+.go-note{margin:0;font-size:12px;color:var(--muted);text-align:center}
+.go-side{display:none}
+
+/* sheet with the short form */
+.go-sheet{position:fixed;inset:0;z-index:20;display:grid;align-items:end;justify-items:center;background:rgba(10,4,12,.55);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.go-sheet.open{opacity:1;visibility:visible}
+.go-panel{width:min(100%,480px);background:#21132A;border:1px solid var(--line);border-radius:26px 26px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(30px);transition:transform .3s;max-height:92svh;overflow:auto}
+.go-sheet.open .go-panel{transform:none}
+.go-grip{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.2);margin:0 auto 12px}
+.go-panel h2{margin:0 0 4px;font:800 23px/1.1 var(--display);letter-spacing:-.03em}
+.go-panel p{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.45}
+.go-field{display:grid;gap:6px;margin-bottom:14px}
+.go-field>span{font-size:12.5px;color:var(--muted)}
+.go-input{height:52px;border-radius:14px;border:1px solid var(--line);background:rgba(255,245,247,.06);color:var(--text);padding:0 14px;font-size:17px}
+.go-chips{display:flex;flex-wrap:wrap;gap:8px}
+.go-chip{min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:14px;cursor:pointer}
+.go-chip[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:var(--plum);font-weight:600}
+.go-submit{width:100%;min-height:54px;border-radius:999px;border:0;background:var(--pink);color:var(--plum);font:700 16px var(--body);cursor:pointer;margin-top:4px}
+.go-small{font-size:11.5px;color:var(--muted);text-align:center;margin:10px 0 0}
+.go-err{color:#FF8C9E;font-size:12.5px;min-height:16px}
+.go-thanks{display:none;text-align:center;padding:10px 0 6px}
+.go-thanks b{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 12px;border-radius:50%;background:var(--ok);color:var(--plum);font-size:30px}
+.go-sheet.done form{display:none}.go-sheet.done .go-thanks{display:block}
+.go-link{display:inline-flex;margin-top:10px;color:var(--pink-l)}
+
+/* desktop: video left, text right */
+@media (min-width:861px){
+  .go{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:64px;padding:24px max(32px,calc((100vw - 1120px)/2)) 32px}
+  .go-top{grid-column:1/-1}
+  .go-video{grid-column:1;grid-row:2;justify-items:end;max-height:780px;align-self:center;height:100%}
+  .go-right{display:grid;grid-column:2;grid-row:2;align-content:center;gap:28px;max-width:460px}
+  .go-side{display:grid;gap:18px}
+  .go-side h1{margin:0;font:800 52px/1.02 var(--display);letter-spacing:-.045em}
+  .go-side h1 em{font-style:normal;color:var(--pink)}
+  .go-side ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;font-size:16px;color:var(--muted)}
+  .go-side li::before{content:"✓";color:var(--ok);font-weight:800;margin-right:10px}
+  .go-cta{justify-items:start}
+  .go-note{text-align:left}
+}
+
+</style>
+<link rel="stylesheet" href="/go/vdalo-videos.css?v=5">
+</head>
+<body>
+
+<main class="go" id="go">
+  <header class="go-top">
+    <a class="go-logo" href="https://www.vdalo.tech/" aria-label="VDALO — головна"><i></i>VDALO</a>
+    <span class="go-price" id="go-price">від 390 грн/міс</span>
+  </header>
+
+  <div class="go-video">
+    <div class="vdv" id="go-vdv" data-scenario="list"></div>
+    <button type="button" class="go-replay" id="go-replay">↻ Ще раз</button>
+  </div>
+
+  <div class="go-right">
+  <div class="go-side">
+    <h1 id="go-h1">Керуйте готелем <em>вдало</em></h1>
+    <ul id="go-list">
+      <li>Booking і Airbnb без овербукінгу</li>
+      <li>Гості реєструються самі — з телефона</li>
+      <li>Чеки, туристичний збір і прибирання — на автоматі</li>
+    </ul>
+  </div>
+
+  <div class="go-cta">
+    <button type="button" class="go-btn" id="go-cta">Спробувати 14 днів безкоштовно</button>
+    <p class="go-note">Без картки · Доступ одразу після реєстрації</p>
+  </div>
+  </div>
+</main>
+
+<div class="go-sheet" id="go-sheet" aria-hidden="true">
+  <div class="go-panel" role="dialog" aria-modal="true" aria-labelledby="go-sheet-title">
+    <div class="go-grip" aria-hidden="true"></div>
+    <!-- TODO(Codex): create the account through the site's existing registration (trial) flow and start the 14-day trial; keep the hidden fields -->
+    <form id="go-form" novalidate>
+      <h2 id="go-sheet-title">Відкрийте VDALO на 14 днів</h2>
+      <p id="go-sheet-sub">Безкоштовно, без картки. Доступ — одразу після реєстрації.</p>
+      <label class="go-field"><span>E-mail — це буде ваш логін</span>
+        <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua" required>
+      </label>
+      <label class="go-field"><span>Телефон</span>
+        <input class="go-input" id="go-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380 __ ___ __ __" required>
+      </label>
+      <label class="go-field"><span>Назва готелю</span>
+        <input class="go-input" id="go-hotel" name="hotel" type="text" autocomplete="organization" placeholder="Готель «Карпати»">
+      </label>
+      <div class="go-field"><span>Скільки номерів</span>
+        <div class="go-chips" data-name="rooms">
+          <button type="button" class="go-chip" aria-pressed="false" data-v="1-10">до 10</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="11-30">11–30</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="31+">31+</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="apart">апартаменти</button>
+        </div>
+      </div>
+      <input type="hidden" name="rooms" id="go-rooms">
+      <input type="hidden" name="source" id="go-source">
+      <input type="hidden" name="code" id="go-code">
+      <input type="hidden" name="funnel" id="go-funnel">
+      <input type="hidden" name="video" id="go-video-name">
+      <input type="hidden" name="watched" id="go-watched">
+      <div class="go-err" id="go-err" role="alert"></div>
+      <button type="submit" class="go-submit">Отримати доступ на 14 днів</button>
+      <p class="go-small">Без картки. Після 14 днів — тариф від 390 грн/міс, або просто не продовжуєте. Натискаючи кнопку, ви погоджуєтесь з умовами та обробкою даних.</p>
+    </form>
+    <div class="go-thanks" aria-live="polite">
+      <b aria-hidden="true">✓</b>
+      <h2>Доступ відкрито!</h2>
+      <p>Дані для входу — на вашому e-mail. 14 днів VDALO — безкоштовно.</p>
+      <!-- TODO(Codex): if registration returns a session or login URL, redirect there instead of showing this screen -->
+      <a class="go-link" id="go-login" href="https://www.vdalo.tech/">Увійти в VDALO →</a>
+    </div>
+  </div>
+</div>
+
+<script src="/go/vdalo-videos.js?v=5"></script>
+<script src="/go/vdalo-videos-more.js?v=5"></script>
+<script src="/go/vdalo-videos-fx.js?v=5"></script>
+<script src="/go/vdalo-videos-top5.js?v=5"></script>
+<script src="/go/vdalo-videos-funnels.js?v=5"></script>
+<script>
+(() => {
+  'use strict';
+  const go = document.getElementById('go');
+  const sheet = document.getElementById('go-sheet');
+  const cta = document.getElementById('go-cta');
+  const params = new URLSearchParams(location.search);
+  // ВІДЕО ЗА ЗАМОВЧУВАННЯМ для vdalo.tech/go без коду: по одному лідеру з кожної з 5 воронок.
+  // Відвідувач завжди бачить те саме відео (запам'ятовується в браузері).
+  const DEFAULT_VIDEOS = ['s-qr', 'n-timeline', 'o-7eur', 'b-share', 'e-dark'];
+  // short links from SMS: vdalo.tech/go/7 → video p-review (see test matrix). ?v=<id> works too.
+  const CODES = { 1: 'p-overbook', 2: 'p-calls', 3: 'p-cash', 4: 'p-shift', 5: 'p-commission', 6: 'p-notebook', 7: 'p-review', 8: 'p-vacation', 9: 'p-reports', 10: 'p-pricing',
+    11: 'm-price', 12: 'm-setup', 13: 'm-allinone', 14: 'm-day', 15: 'm-features', 16: 'm-trial', 17: 'm-ukraine', 18: 'm-mobile', 19: 'm-guest', 20: 'm-compare',
+    21: 'list', 22: 'phone', 23: 'night',
+    24: 'f-excel', 25: 'f-tears', 26: 'f-twoguests', 27: 'f-siren', 28: 'f-domino', 29: 'f-explode', 30: 'f-flood', 31: 'f-noshow', 32: 'f-burnout', 33: 'f-queue',
+    34: 't-docs-pile', 35: 't-docs-race', 36: 't-booking-copy', 37: 't-booking-clicks', 38: 't-guest-lobby', 39: 't-guest-chat', 40: 't-ob-collide', 41: 't-ob-countdown', 42: 't-night-repeat', 43: 't-night-sleep',
+    44: 's-vacancy', 45: 's-newbie', 46: 's-three', 47: 'b-share', 48: 'b-budget', 49: 'b-pnl', 50: 'e-dark', 51: 'e-fuel', 52: 'e-guests',
+    53: 's-qr', 54: 'n-timeline', 55: 'o-7eur',
+    // додаткові коди на те саме відео — щоб рахувати кожну SMS окремо
+    56: 'b-budget', 57: 'e-dark', 58: 'p-commission' };
+  // ТОП-5 ВОРОНОК: тексти сторінки під біль із SMS. Відео без воронки → тексти за замовчуванням (DEFAULT_COPY).
+  // price: null — бейдж ціни ховається (для овербукінгу: канали не входять у Start за 390 грн).
+  const FUNNELS = {
+    staff: { videos: ['s-qr', 't-guest-lobby', 't-guest-chat', 's-vacancy', 's-newbie', 's-three', 'p-shift', 'f-queue', 'm-guest', 'f-burnout'],
+      h1: 'Гості заселяються, <em>навіть коли адміна немає</em>',
+      li: ['QR на рецепції — гість реєструється з телефона', 'Документи, підпис і оплата — ще до приїзду', 'Новачок не продасть зайнятий номер'],
+      title: '14 днів VDALO: почніть із QR-заселення', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
+    nights: { videos: ['n-timeline', 't-night-repeat', 't-night-sleep', 'night', 'f-tears', 'p-calls', 'f-explode', 'p-vacation'],
+      h1: 'Гості знають усе <em>ще до того, як спитають</em>',
+      li: ['Повідомлення гостю в потрібний момент: бронь, дорога, заїзд, виїзд', 'Wi‑Fi, паркінг, як зайти — на гостьовій сторінці', 'На прості питання відповідає ШІ-помічник'],
+      title: '14 днів VDALO: налаштуйте повідомлення гостям', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
+    overbook: { videos: ['o-7eur', 't-ob-collide', 't-ob-countdown', 't-booking-copy', 't-booking-clicks', 'p-overbook', 'f-twoguests', 'f-excel', 'p-notebook'], price: null,
+      h1: 'Booking, Airbnb і телефон — <em>в одному календарі</em>',
+      li: ['Брони з Booking і Airbnb з\'являються самі', 'Номер продано — закрито на всіх каналах', 'Телефонні й прямі броні — там само'],
+      title: '14 днів VDALO: підключіть Booking і Airbnb', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
+    commission: { videos: ['b-share', 'b-pnl', 'b-budget', 'p-commission', 'p-pricing', 'f-noshow'],
+      h1: 'Менше комісій — <em>більше прямих бронювань</em>',
+      li: ['Кнопка «Забронювати» на сайті й в Instagram', 'Оплата одразу, без переписок', 'Чистий дохід по кожному каналу — після комісій'],
+      title: '14 днів VDALO: запустіть прямі бронювання', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
+    blackout: { videos: ['e-dark', 'e-fuel', 'e-guests', 'm-mobile', 'phone'],
+      h1: 'Світло вимкнули — <em>готель працює</em>',
+      li: ['Бронювання, оплати й канали — з телефона', 'ШІ-помічник відповідає гостям, поки ви з генератором', 'Пальне — окремою статтею в P&L'],
+      title: '14 днів VDALO: готель у вашому телефоні', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' }
+  };
+  const VIDEO_FUNNEL = {};
+  Object.entries(FUNNELS).forEach(([f, c]) => c.videos.forEach(v => { VIDEO_FUNNEL[v] = f; }));
+  const DEFAULT_COPY = { h1: document.getElementById('go-h1').innerHTML, li: [...document.querySelectorAll('#go-list li')].map(li => li.textContent),
+    title: document.getElementById('go-sheet-title').textContent, sub: document.getElementById('go-sheet-sub').textContent, price: document.getElementById('go-price').textContent };
+  function applyCopy(video) {
+    const f = VIDEO_FUNNEL[video] || '';
+    const c = Object.assign({}, DEFAULT_COPY, FUNNELS[f] || {});
+    document.getElementById('go-h1').innerHTML = c.h1;
+    document.getElementById('go-list').innerHTML = c.li.map(t => `<li>${t}</li>`).join('');
+    document.getElementById('go-sheet-title').textContent = c.title;
+    document.getElementById('go-sheet-sub').textContent = c.sub;
+    const price = document.getElementById('go-price');
+    price.hidden = c.price === null; if (c.price) price.textContent = c.price;
+    document.getElementById('go-funnel').value = f;
+  }
+  const code = (location.pathname.match(/^\/(?:go\/)?(\d{1,3})\/?$/) || [])[1] || params.get('c');
+  document.getElementById('go-source').value = params.get('src') || params.get('utm_source') || (code ? 'sms' : 'direct');
+  document.getElementById('go-code').value = code || '';
+  let vdv = document.getElementById('go-vdv');
+  let watched = 0;
+  const emit = (name, detail) => document.dispatchEvent(new CustomEvent(`go:${name}`, { detail }));
+
+  function wire(el) {
+    el.addEventListener('vdv:progress', e => { watched = e.detail.p; });
+    el.addEventListener('vdv:end', () => { watched = 100; go.classList.add('is-ended'); emit('video-end', { video: el.dataset.scenario }); });
+    VDALOVideo.mount(el);
+  }
+  wire(vdv);
+
+  function setScenario(s) {
+    const fresh = document.createElement('div');
+    fresh.className = 'vdv'; fresh.id = 'go-vdv'; fresh.dataset.scenario = s;
+    vdv.vdv && vdv.vdv.pause();
+    vdv.replaceWith(fresh); vdv = fresh; watched = 0;
+    go.classList.remove('is-ended');
+    wire(vdv);
+    applyCopy(s);
+    pick.value = s;
+  }
+  const pick = { value: '' };
+  // a video can be chosen from the link: /go?v=p-overbook — one link per SMS variant for A/B tests
+  // no code in the link → rotate the TOP-5 videos (stable per visitor) so plain vdalo.tech/go also A/B-tests them
+  let rotated = '';
+  if (!params.get('v') && !CODES[code]) {
+    const pool = DEFAULT_VIDEOS.length ? DEFAULT_VIDEOS.filter(s => VDALOVideo.scenes.includes(s)) : VDALOVideo.scenes.filter(s => (VDALOVideo.meta(s) || {}).group === 'top5');
+    try { rotated = localStorage.getItem('vdalo_go_video') || ''; } catch (e) {}
+    if (!pool.includes(rotated)) rotated = pool[Math.floor(Math.random() * pool.length)] || '';
+    try { localStorage.setItem('vdalo_go_video', rotated); } catch (e) {}
+  }
+  const forced = params.get('v') || CODES[code] || rotated;
+  if (forced && VDALOVideo.scenes.includes(forced)) setScenario(forced); else applyCopy(vdv.dataset.scenario);
+  document.getElementById('go-replay').addEventListener('click', () => { go.classList.remove('is-ended'); vdv.vdv.replay(); });
+
+  // sheet
+  const open = () => {
+    document.getElementById('go-video-name').value = vdv.dataset.scenario;
+    document.getElementById('go-watched').value = watched;
+    sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false');
+    vdv.vdv && vdv.vdv.pause();
+    setTimeout(() => document.getElementById('go-email').focus(), 250);
+    emit('cta', { video: vdv.dataset.scenario, watched });
+  };
+  const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); cta.focus(); };
+  cta.addEventListener('click', open);
+  sheet.addEventListener('click', e => { if (e.target === sheet) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('open')) close(); });
+
+  document.querySelectorAll('.go-chips').forEach(group => group.addEventListener('click', e => {
+    const b = e.target.closest('.go-chip'); if (!b) return;
+    group.querySelectorAll('.go-chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    document.getElementById(`go-${group.dataset.name}`).value = b.dataset.v;
+  }));
+
+  document.getElementById('go-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const $ = id => document.getElementById(id);
+    const phone = $('go-phone').value.replace(/[^\d+]/g, '');
+    const email = $('go-email').value.trim();
+    const err = $('go-err');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Перевірте e-mail'; return; }
+    if (phone.replace(/\D/g, '').length < 10) { err.textContent = 'Перевірте номер телефону'; return; }
+    err.textContent = '';
+    const data = Object.fromEntries(new FormData(e.target));
+    data.phone = phone;
+    // TODO(Codex): register via the site's trial signup (same flow as «Спробувати безкоштовно» on vdalo.tech), start the 14-day trial, then redirect or show thanks.
+    emit('lead', data);
+    sheet.classList.add('done');
+  });
+})();
+</script>
+</body>
+</html>
