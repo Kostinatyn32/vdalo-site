@@ -1,6 +1,8 @@
 import http from 'node:http';
 import {offers} from './microlandings/content.mjs';
 import {renderMicrolanding,renderDirectory,renderFunnelPrivacy} from './microlandings/render.mjs';
+import {renderSmsGo} from './microlandings/sms-go.mjs';
+import {renderSmsTrial} from './microlandings/sms-trial.mjs';
 import {handleFunnelLead} from './microlandings/leads.mjs';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -22,7 +24,7 @@ import {renderOfferPage,renderRefundPage} from './versions/v1/legal.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
-const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg'};
+const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4'};
 function send(res,status,text,type='text/html; charset=utf-8'){
  res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(text);
 }
@@ -32,6 +34,22 @@ function sendCompressed(req,res,status,data,type,cache='no-store'){
  res.writeHead(status,{'Content-Type':type,'Cache-Control':cache,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY','Vary':'Accept-Encoding',...(compressed?{'Content-Encoding':'gzip'}:{})});
  if(req.method==='HEAD')return res.end();
  res.end(compressed?gzipSync(body,{level:6}):body);
+}
+function sendVideo(req,res,data){
+ const size=data.length,range=req.headers.range;
+ let status=200,start=0,end=size-1;
+ if(range){
+  const match=/^bytes=(\d*)-(\d*)$/.exec(range);
+  if(!match||(!match[1]&&!match[2])){res.writeHead(416,{'Content-Range':`bytes */${size}`,'Accept-Ranges':'bytes'});return res.end();}
+  if(!match[1]){const suffix=Number(match[2]);start=Math.max(0,size-suffix);}
+  else start=Number(match[1]);
+  if(match[1]&&match[2])end=Math.min(Number(match[2]),size-1);
+  if(start>=size||end<start){res.writeHead(416,{'Content-Range':`bytes */${size}`,'Accept-Ranges':'bytes'});return res.end();}
+  status=206;
+ }
+ const body=status===206?data.subarray(start,end+1):data;
+ res.writeHead(status,{'Content-Type':'video/mp4','Content-Length':body.length,'Cache-Control':'public, max-age=86400','X-Content-Type-Options':'nosniff','Accept-Ranges':'bytes',...(status===206?{'Content-Range':`bytes ${start}-${end}/${size}`}:{})});
+ res.end(req.method==='HEAD'?undefined:body);
 }
 function prefix(html,version){return html.replace(/\b(src|href|action)="\/([^\"]*)"/g,(match,attribute,path)=>{if(path.startsWith('/')||path.startsWith('v1/')||path.startsWith('v2/')||path.startsWith('v3/'))return match;if(attribute==='href'&&(/^(?:$|#|privacy(?:\/|$)|offer(?:\/|$)|refunds?(?:\/|$)|cases(?:\/|$)|blog(?:\/|$)|tools(?:\/|$)|solutions(?:\/|$)|integrations(?:\/|$)|pricing(?:\/|$)|hotel-booking-calendar(?:\/|$)|hotel-check-in(?:\/|$)|hotel-operations(?:\/|$)|guest-communication(?:\/|$)|hotel-automation(?:\/|$)|about(?:\/|$)|contact(?:\/|$)|registration(?:\/|$))/.test(path)))return match;return `${attribute}="/${version}/${path}"`;});}
 const server=http.createServer(async(req,res)=>{
@@ -67,6 +85,16 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases','/cases/hotel-ai-reception','/blog',pmsArticle.slug,pmsChoiceArticle.slug,'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
+  if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/go')return send(res,200,renderSmsGo(url.searchParams));
+  if(pathname==='/go/trial')return send(res,200,renderSmsTrial(url.searchParams));
+  if(pathname==='/sms-trial-assets/sms-documents-tourist-levy.mp4'){
+   const data=await readFile(path.join(root,'microlandings','public','sms-documents-tourist-levy.mp4'));return sendVideo(req,res,data);
+  }
+  if(/^\/sms-trial-assets\/(sms-trial\.(?:css|js)|sms-go\.js)$/.test(pathname)){
+   const filename=path.join(root,'microlandings','public',path.basename(pathname));
+   const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
+  }
   const offer=offers.find(o=>o.route===pathname||o.route+'/'===pathname);
   if(offer){if(pathname.endsWith('/')){res.writeHead(307,{Location:offer.route+url.search});return res.end();}return send(res,200,renderMicrolanding(offer));}
   if(/^\/funnel-assets\/(funnel\.css|funnel\.js)$/.test(pathname)){
