@@ -121,7 +121,7 @@ const server=http.createServer(async(req,res)=>{
   const data=await readFile(filename);
   res.writeHead(200,{'Content-Type':mime[path.extname(filename)]||'application/octet-stream','X-Content-Type-Options':'nosniff','Cache-Control':process.env.NODE_ENV==='production'?'public, max-age=300':'no-store'});
   res.end(req.method==='HEAD'?undefined:data);
- } catch { send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8'); }
+ } catch(error) { if(error?.code==='ENOENT')return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8'); console.error('VDALO v1 request failed:',error); send(res,500,{ok:false,message:'Внутрішня помилка сервера.'}); }
 });
 if ((process.argv[1] && path.resolve(process.argv[1])===fileURLToPath(import.meta.url))) server.listen(port,host,()=>console.log(`VDALO server started`));
 export { server, privacyPage };

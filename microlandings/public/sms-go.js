@@ -9,4 +9,8 @@
  video.addEventListener('play',()=>{if(!started){started=true;track('video_start');}});
  video.addEventListener('ended',()=>{next.hidden=false;track('video_complete');});
  link.addEventListener('click',()=>track('video_to_trial_click'));
+ video.muted=true;
+ video.defaultMuted=true;
+ const playback=video.play();
+ if(playback&&typeof playback.catch==='function')playback.catch(()=>{video.controls=true;});
 })();

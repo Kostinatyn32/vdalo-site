@@ -78,8 +78,8 @@ const server=http.createServer(async(req,res)=>{
   if(seoRoutes().includes(pathname))return send(res,200,prefix(renderSeoPage(pathname),'v1'));
   if(seoRoutes().includes(pathname.slice(0,-1))&&pathname.endsWith('/')){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
-  if(pathname==='/offer')return send(res,200,renderOfferPage());
-  if(pathname==='/refunds')return send(res,200,renderRefundPage());
+  if(pathname==='/offer')return send(res,200,prefix(renderOfferPage(),'v1'));
+  if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
   if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
   if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact','/privacy','/offer','/refunds','/cases','/cases/hotel-ai-reception','/blog',pmsArticle.slug,pmsChoiceArticle.slug,'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
@@ -116,7 +116,7 @@ const server=http.createServer(async(req,res)=>{
   const currentVersion=bundle?.version||createHash('sha256').update(data).digest('hex').slice(0,12);
   const cache=requestedVersion===currentVersion?'public, max-age=31536000, immutable':relative.startsWith('/assets/')?'public, max-age=86400, stale-while-revalidate=604800':'public, max-age=300';
   sendCompressed(req,res,200,data,types[path.extname(file)]||'application/octet-stream',cache);
- }catch{return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');}
+ }catch(error){if(error instanceof URIError)return send(res,400,'Некоректна адреса запиту.','text/plain; charset=utf-8');if(error?.code==='ENOENT')return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');console.error('VDALO request failed:',error);return send(res,500,'Внутрішня помилка сервера.','text/plain; charset=utf-8');}
 });
 // Vercel captures this standard Node.js HTTP server entrypoint.
 if(!process.env.VERCEL)server.listen(Number(process.env.PORT||4185),process.env.HOST||'127.0.0.1',()=>console.log('VDALO comparison server started'));

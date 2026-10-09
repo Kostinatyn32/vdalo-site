@@ -23,12 +23,10 @@ if (pricingRoot && core) {
   pricingRoot.querySelectorAll('.pricing-panel[role="tabpanel"]').forEach(panel=>panel.hidden=panel.id!==`pricing-panel-${id}`);
   if(focus) pricingRoot.querySelector(`[data-pricing-view="${id}"]`)?.focus();
  }
- const priceOfGroup={small:'start',medium:'hotel',large:'complex'};
+ const groupForRooms = rooms => rooms<=12?'small':rooms<=80?'medium':'large';
  const showEstimate = () => {
   const data=estimateData();
   const {plan,rooms,modules,periodPlan,estimateMonthly,isFrom}=data;
-  const group=rooms<=12?'small':rooms<=80?'medium':'large';
-  activateTab(group);
   pricingRoot.querySelectorAll('[data-plan-card]').forEach(card=>{
    const active=card.dataset.planCard===plan.id;
    card.classList.toggle('is-current',active);
@@ -61,9 +59,9 @@ if (pricingRoot && core) {
   tab.addEventListener('keydown',event=>{let next=index;if(event.key==='ArrowRight')next=(index+1)%all.length;else if(event.key==='ArrowLeft')next=(index+all.length-1)%all.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=all.length-1;else return;event.preventDefault();activateTab(all[next].dataset.pricingView,true);});
  });
  pricingRoot.querySelectorAll('[data-billing-period]').forEach(button=>button.addEventListener('click',()=>{period=button.dataset.billingPeriod;showEstimate();}));
- roomInput?.addEventListener('input',showEstimate);
+ roomInput?.addEventListener('input',()=>{activateTab(groupForRooms(Math.max(1,Math.floor(Number(roomInput.value)||1))));showEstimate();});
  const planRoomDefaults={start:5,mini:10,hotel:20,'hotel-plus':50,complex:90,enterprise:151};
- pricingRoot.querySelectorAll('[data-select-plan]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();roomInput.value=String(planRoomDefaults[link.dataset.selectPlan]||20);showEstimate();roomInput.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});roomInput.focus({preventScroll:true});}));
+ pricingRoot.querySelectorAll('[data-select-plan]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();roomInput.value=String(planRoomDefaults[link.dataset.selectPlan]||20);activateTab(groupForRooms(Number(roomInput.value)));showEstimate();roomInput.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});roomInput.focus({preventScroll:true});}));
  moduleInputs.forEach(input=>input.addEventListener('change',showEstimate));
  const presets={evening:['assistant','checkin','access'],accounting:['prro','finance']};
  pricingRoot.querySelectorAll('[data-module-preset]').forEach(button=>button.addEventListener('click',()=>{
@@ -75,5 +73,6 @@ if (pricingRoot && core) {
  }));
  pricingRoot.querySelector('#apart-unit-count')?.addEventListener('input',event=>{pricingRoot.querySelector('[data-apart-price]').textContent=`${money(core.apartPrice(event.target.value))} на місяць`;});
  if('IntersectionObserver' in window){const pricingObserver=new IntersectionObserver(entries=>{const visible=entries.some(entry=>entry.isIntersecting);pricingRoot.querySelector('[data-pricing-sticky]').classList.toggle('visible',visible);document.body.classList.toggle('pricing-visible',visible);},{threshold:.1});pricingObserver.observe(pricingRoot);}
+ activateTab(groupForRooms(Math.max(1,Math.floor(Number(roomInput?.value)||1))));
  showEstimate();
 }
