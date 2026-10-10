@@ -94,6 +94,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
   <div class="go-right">
   <div class="go-side">
     <h1 id="go-h1">Керуйте готелем <em>вдало</em></h1>
+    <p class="go-mobile-copy" id="go-mobile-copy"></p>
     <ul id="go-list">
       <li>Booking і Airbnb без овербукінгу</li>
       <li>Гості реєструються самі — з телефона</li>
@@ -180,35 +181,36 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
   // ТОП-5 ВОРОНОК: тексти сторінки під біль із SMS. Відео без воронки → тексти за замовчуванням (DEFAULT_COPY).
   // price: null — бейдж ціни ховається (для овербукінгу: канали не входять у Start за 390 грн).
   const FUNNELS = {
-    staff: { videos: ['s-qr', 't-guest-lobby', 't-guest-chat', 's-vacancy', 's-newbie', 's-three', 'p-shift', 'f-queue', 'm-guest', 'f-burnout'],
+    staff: { videos: ['s-qr', 't-guest-lobby', 't-guest-chat', 's-vacancy', 's-newbie', 's-three', 'p-shift', 'f-queue', 'm-guest', 'f-burnout'], copy: 'Навіть без адміністратора гість може пройти заселення, надіслати документи й оплатити онлайн.',
       h1: 'Гості заселяються, <em>навіть коли адміна немає</em>',
       li: ['QR на рецепції — гість реєструється з телефона', 'Документи, підпис і оплата — ще до приїзду', 'Новачок не продасть зайнятий номер'],
       title: '14 днів VDALO: почніть із QR-заселення', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
-    nights: { videos: ['n-timeline', 't-night-repeat', 't-night-sleep', 'night', 'f-tears', 'p-calls', 'f-explode', 'p-vacation'],
+    nights: { videos: ['n-timeline', 't-night-repeat', 't-night-sleep', 'night', 'f-tears', 'p-calls', 'f-explode', 'p-vacation'], copy: 'Гість отримує потрібну інформацію заздалегідь — менше однакових дзвінків уночі.',
       h1: 'Гості знають усе <em>ще до того, як спитають</em>',
       li: ['Повідомлення гостю в потрібний момент: бронь, дорога, заїзд, виїзд', 'Wi‑Fi, паркінг, як зайти — на гостьовій сторінці', 'На прості питання відповідає ШІ-помічник'],
       title: '14 днів VDALO: налаштуйте повідомлення гостям', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
-    overbook: { videos: ['o-7eur', 't-ob-collide', 't-ob-countdown', 't-booking-copy', 't-booking-clicks', 'p-overbook', 'f-twoguests', 'f-excel', 'p-notebook'], price: null,
+    overbook: { videos: ['o-7eur', 't-ob-collide', 't-ob-countdown', 't-booking-copy', 't-booking-clicks', 'p-overbook', 'f-twoguests', 'f-excel', 'p-notebook'], price: null, copy: 'Бронювання з різних каналів сходяться в одному календарі — менше ручного перенесення.',
       h1: 'Booking, Airbnb і телефон — <em>в одному календарі</em>',
       li: ['Брони з Booking і Airbnb з\'являються самі', 'Номер продано — закрито на всіх каналах', 'Телефонні й прямі броні — там само'],
       title: '14 днів VDALO: підключіть Booking і Airbnb', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
-    commission: { videos: ['b-share', 'b-pnl', 'b-budget', 'p-commission', 'p-pricing', 'f-noshow'],
+    commission: { videos: ['b-share', 'b-pnl', 'b-budget', 'p-commission', 'p-pricing', 'f-noshow'], copy: 'Розвивайте прямі бронювання та бачте, скільки залишається після комісій.',
       h1: 'Менше комісій — <em>більше прямих бронювань</em>',
       li: ['Кнопка «Забронювати» на сайті й в Instagram', 'Оплата одразу, без переписок', 'Чистий дохід по кожному каналу — після комісій'],
       title: '14 днів VDALO: запустіть прямі бронювання', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' },
-    blackout: { videos: ['e-dark', 'e-fuel', 'e-guests', 'm-mobile', 'phone'],
+    blackout: { videos: ['e-dark', 'e-fuel', 'e-guests', 'm-mobile', 'phone'], copy: 'Бронювання, оплати й відповіді гостям — під рукою, навіть коли ви не біля рецепції.',
       h1: 'Світло вимкнули — <em>готель працює</em>',
       li: ['Бронювання, оплати й канали — з телефона', 'ШІ-помічник відповідає гостям, поки ви з генератором', 'Пальне — окремою статтею в P&L'],
       title: '14 днів VDALO: готель у вашому телефоні', sub: 'Безкоштовно, без картки. Доступ — одразу після реєстрації.' }
   };
   const VIDEO_FUNNEL = {};
   Object.entries(FUNNELS).forEach(([f, c]) => c.videos.forEach(v => { VIDEO_FUNNEL[v] = f; }));
-  const DEFAULT_COPY = { h1: document.getElementById('go-h1').innerHTML, li: [...document.querySelectorAll('#go-list li')].map(li => li.textContent),
+  const DEFAULT_COPY = { h1: document.getElementById('go-h1').innerHTML, copy: '', li: [...document.querySelectorAll('#go-list li')].map(li => li.textContent),
     title: document.getElementById('go-sheet-title').textContent, sub: document.getElementById('go-sheet-sub').textContent, price: document.getElementById('go-price').textContent };
   function applyCopy(video) {
     const f = VIDEO_FUNNEL[video] || '';
     const c = Object.assign({}, DEFAULT_COPY, FUNNELS[f] || {});
     document.getElementById('go-h1').innerHTML = c.h1;
+    document.getElementById('go-mobile-copy').textContent = c.copy || '';
     document.getElementById('go-list').innerHTML = c.li.map(t => `<li>${t}</li>`).join('');
     document.getElementById('go-sheet-title').textContent = c.title;
     document.getElementById('go-sheet-sub').textContent = c.sub;
