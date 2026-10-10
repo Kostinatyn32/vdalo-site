@@ -4,15 +4,27 @@ import {secondPassArticles} from '../versions/v1/article-second-pass.mjs';
 import {pmsArticle} from '../versions/v1/article-pms.mjs';
 import {pmsChoiceArticle} from '../versions/v1/article-pms-choice.mjs';
 import {seoRoutes} from '../versions/v1/seo-pages.mjs';
+import {offers} from '../microlandings/content.mjs';
 
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:4450';
+const campaignRoutes = [
+  '/funnel', '/funnel/privacy', '/go', '/go/trial',
+  ...offers.map(offer => offer.route),
+  ...Array.from({length: 55}, (_, index) => `/${index + 1}`),
+  ...Array.from({length: 5}, (_, index) => `/k${index + 1}`),
+];
 const routes = [...new Set([
-  '/', '/cases', ...caseSlugs, '/blog', pmsArticle.slug, pmsChoiceArticle.slug,
+  '/', '/solutions', '/integrations', '/pricing', '/hotel-booking-calendar',
+  '/hotel-check-in', '/hotel-operations', '/guest-communication',
+  '/hotel-automation', '/registration', '/about', '/contact',
+  '/privacy', '/offer', '/refunds', '/cases', ...caseSlugs,
+  '/blog', pmsArticle.slug, pmsChoiceArticle.slug,
   ...editorialArticles.map(article => article.slug), ...secondPassArticles.map(article => article.slug),
   ...seoRoutes(), '/authors/oleh-stepeniev', '/tools/', '/tools/pms-checklist/',
-  '/tools/hotel-profitability-calculator/', '/privacy', '/offer', '/refunds',
-  '/robots.txt', '/sitemap.xml', '/go', '/go/trial', '/53', '/54', '/55', '/47', '/50',
+  '/tools/hotel-profitability-calculator/', ...campaignRoutes,
+  '/robots.txt', '/sitemap.xml',
 ])];
+const campaignRouteSet = new Set(campaignRoutes);
 const errors = [];
 const warnings = [];
 const titles = new Map();
@@ -40,13 +52,13 @@ for (const route of routes) {
     if (!/\salt="/i.test(image[0])) errors.push(`${route}: image is missing an alt attribute`);
   }
   if (!title) errors.push(`${route}: missing title`);
-  else if (!route.startsWith('/go') && !/^\/(?:[1-9]|[1-5]\d)$/.test(route)) {
+  else if (!campaignRouteSet.has(route)) {
     const previous = titles.get(title);
     if (previous) warnings.push(`${route}: duplicate title with ${previous}: ${title}`);
     else titles.set(title, route);
   }
   if (!description) warnings.push(`${route}: missing meta description`);
-  if (route.startsWith('/go') || /^\/(?:[1-9]|[1-5]\d)$/.test(route)) {
+  if (campaignRouteSet.has(route)) {
     if (!/noindex,nofollow/.test(html)) warnings.push(`${route}: campaign landing should be noindex`);
   } else {
     if (!canonical || !canonical.startsWith('https://vdalo.tech/')) warnings.push(`${route}: canonical missing or unexpected (${canonical || 'none'})`);
@@ -56,7 +68,7 @@ for (const route of routes) {
     try { JSON.parse(match[1]); }
     catch { errors.push(`${route}: invalid JSON-LD`); }
   }
-  for (const match of html.matchAll(/<(?:img|source)\b[^>]*\s(?:src|srcset)="([^"]+)"/gi)) {
+  for (const match of html.matchAll(/<(?:img|source|video)\b[^>]*\s(?:src|srcset|poster)="([^"]+)"/gi)) {
     const raw = match[1].split(',')[0].trim().split(/\s+/)[0];
     if (!raw || raw.startsWith('data:') || raw.startsWith('https://')) continue;
     const target = new URL(raw, new URL(route, base));
@@ -83,7 +95,7 @@ for (const name of ['staff-checkin.webp', 'night-answers.webp', 'channel-sync.we
   else if (Number(response.headers.get('content-length')) > 300_000) warnings.push(`${name}: optimized artwork exceeds 300 KB`);
 }
 
-console.log(`Checked ${routes.length} routes; ${checkedImages.size} unique local image assets; 5 funnel WebP assets; ${checkedLinks.size} internal links; ${titles.size} unique page titles.`);
+console.log(`Checked ${routes.length} routes; ${checkedImages.size} unique local media assets; 5 funnel WebP assets; ${checkedLinks.size} internal links; ${titles.size} unique page titles.`);
 for (const warning of warnings) console.log(`WARN ${warning}`);
 for (const error of errors) console.log(`FAIL ${error}`);
 if (errors.length) process.exitCode = 1;
