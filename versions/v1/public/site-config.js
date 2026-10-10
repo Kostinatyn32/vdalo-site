@@ -28,7 +28,7 @@ window.VDALO_CONFIG = {
   ],
   author: {
     name: 'Олег',
-    photo: '/v1/assets/oleg-stepeniev.png',
+    photo: '/v1/assets/oleg-stepeniev.jpg',
     linkedinUrl: 'https://www.linkedin.com/in/olegalisio/',
     instagramUrl: null, // TODO(Oleg): add verified Instagram
     facebookUrl: null, // TODO(Oleg): add verified Facebook

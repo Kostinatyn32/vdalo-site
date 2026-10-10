@@ -1,6 +1,6 @@
 /* VDALO · промо-відео (3 сценарії), vanilla JS без залежностей.
    Розмітка: <div class="vdv" data-scenario="list|phone|night"></div>
-   Кожен кадр — чиста функція від часу t, тому:
+   Кожен кадр: чиста функція від часу t, тому:
    - на сторінці відео програється само, ставиться на паузу поза екраном;
    - для MP4 його можна прогнати покадрово: el.vdv.seek(t).
    Події на елементі .vdv: vdv:start, vdv:progress {detail:{p:25|50|75}}, vdv:end. */
@@ -82,7 +82,7 @@
       const caps = captions(stage, [
         [0.1, 3.2, 'Ваш тиждень <em>у готелі</em>'],
         [3.4, 14.8, 'VDALO <em>викреслює</em> рутину'],
-        [15.1, 18.0, 'Рутина — на автоматі. <em>Ви — на головному.</em>', 27]
+        [15.1, 18.0, 'Рутина: на автоматі. <em>Ви: на головному.</em>', 27]
       ]);
       const meter = h(`<div class="vdv-meter" data-a>
           <div><b><span class="n">14</span><small>год</small></b></div>
@@ -108,7 +108,7 @@
       });
       const win = h(`<div class="vdv-row win" data-a style="position:absolute;left:24px;right:24px;top:250px">
           <span class="vdv-ic g">${ICON.up}</span>
-          <span class="tx"><span class="t">Розвивати готель</span><span class="s" style="color:#A8EBC9">а рутина — на VDALO</span></span></div>`);
+          <span class="tx"><span class="t">Розвивати готель</span><span class="s" style="color:#A8EBC9">а рутина: на VDALO</span></span></div>`);
       stage.append(win);
       const foot = h('<div class="vdv-foot" data-a>Приклад для готелю на 15 номерів. Цифри умовні.</div>');
       stage.append(foot);
@@ -154,9 +154,9 @@
       stage.append(h('<div class="vdv-kicker" data-a>VDALO · система для готелів</div>'));
       const caps = captions(stage, [
         [0.1, 3.3, '<em>Знайомо?</em>', 40],
-        [3.6, 7.0, 'Усе — <em>в одному місці</em>'],
+        [3.6, 7.0, 'Усе: <em>в одному місці</em>'],
         [7.2, 11.0, 'Booking і Airbnb <em>без овербукінгу</em>', 28],
-        [11.2, 15.0, 'Заселення, прибирання, чеки — <em>самі</em>', 26],
+        [11.2, 15.0, 'Заселення, прибирання, чеки: <em>самі</em>', 26],
         [15.3, 18.0, 'Керуйте готелем <em>з телефона</em>']
       ]);
       const phone = h(`<div class="vdv-phone" data-a><div class="isl"></div><div class="scr">
@@ -208,9 +208,9 @@
         scr.append(e); return e;
       });
       const calm = h(`<div class="vdv-calm" data-a><b>0</b><span>пропущених дзвінків<br>за ніч</span>
-        <span style="margin-top:10px;color:#A8EBC9;font-size:12px">Усе працює. Ви — вільні.</span></div>`);
+        <span style="margin-top:10px;color:#A8EBC9;font-size:12px">Усе працює. Ви: вільні.</span></div>`);
       phone.append(calm);
-      const foot = h('<div class="vdv-foot" data-a>PIN-заселення — з розумним замком</div>');
+      const foot = h('<div class="vdv-foot" data-a>PIN-заселення: з розумним замком</div>');
       stage.append(foot);
       const fin = finalFrame(stage, 18.3);
       const clockAt = t => {
@@ -292,7 +292,7 @@
       const tl = h('<div class="vdv-tally" data-a>Вас будили<b>0</b></div>'); L.append(tl);
       const tr = h('<div class="vdv-tally" data-a>Вас будили<b>0</b></div>'); R.append(tr);
       const tlb = tl.querySelector('b'), trb = tr.querySelector('b');
-      const foot = h('<div class="vdv-foot" data-a>Умовна ніч. PIN-заселення — з розумним замком.</div>'); stage.append(foot);
+      const foot = h('<div class="vdv-foot" data-a>Умовна ніч. PIN-заселення: з розумним замком.</div>'); stage.append(foot);
       const fin = finalFrame(stage, 18.3);
       const KEYS = [[0, 22 * 60], [3.8, 23 * 60 + 45], [7.8, 25 * 60 + 50], [11.8, 29 * 60 + 30], [15, 31 * 60]];
       const minutes = t => {

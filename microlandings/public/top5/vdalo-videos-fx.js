@@ -1,5 +1,5 @@
-/* VDALO · 10 відео «факапи» (f-*): жорсткі болі з візуальними ефектами — глітч, тріщини, сирена,
-   дощ і сльози, вода, вибух сповіщень, доміно, батарейка, черга — і як VDALO це прибирає.
+/* VDALO · 10 відео «факапи» (f-*): жорсткі болі з візуальними ефектами: глітч, тріщини, сирена,
+   дощ і сльози, вода, вибух сповіщень, доміно, батарейка, черга: і як VDALO це прибирає.
    Підключати ПІСЛЯ vdalo-videos.js і vdalo-videos-more.js. */
 (() => {
   'use strict';
@@ -114,7 +114,7 @@
 
   // ---------- shared bits ----------
   const sheet = `<div class="vdv-box" style="left:24px;right:24px;top:132px;padding:10px;display:grid;gap:4px;background:#F6F8F4;border-color:#cfd8cc;color:#1F3A2A;font:500 11px/1 'Courier New',monospace">
-      ${[['A', 'B', 'C', 'D'], ['302', 'Іван', 'пт–нд', '3600'], ['105', 'Олена', 'сб', '1200'], ['201', 'Booking', 'пт–сб', '2400'], ['303', 'Airbnb', 'нд–вт', '4800'], ['104', '?', 'пт', '—'], ['202', 'Марко', 'сб–нд', '2400']]
+      ${[['A', 'B', 'C', 'D'], ['302', 'Іван', 'пт–нд', '3600'], ['105', 'Олена', 'сб', '1200'], ['201', 'Booking', 'пт–сб', '2400'], ['303', 'Airbnb', 'нд–вт', '4800'], ['104', '?', 'пт', ':'], ['202', 'Марко', 'сб–нд', '2400']]
         .map((r, i) => `<div style="display:grid;grid-template-columns:44px 1fr 1fr 60px;gap:4px">${r.map(c => `<span style="padding:6px 5px;background:${i ? '#fff' : '#DDE7D8'};border:1px solid #d5ddd2">${c}</span>`).join('')}</div>`).join('')}</div>`;
   const board = top => `<div class="vdv-box" style="left:24px;right:24px;top:${top}px;padding:12px;display:grid;gap:7px;background:#1B0F20;border-color:rgba(255,245,247,.14);color:#FFF5F7">
       ${[['101', 0, 2, '#C76A96', 'Сайт'], ['105', 1, 3, '#2F6FDB', 'Booking'], ['201', 0, 1, '#FF5A5F', 'Airbnb'], ['302', 0, 2, '#2F6FDB', 'Booking'], ['303', 2, 2, '#FF5A5F', 'Airbnb']].map(([n, f, l, c, lab]) => `<div style="display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;font:700 12px var(--vd-body)"><span>${n}</span><span style="position:relative;height:24px;border-radius:6px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 calc(25% - 2px),transparent calc(25% - 2px) 25%)"><i style="position:absolute;top:3px;bottom:3px;left:${f * 25}%;width:calc(${l * 25}% - 3px);border-radius:6px;background:${c};font:700 10px/18px var(--vd-display);color:#fff;padding-left:6px;font-style:normal">${lab}</i></span></div>`).join('')}</div>`;
@@ -126,18 +126,18 @@
 
   // =====================================================================
   reg('f-excel', {
-    title: 'Факап: Excel з бронюваннями зламався', group: 'fail', pain: 'Файл з бронюваннями пошкоджено — сезон зник', theme: 'ink',
+    title: 'Факап: Excel з бронюваннями зламався', group: 'fail', pain: 'Файл з бронюваннями пошкоджено: сезон зник', theme: 'ink',
     quake: [[3.0, 3.7, 7]],
     segs: [
       { a: 0, b: 6.8, els: [
-        { type: 'big', html: 'Усі бронювання сезону —', top: 56, size: 26, at: .1 },
+        { type: 'big', html: 'Усі бронювання сезону :', top: 56, size: 26, at: .1 },
         { type: 'big', html: 'в одному Excel.', top: 88, size: 34, at: .5, anim: 'slam' },
         { type: 'glitch', html: sheet, gl: [[2.2, 2.5], [2.8, 3.6], [4.4, 4.6], [5.6, 5.8]], at: .9, anim: 'up' },
         { type: 'flash', at: 3.0 },
         { type: 'html', at: 3.1, anim: 'pop', html: `<div style="position:absolute;left:38px;right:38px;top:226px;background:#F0F0F0;color:#222;border-radius:8px;box-shadow:0 20px 50px rgba(0,0,0,.6);font:13px/1.35 Arial,sans-serif;overflow:hidden">
             <div style="background:#D83B3B;color:#fff;padding:7px 10px;font-weight:700">Помилка</div>
             <div style="display:flex;gap:10px;padding:12px"><b style="flex:none;width:30px;height:30px;border-radius:50%;background:#D83B3B;color:#fff;display:grid;place-items:center">✕</b><span>Файл «Бронювання_2026.xlsx» пошкоджено. Відновити не вдалося.</span></div></div>` },
-        { type: 'glitch', html: '<p class="vdv-big" style="position:static;font-size:34px"><em class="r">Сезон — зник.</em></p>', gl: [[3.9, 4.3], [5.2, 5.4]], at: 3.8, anim: 'slam', pos: 'left:24px;right:24px;top:398px' },
+        { type: 'glitch', html: '<p class="vdv-big" style="position:static;font-size:34px"><em class="r">Сезон: зник.</em></p>', gl: [[3.9, 4.3], [5.2, 5.4]], at: 3.8, anim: 'slam', pos: 'left:24px;right:24px;top:398px' },
         { type: 'chip', html: 'хто заїжджає завтра?', top: 470, at: 4.8, cls: 'bad', pos: 'left:24px' },
         { type: 'chip', html: 'хто вже заплатив?', top: 518, at: 5.3, cls: 'bad', pos: 'left:24px' }
       ] },
@@ -151,7 +151,7 @@
   });
 
   reg('f-tears', {
-    title: 'Факап: гість плаче під зачиненими дверима', group: 'fail', pain: 'Нічний заїзд — рецепція зачинена, гість під дощем', theme: 'ink',
+    title: 'Факап: гість плаче під зачиненими дверима', group: 'fail', pain: 'Нічний заїзд: рецепція зачинена, гість під дощем', theme: 'ink',
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'rain', at: 0, out: 6.9, anim: 'fade' },
@@ -169,13 +169,13 @@
         { type: 'html', at: 8.2, anim: 'up', html: door(160, 270, true, '203') },
         { type: 'face', mood: 'happy', size: 92, at: 8.6, anim: 'pop', pos: 'left:46px;top:316px' },
         { type: 'chip', html: 'заселились о 02:12 · ви спали', top: 512, at: 9.6, cls: 'ok', pos: 'left:24px' },
-        foot('PIN-заселення — з розумним замком.', 7.4)
+        foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
   });
 
   reg('f-twoguests', {
-    title: 'Факап: двоє гостей, один номер', group: 'fail', pain: 'Номер продано двічі — двоє гостей під одними дверима', theme: 'ink',
+    title: 'Факап: двоє гостей, один номер', group: 'fail', pain: 'Номер продано двічі: двоє гостей під одними дверима', theme: 'ink',
     quake: [[3.3, 4.0, 8]],
     segs: [
       { a: 0, b: 6.8, els: [
@@ -195,13 +195,13 @@
         { type: 'card', icc: 'b', ic: 'B', t: 'Booking · 302 · пт–нд', s: 'нове бронювання', top: 170, at: 7.4, check: 7.9 },
         { type: 'card', icc: 'p', ic: I.check, t: '302 закрито в Airbnb', s: 'автоматично', top: 228, at: 8.3, check: 8.8 },
         { type: 'card', icc: 'p', ic: I.check, t: '302 закрито на сайті', s: 'автоматично', top: 286, at: 9.0, check: 9.5 },
-        { type: 'big', html: 'Один номер — <em>один гість.</em>', top: 380, size: 32, at: 9.9 }
+        { type: 'big', html: 'Один номер: <em>один гість.</em>', top: 380, size: 32, at: 9.9 }
       ] }
     ]
   });
 
   reg('f-siren', {
-    title: 'Факап: недостача в касі', group: 'fail', pain: 'Недостача в касі — ніхто не знає, де гроші', theme: 'red',
+    title: 'Факап: недостача в касі', group: 'fail', pain: 'Недостача в касі: ніхто не знає, де гроші', theme: 'red',
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'siren', at: 0, out: 6.8, anim: 'fade' },
@@ -214,8 +214,8 @@
         foot('Цифри умовні.', 1)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'Оплата карткою — <em>чек сам</em>', size: 34 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Кожна оплата — в системі', s: 'хто, коли, за який номер', top: 166, at: 7.4, check: 7.9 },
+        { type: 'cap', html: 'Оплата карткою: <em>чек сам</em>', size: 34 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Кожна оплата: в системі', s: 'хто, коли, за який номер', top: 166, at: 7.4, check: 7.9 },
         { type: 'card', icc: 'p', ic: I.receipt, t: 'Фіскальний чек ПРРО', s: 'автоматично', top: 224, at: 8.1, check: 8.6 },
         { type: 'card', icc: 'p', ic: I.receipt, t: 'Звіт по зміні', s: 'без перерахунку вручну', top: 282, at: 8.8, check: 9.3 },
         { type: 'stamp', html: 'Каса звірена ✓', cls: 'ok', top: 380, at: 9.8, pos: 'left:76px', rot: -5 }
@@ -257,17 +257,17 @@
       ] },
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'VDALO розбирає все <em>за вас</em>', size: 34 },
-        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання — 12', s: 'синхронізовано в усіх каналах', top: 170, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей — 31', s: 'відповів ШІ-помічник', top: 228, at: 8.1, check: 8.6 },
-        { type: 'card', icc: 'n', ic: I.broom, t: 'Задачі команді — 6', s: 'у покоївки й техніка', top: 286, at: 8.8, check: 9.3 },
-        { type: 'big', html: 'Вам — <em>тільки важливе.</em>', top: 380, size: 34, at: 9.8 },
+        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання: 12', s: 'синхронізовано в усіх каналах', top: 170, at: 7.4, check: 7.9 },
+        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей: 31', s: 'відповів ШІ-помічник', top: 228, at: 8.1, check: 8.6 },
+        { type: 'card', icc: 'n', ic: I.broom, t: 'Задачі команді: 6', s: 'у покоївки й техніка', top: 286, at: 8.8, check: 9.3 },
+        { type: 'big', html: 'Вам: <em>тільки важливе.</em>', top: 380, size: 34, at: 9.8 },
         foot('Цифри умовні.', 7.4)
       ] }
     ]
   });
 
   reg('f-flood', {
-    title: 'Факап: потоп у номері', group: 'fail', pain: 'Поломку написали в Viber уночі — побачили зранку', theme: 'dark',
+    title: 'Факап: потоп у номері', group: 'fail', pain: 'Поломку написали в Viber уночі: побачили зранку', theme: 'dark',
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'big', html: 'Тече кран у 105.', top: 58, size: 36, at: .1, anim: 'slam' },
@@ -280,7 +280,7 @@
         { type: 'chip', html: 'мінус 3 ночі продажів', top: 492, at: 5.0, cls: 'bad', pos: 'left:24px', move: [5.0, 6.6, 0, -10] }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'У VDALO поломка — <em>це задача, а не повідомлення</em>', size: 26 },
+        { type: 'cap', html: 'У VDALO поломка: <em>це задача, а не повідомлення</em>', size: 26 },
         { type: 'card', icc: 'n', ic: I.broom, t: 'Задача технікові · 23:11', s: '105 · тече кран', top: 176, at: 8.2, check: 8.7 },
         { type: 'card', icc: 'x', ic: '!', t: '105 позначено «на огляді»', s: 'гостя туди не поселять', top: 234, at: 8.8, check: 9.3 },
         { type: 'card', icc: 'g', ic: I.check, t: 'Технік: виконано · 23:40', s: 'ви бачите статус у телефоні', top: 292, at: 9.4, check: 9.9 }
@@ -289,7 +289,7 @@
   });
 
   reg('f-noshow', {
-    title: 'Факап: гість не приїхав', group: 'fail', pain: 'No-show без передоплати — номер порожній, гроші втрачено', theme: 'ink',
+    title: 'Факап: гість не приїхав', group: 'fail', pain: 'No-show без передоплати: номер порожній, гроші втрачено', theme: 'ink',
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'big', html: 'Гість не приїхав.', top: 58, size: 38, at: .1, anim: 'slam' },
@@ -309,34 +309,34 @@
             <b style="font:800 15px var(--vd-display)">Номер 203 · пт–сб</b><span style="font:500 12px var(--vd-body);color:#7a6a7e">Разом: 2 400 грн</span>
             <span style="background:#FF92BD;border-radius:999px;padding:10px;text-align:center;font:700 13px var(--vd-body)">Оплатити й забронювати</span></div>` },
         { type: 'card', icc: 'g', ic: I.check, t: 'Оплату отримано', s: 'ще до приїзду гостя', top: 320, at: 8.8, check: 9.3 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Умови скасування — ваші', s: 'налаштовуєте в системі', top: 378, at: 9.5, check: 10.0 }
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Умови скасування: ваші', s: 'налаштовуєте в системі', top: 378, at: 9.5, check: 10.0 }
       ] }
     ]
   });
 
   reg('f-burnout', {
-    title: 'Факап: власник на нулі', group: 'fail', pain: 'Власник вигорає — усе тримається на ньому', theme: 'dark',
+    title: 'Факап: власник на нулі', group: 'fail', pain: 'Власник вигорає: усе тримається на ньому', theme: 'dark',
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'big', html: '16 годин на ногах.', top: 58, size: 36, at: .1, anim: 'slam' },
         { type: 'big', html: '<em class="r">Сьомий день поспіль.</em>', top: 100, size: 30, at: .7 },
         { type: 'battery', keys: [[.8, 100], [5.4, 3]], at: .8, anim: 'up', pos: 'left:80px;top:190px;color:rgba(255,245,247,.8)', out: 6.8 },
         { type: 'face', mood: 'sad', size: 80, at: 4.2, anim: 'pop', pos: 'left:140px;top:360px' },
-        { type: 'big', html: 'А готель — <em class="r">досі на вас.</em>', top: 520, size: 26, at: 5.0 }
+        { type: 'big', html: 'А готель: <em class="r">досі на вас.</em>', top: 520, size: 26, at: 5.0 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'Рутина — на автоматі. <em>Ви — заряджені.</em>', size: 28 },
+        { type: 'cap', html: 'Рутина: на автоматі. <em>Ви: заряджені.</em>', size: 28 },
         { type: 'battery', keys: [[7.2, 3], [9.2, 100]], at: 7.2, anim: 'fade', pos: 'left:80px;top:150px;color:rgba(255,245,247,.8)' },
-        { type: 'card', icc: 'p', ic: I.key, t: 'Заселення — за PIN-кодом', top: 330, at: 7.8, check: 8.2 },
-        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей — ШІ-помічник', top: 386, at: 8.4, check: 8.8 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Чеки й збір — автоматично', top: 442, at: 9.0, check: 9.4 },
+        { type: 'card', icc: 'p', ic: I.key, t: 'Заселення: за PIN-кодом', top: 330, at: 7.8, check: 8.2 },
+        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей: ШІ-помічник', top: 386, at: 8.4, check: 8.8 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Чеки й збір: автоматично', top: 442, at: 9.0, check: 9.4 },
         { type: 'face', mood: 'happy', size: 60, at: 9.8, anim: 'pop', pos: 'left:150px;top:500px' }
       ] }
     ]
   });
 
   reg('f-queue', {
-    title: 'Факап: черга на заселення', group: 'fail', pain: 'Пік заїздів — черга в лобі, один адмін', theme: 'dark',
+    title: 'Факап: черга на заселення', group: 'fail', pain: 'Пік заїздів: черга в лобі, один адмін', theme: 'dark',
     quake: [[3.6, 5.2, 2.5]],
     segs: [
       { a: 0, b: 6.8, els: [
@@ -351,8 +351,8 @@
         { type: 'cap', html: 'А з VDALO гості <em>заходять самі</em>', size: 32 },
         { type: 'card', icc: 'p', ic: I.key, t: 'PIN-коди надіслано 8 гостям', s: 'заздалегідь, у месенджер', top: 170, at: 7.4, check: 7.9 },
         { type: 'card', icc: 'g', ic: I.check, t: 'Черги немає', s: 'кожен заходить у свій час', top: 228, at: 8.2, check: 8.7 },
-        { type: 'card', icc: 'p', ic: I.broom, t: 'Адмін — на гостях, а не на ключах', top: 286, at: 9.0, check: 9.5 },
-        foot('PIN-заселення — з розумним замком.', 7.4)
+        { type: 'card', icc: 'p', ic: I.broom, t: 'Адмін: на гостях, а не на ключах', top: 286, at: 9.0, check: 9.5 },
+        foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
   });

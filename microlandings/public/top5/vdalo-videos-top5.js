@@ -29,7 +29,7 @@
       p.style.transform = `translate(${(x + Math.sin(k * 6 + x) * 12 * (1 - k)).toFixed(1)}px,${(y0 + (y - y0) * fall - away * 700).toFixed(1)}px) rotate(${(r0 + (r1 - r0) * fall).toFixed(1)}deg)`;
     }) };
   };
-  // race: two bars — manual (slow) vs VDALO (instant)
+  // race: two bars: manual (slow) vs VDALO (instant)
   T.race = e => {
     const row = (l, cls) => `<div style="display:grid;gap:8px"><div style="display:flex;justify-content:space-between;font:700 15px var(--vd-body)"><span>${l}</span><b class="${cls}" style="font:800 15px var(--vd-display);font-variant-numeric:tabular-nums"></b></div>
         <div style="height:18px;border-radius:10px;background:rgba(255,255,255,.1);overflow:hidden"><i class="${cls}b" style="display:block;height:100%;width:0;border-radius:inherit"></i></div></div>`;
@@ -125,7 +125,7 @@
         { type: 'chip', html: 'пробити чеки', top: 384, at: 3.6, cls: 'bad', pos: 'left:24px' },
         { type: 'chip', html: 'скласти звіт', top: 384, at: 4.2, cls: 'bad', pos: 'left:146px' },
         { type: 'chip', html: 'перевірити ще раз', top: 432, at: 4.8, cls: 'bad', pos: 'left:24px' },
-        { type: 'big', html: 'Поки ви рахуєте — <em>VDALO вже порахував.</em>', top: 490, size: 26, at: 6.4 },
+        { type: 'big', html: 'Поки ви рахуєте: <em>VDALO вже порахував.</em>', top: 490, size: 26, at: 6.4 },
         foot('Час умовний.', 1.5)
       ] }
     ]
@@ -145,12 +145,12 @@
             <b style="color:#2F6FDB;font-size:12px">Booking.com · Нове бронювання</b><span>Олена К. · номер 302</span><span>Заїзд: <b>12 жовт.</b> · Виїзд: <b>14 жовт.</b></span></div>` },
         { type: 'html', at: 1.3, anim: 'up', html: `<div style="position:absolute;left:24px;right:24px;top:290px;padding:12px;border-radius:14px;background:#F6F0E2;color:#2B2340;display:grid;gap:6px;font:italic 500 14px/1 Georgia,serif">
             <b style="font:700 11px var(--vd-body);font-style:normal;color:#7a6a7e">Календар на стіні · жовтень</b>
-            <span style="border-bottom:1px solid #D9E2F0;padding:5px 0">105 — Іван, 11–13</span><span style="border-bottom:1px solid #D9E2F0;padding:5px 0">201 — Booking, 12–15</span><span style="padding:5px 0;opacity:0">.</span></div>` },
-        { type: 'html', at: 3.5, anim: 'fade', html: '<div style="position:absolute;left:38px;top:384px;font:italic 600 15px Georgia,serif;color:#D63A55">302 — Олена, 21–23</div>' },
+            <span style="border-bottom:1px solid #D9E2F0;padding:5px 0">105: Іван, 11–13</span><span style="border-bottom:1px solid #D9E2F0;padding:5px 0">201: Booking, 12–15</span><span style="padding:5px 0;opacity:0">.</span></div>` },
+        { type: 'html', at: 3.5, anim: 'fade', html: '<div style="position:absolute;left:38px;top:384px;font:italic 600 15px Georgia,serif;color:#D63A55">302: Олена, 21–23</div>' },
         { type: 'cursor', at: 1.0, anim: 'fade', out: 6.6, keys: [[1.0, 280, 600, 0], [1.8, 150, 208, 1], [2.3, 150, 208, 1], [3.2, 120, 390, 1], [3.6, 120, 390, 0], [4.6, 240, 520, 0]] },
         { type: 'flash', at: 3.7 },
         { type: 'stamp', html: '12 ≠ 21', top: 440, at: 4.0, pos: 'left:110px', rot: -7 },
-        { type: 'big', html: 'Одна цифра — <em class="r">і дата зайнята двічі.</em>', top: 520, size: 24, at: 4.8 }
+        { type: 'big', html: 'Одна цифра: <em class="r">і дата зайнята двічі.</em>', top: 520, size: 24, at: 4.8 }
       ] },
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'У VDALO бронь <em>з\'являється сама</em>', size: 31 },
@@ -166,15 +166,15 @@
     title: 'Booking вручну: лічильник кліків', group: 'top5', pain: 'Бронювання з Booking переносите в календар вручну', theme: 'red',
     segs: [
       { a: 0, b: 6.8, els: [
-        { type: 'big', html: 'Одна бронь з Booking —', top: 60, size: 26, at: .1, anim: 'slam' },
+        { type: 'big', html: 'Одна бронь з Booking :', top: 60, size: 26, at: .1, anim: 'slam' },
         { type: 'num', from: 0, to: 14, n1: .6, n2: 2.0, top: 116, at: .5, cls: 'c xl', label: 'кліків: відкрити лист, скопіювати, вставити, перевірити', fmt: n => `${Math.round(n)}` },
         { type: 'big', html: '× 60 бронювань на місяць', top: 270, size: 26, at: 2.6, cls: 'c' },
         { type: 'num', from: 0, to: 840, n1: 3.2, n2: 4.6, top: 320, at: 3.1, cls: 'c r xl', label: 'кліків щомісяця', fmt: n => `${Math.round(n)}` },
-        { type: 'big', html: '<em class="r">І кожен — шанс помилитися.</em>', top: 490, size: 26, at: 5.0, cls: 'c' },
+        { type: 'big', html: '<em class="r">І кожен: шанс помилитися.</em>', top: 490, size: 26, at: 5.0, cls: 'c' },
         foot('Цифри умовні.', 1)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з VDALO — <em>0 кліків</em>', size: 32 },
+        { type: 'cap', html: 'А з VDALO: <em>0 кліків</em>', size: 32 },
         { type: 'num', from: 840, to: 0, n1: 7.3, n2: 8.2, top: 140, at: 7.2, cls: 'c g xl', label: 'кліків на перенесення бронювань', fmt: n => `${Math.round(n)}` },
         { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання з Booking', s: 'одразу в шахматці VDALO', top: 300, at: 8.6, check: 9.0 },
         { type: 'card', icc: 'p', ic: I.check, t: 'Дати закрито в інших каналах', s: 'автоматично', top: 358, at: 9.2, check: 9.6 }
@@ -204,7 +204,7 @@
         { type: 'html', at: 8.2, anim: 'up', html: door(150, 270, true) },
         { type: 'person', color: '#7FA8F0', bag: true, w: 40, at: 8.4, anim: 'left', pos: 'left:70px;top:350px' },
         { type: 'chip', html: 'заселився о 14:02 · без очікування', top: 492, at: 9.4, cls: 'ok', pos: 'left:24px' },
-        foot('PIN-заселення — з розумним замком.', 7.4)
+        foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
   });
@@ -228,7 +228,7 @@
         msg('r', '<b>VDALO</b><br>Вітаємо! Ваш номер 203, код дверей 4827. Заїзд з 14:00.', '12:00', 186, 7.5),
         msg('l', 'Дякуємо, вже в номері!', '14:03', 290, 8.6),
         { type: 'chip', html: 'адміністратор не потрібен', top: 470, at: 9.6, cls: 'ok', pos: 'left:58px' },
-        foot('PIN-заселення — з розумним замком.', 7.4)
+        foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
   });
@@ -278,7 +278,7 @@
         { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання з Booking · 302', s: 'потрапило у VDALO', top: 170, at: 7.4, check: 7.9 },
         { type: 'card', icc: 'p', ic: I.check, t: '302 закрито в Airbnb', s: 'автоматично', top: 228, at: 8.1, check: 8.6 },
         { type: 'card', icc: 'p', ic: I.check, t: '302 закрито на сайті', s: 'автоматично', top: 286, at: 8.8, check: 9.3 },
-        { type: 'big', html: 'Гість приїжджає — <em>номер його.</em>', top: 380, size: 30, at: 9.8 }
+        { type: 'big', html: 'Гість приїжджає: <em>номер його.</em>', top: 380, size: 30, at: 9.8 }
       ] }
     ]
   });
@@ -294,12 +294,12 @@
         { type: 'big', html: 'Те саме питання.', top: 56, size: 36, at: .1, anim: 'slam' },
         { type: 'big', html: '<em class="r">Щоночі.</em>', top: 98, size: 44, at: .6, anim: 'slam' },
         ...QS.map((q, i) => ({ type: 'chip', html: q, top: 172 + Math.floor(i / 2) * 46, at: .9 + i * .3, anim: 'pop', cls: q.startsWith('Пароль') ? 'bad' : '', pos: `left:${i % 2 ? 186 : 24}px` })),
-        { type: 'big', html: 'Адміністратор — <em class="r">не довідкове бюро.</em>', top: 470, size: 26, at: 5.0 }
+        { type: 'big', html: 'Адміністратор: <em class="r">не довідкове бюро.</em>', top: 470, size: 26, at: 5.0 }
       ] },
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'ШІ-помічник <em>відповідає сам</em>', size: 36 },
         { type: 'bub', html: 'Пароль від Wi‑Fi?', top: 170, at: 7.4 },
-        { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 02:14</small>Мережа HOTEL_GUEST, пароль — у вашому листі підтвердження.', top: 216, at: 8.0 },
+        { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 02:14</small>Мережа HOTEL_GUEST, пароль: у вашому листі підтвердження.', top: 216, at: 8.0 },
         { type: 'bub', html: 'Де паркінг?', top: 310, at: 8.8 },
         { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 02:31</small>У дворі, в\'їзд з вулиці. Безкоштовно.', top: 356, at: 9.3 },
         { type: 'chip', html: 'адміністратор спить', top: 446, at: 10.0, cls: 'ok', pos: 'left:24px' }
@@ -320,7 +320,7 @@
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'А з ШІ-помічником <em>VDALO</em>', size: 32 },
         { type: 'chart', top: 156, at: 7.2, end: 9.6, color: '#5CC898', pts: [[0, 40], [30, 120], [60, 138], [100, 142], [150, 140], [200, 142], [250, 138], [280, 120], [300, 50]] },
-        { type: 'num', from: 0, to: 0, top: 410, at: 7.4, cls: 'g', label: 'пробуджень — на питання гостей відповів ШІ', fmt: n => Math.round(n) }
+        { type: 'num', from: 0, to: 0, top: 410, at: 7.4, cls: 'g', label: 'пробуджень: на питання гостей відповів ШІ', fmt: n => Math.round(n) }
       ] }
     ]
   });

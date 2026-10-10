@@ -115,7 +115,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/go')return send(res,200,renderSmsGo(url.searchParams));
   if(pathname==='/go/trial')return send(res,200,renderSmsTrial(url.searchParams));
-  const top5Asset=pathname.match(/^\/sms-trial-assets\/top5\/([a-zA-Z0-9_.-]+)$/);
+  const top5Asset=pathname.match(/^\/sms-trial-assets\/top5\/([a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)?)$/);
   if(top5Asset&&assetNames.has(top5Asset[1])){
    const filename=path.join(root,'microlandings','public','top5',top5Asset[1]),data=await readFile(filename);
    if(pathname.endsWith('.mp4'))return sendVideo(req,res,data);
