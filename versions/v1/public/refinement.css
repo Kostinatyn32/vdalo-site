@@ -401,3 +401,24 @@
 .ds2 .form-optional-note{margin:10px 0 16px;color:var(--muted);font-size:12px;line-height:1.55}
 @media(max-width:1000px){.ds2 .start-routes{grid-template-columns:repeat(2,minmax(0,1fr))}.ds2 .start-routes .action-route-audit{grid-column:1/-1}}
 @media(max-width:767px){.ds2 .start-routes{grid-template-columns:1fr}.ds2 .start-routes .action-route-audit{grid-column:auto}.ds2 .start-routes .action-route .button{width:100%;min-height:52px}.ds2 .form-optional-note{font-size:13px}}
+
+/* Lead with five concise hotel pains, then show the shared channel workspace. */
+.ds2 .problem-solution-sequence{padding-block:clamp(52px,7vw,88px);background:#f8f1f5}
+.ds2 .problem-sequence-heading{max-width:760px;margin:0 auto 34px;text-align:center}
+.ds2 .problem-sequence-heading .eyebrow{margin-bottom:12px;color:#87375f}
+.ds2 .problem-sequence-heading h2{margin:0;color:#39233e;font:800 clamp(30px,4vw,46px)/1.08 'Inter Tight',sans-serif;letter-spacing:-.04em;text-wrap:balance}
+.ds2 .problem-sequence-heading>p:last-child{max-width:650px;margin:14px auto 0;color:#625763;font-size:17px;line-height:1.6}
+.ds2 .problem-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.ds2 .problem-card{min-width:0;overflow:hidden;border:1px solid #eadde5;border-radius:20px;background:#fff;box-shadow:0 12px 34px #39233e0b}
+.ds2 .problem-card-photo{height:auto;aspect-ratio:16/10;margin:0;overflow:hidden;background:#f1e8ed}
+.ds2 .problem-card-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.ds2 .problem-card:hover .problem-card-photo img{transform:scale(1.025)}
+.ds2 .problem-card-copy{padding:22px 23px 25px}
+.ds2 .problem-card-copy .eyebrow{margin:0 0 9px;color:#8a4267;font-size:10px;letter-spacing:.12em}
+.ds2 .problem-card-copy h3{margin:0;color:#39233e;font:750 clamp(19px,2vw,23px)/1.2 'Inter Tight',sans-serif;letter-spacing:-.025em}
+.ds2 .problem-card-copy>p:last-child{margin:11px 0 0;color:#625763;font-size:14px;line-height:1.55}
+.ds2 .integrations-section{scroll-margin-top:78px}
+@media(max-width:1000px){.ds2 .problem-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ds2 .problem-card-photo{aspect-ratio:16/9}}
+@media(max-width:767px){.ds2 .problem-solution-sequence{padding-block:44px 52px}.ds2 .problem-sequence-heading{margin-bottom:22px;text-align:left}.ds2 .problem-sequence-heading h2{font-size:31px}.ds2 .problem-sequence-heading>p:last-child{margin:10px 0 0;font-size:15px}.ds2 .problem-card-grid{grid-template-columns:1fr;gap:12px}.ds2 .problem-card{display:grid;grid-template-columns:minmax(104px,.7fr) minmax(0,1.3fr);align-items:stretch;border-radius:16px}.ds2 .problem-card-photo{min-height:100%;aspect-ratio:auto}.ds2 .problem-card-copy{align-self:center;padding:15px 16px}.ds2 .problem-card-copy .eyebrow{margin-bottom:7px;font-size:9px}.ds2 .problem-card-copy h3{font-size:18px;line-height:1.18}.ds2 .problem-card-copy>p:last-child{margin-top:7px;font-size:12px;line-height:1.45}}
+@media(max-width:360px){.ds2 .problem-card{grid-template-columns:92px minmax(0,1fr)}.ds2 .problem-card-copy{padding:13px}.ds2 .problem-card-copy h3{font-size:17px}.ds2 .problem-card-copy>p:last-child{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.ds2 .problem-card-photo img{transition:none}}
