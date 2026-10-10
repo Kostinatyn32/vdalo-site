@@ -108,8 +108,8 @@ function trustAndFaq() {
   return `<section class="section faq-section" id="faq"><div class="wrap faq-grid"><div>${label('ЗАПИТАННЯ ПЕРЕД СТАРТОМ')}<h2>Запитання про систему керування готелем</h2><p>Розкажіть, як працює команда. Разом визначимо, що варто перевірити.</p><a class="homepage-article-link" href="/blog/shcho-take-pms-dlya-gotelyu"><span>СТАТТЯ У БЛОЗІ · 9 ХВ</span><strong>Що таке PMS для готелю?</strong><small>Просте пояснення системи керування, її функцій і того, що перевірити перед вибором.</small><span class="homepage-article-link-action">Читати статтю <b aria-hidden="true">↗</b></span></a></div><div class="faq-list">${questions.map(([q,a],i)=>`<details data-faq="${i}"><summary>${e(q)}<span aria-hidden="true">+</span></summary><p>${e(a)}</p></details>`).join('')}<div data-config-faq-extra></div></div></div></section><section class="section dark final-cta final-v2"><div class="wrap">${label('НАСТУПНИЙ КРОК')}<h2>З чого вашому готелю почати автоматизацію?</h2><div class="final-bottom"><p>Не потрібно визначати це навмання. Почнімо з ваших процесів і знайдемо доречний напрям для перевірки.</p><div>${cta('audit','Отримати аудит','final')}</div></div><p class="final-next-step">Коротко опишіть задачу. Обсяг аудиту погодимо до початку.</p></div></section><div class="mobile-cta" aria-label="Почати роботу з VDALO">${cta('audit','Отримати аудит','mobile')}</div>`;
 }
 
-export function renderContent({featureVisual,postIntegrations=''}) {
- return `${hotelProblems()}${integrations()}${postIntegrations}${calendar()}${products(featureVisual)}${rolesAndFit()}${guestJourney()}${trustStrip()}${renderPricing()}${authorSection()}${uniqueApproach()}${onboardingAndConversion()}${trustAndFaq()}`;
+export function renderContent({featureVisual,preProblems='',postIntegrations=''}) {
+ return `${preProblems}${hotelProblems()}${integrations()}${postIntegrations}${calendar()}${products(featureVisual)}${rolesAndFit()}${guestJourney()}${trustStrip()}${renderPricing()}${authorSection()}${uniqueApproach()}${onboardingAndConversion()}${trustAndFaq()}`;
 }
 
 export function renderFooter() {

@@ -40,7 +40,7 @@ function featureVisual(type) {
  if(type==='local') return `${label}<div class="sample-heading"><strong>Локальні задачі</strong><span>Україна</span></div>${row('Оплата','Електронний чек')}${row('Проживання','Туристичний збір')}${row('Заселення','Документи та Дія')}${row('Іноземні гості','Реєстраційні модулі')}`;
  return `${label}<div class="sample-heading"><strong>Номер у робочому сценарії</strong><span>Smart hotel</span></div><div class="smart-center"><img src="/assets/automation.svg" width="56" height="56" alt="" loading="lazy" decoding="async"><strong>Система готелю + обладнання</strong></div><div class="smart-labels"><span>Доступ</span><span>Світло</span><span>Клімат</span></div><p class="sample-note">Автоматизація через сумісне обладнання.</p>`;
 }
-function fullPage() { return renderContent({featureVisual,postIntegrations:livingHotel() + livingHotelMobile()}) + caseStudies(); }
+function fullPage() { return renderContent({featureVisual,preProblems:livingHotel() + livingHotelMobile()}) + caseStudies(); }
 function caseStudies() {
  if(!site.commercial.customerProofEnabled) return '';
  const approved=site.commercial.caseStudies.filter(x=>x.permissionState==='approved');
