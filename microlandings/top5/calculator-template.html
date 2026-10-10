@@ -39,11 +39,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
 .go-side{display:none}
 
 /* sheet with the short form */
-.go-sheet{position:fixed;inset:0;z-index:20;display:grid;align-items:end;justify-items:center;background:rgba(10,4,12,.55);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.go-sheet{position:fixed;inset:0;z-index:20;display:grid;align-items:end;justify-items:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(10,4,12,.68);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
 .go-sheet.open{opacity:1;visibility:visible}
-.go-panel{width:min(100%,480px);background:#21132A;border:1px solid var(--line);border-radius:26px 26px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(30px);transition:transform .3s;max-height:92svh;overflow:auto}
+.go-panel{position:relative;width:min(100%,480px);background:linear-gradient(160deg,#2D1A31,#1B101F 70%);border:1px solid rgba(255,245,247,.2);border-radius:26px;padding:20px 22px calc(20px + env(safe-area-inset-bottom,0px));box-shadow:0 24px 80px rgba(0,0,0,.42);transform:translateY(30px);transition:transform .3s;max-height:min(92svh,780px);overflow:auto;overscroll-behavior:contain}
 .go-sheet.open .go-panel{transform:none}
 .go-grip{width:44px;height:5px;border-radius:3px;background:rgba(255,255,255,.2);margin:0 auto 12px}
+.go-close{position:absolute;right:14px;top:14px;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:rgba(255,245,247,.06);color:var(--text);font-size:24px;line-height:1;cursor:pointer}
+.go-close:hover{background:rgba(255,245,247,.12)}
 .go-panel h2{margin:0 0 4px;font:800 23px/1.1 var(--display);letter-spacing:-.03em}
 .go-panel p{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.45}
 .go-field{display:grid;gap:6px;margin-bottom:14px}
@@ -53,6 +55,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
 .go-chip{min-height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:14px;cursor:pointer}
 .go-chip[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:var(--plum);font-weight:600}
 .go-submit{width:100%;min-height:54px;border-radius:999px;border:0;background:var(--pink);color:var(--plum);font:700 16px var(--body);cursor:pointer;margin-top:4px}
+.go-submit:disabled{opacity:.65;cursor:wait}
 .go-small{font-size:11.5px;color:var(--muted);text-align:center;margin:10px 0 0}
 .go-err{color:#FF8C9E;font-size:12.5px;min-height:16px}
 .go-thanks{display:none;text-align:center;padding:10px 0 6px}
@@ -111,21 +114,22 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
 
 <div class="go-sheet" id="go-sheet" aria-hidden="true">
   <div class="go-panel" role="dialog" aria-modal="true" aria-labelledby="go-sheet-title">
+    <button type="button" class="go-close" id="go-close" aria-label="Закрити форму">×</button>
     <div class="go-grip" aria-hidden="true"></div>
     <!-- TODO(Codex): create the account through the site's existing registration (trial) flow and start the 14-day trial; keep the hidden fields -->
     <form id="go-form" novalidate>
       <h2 id="go-sheet-title">Відкрийте VDALO на 14 днів</h2>
       <p id="go-sheet-sub">Безкоштовно, без картки. Доступ — одразу після реєстрації.</p>
-      <label class="go-field"><span>E-mail — це буде ваш логін</span>
+      <label class="go-field"><span>E-mail для зв’язку *</span>
         <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua" required>
       </label>
-      <label class="go-field"><span>Телефон</span>
+      <label class="go-field"><span>Телефон *</span>
         <input class="go-input" id="go-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380 __ ___ __ __" required>
       </label>
-      <label class="go-field"><span>Назва готелю</span>
+      <label class="go-field"><span>Назва готелю (необов’язково)</span>
         <input class="go-input" id="go-hotel" name="hotel" type="text" autocomplete="organization" placeholder="Готель «Карпати»">
       </label>
-      <div class="go-field"><span>Скільки номерів</span>
+      <div class="go-field"><span>Скільки номерів? (необов’язково)</span>
         <div class="go-chips" data-name="rooms">
           <button type="button" class="go-chip" aria-pressed="false" data-v="1-10">до 10</button>
           <button type="button" class="go-chip" aria-pressed="false" data-v="11-30">11–30</button>
@@ -145,10 +149,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     </form>
     <div class="go-thanks" aria-live="polite">
       <b aria-hidden="true">✓</b>
-      <h2>Доступ відкрито!</h2>
-      <p>Дані для входу — на вашому e-mail. 14 днів VDALO — безкоштовно.</p>
-      <!-- TODO(Codex): if registration returns a session or login URL, redirect there instead of showing this screen -->
-      <a class="go-link" id="go-login" href="https://www.vdalo.tech/">Увійти в VDALO →</a>
+      <h2>Запит надіслано</h2>
+      <p>Отримали ваші контакти. Команда VDALO зв’яжеться, щоб узгодити налаштування й дату старту тесту.</p>
     </div>
   </div>
 </div>
@@ -261,14 +263,25 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     document.getElementById('go-video-name').value = vdv.dataset.scenario;
     document.getElementById('go-watched').value = watched;
     sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false');
+    go.setAttribute('inert', '');
     vdv.vdv && vdv.vdv.pause();
     setTimeout(() => document.getElementById('go-email').focus(), 250);
     emit('cta', { video: vdv.dataset.scenario, watched });
   };
-  const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); cta.focus(); };
+  const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); go.removeAttribute('inert'); cta.focus(); };
   cta.addEventListener('click', open);
+  document.getElementById('go-close').addEventListener('click', close);
   sheet.addEventListener('click', e => { if (e.target === sheet) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheet.classList.contains('open')) close(); });
+  document.addEventListener('keydown', e => {
+    if (!sheet.classList.contains('open')) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'Tab') {
+      const items = [...sheet.querySelectorAll('button:not([disabled]),input:not([type="hidden"]):not([disabled]),a[href]')].filter(el => el.offsetParent !== null && !el.closest('[aria-hidden="true"]'));
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
   document.querySelectorAll('.go-chips').forEach(group => group.addEventListener('click', e => {
     const b = e.target.closest('.go-chip'); if (!b) return;
