@@ -3,3 +3,25 @@
 @media(max-width:560px){.quiz-header>.wrap{min-height:70px;padding-inline:20px}.quiz-header .brand img{width:132px;height:auto}.quiz-header .ml-header-tag{max-width:140px;text-align:right;font-size:10px}.quiz-wrap{padding:14px 18px 40px}.quiz-intro{display:flex;flex-direction:column;align-items:stretch}.quiz-visual{order:0;height:250px;min-height:250px}.quiz-visual-card{width:230px;padding:18px;border-radius:20px}.quiz-visual-mark{width:34px;height:34px;font-size:21px;border-radius:10px}.quiz-visual-card p{margin:12px 0 5px;font-size:11px}.quiz-visual-card strong{font-size:29px}.quiz-visual-tags{margin-top:14px;gap:6px}.quiz-visual-tags span{padding:5px 8px;font-size:9px}.quiz-orbit{width:225px}.orbit-two{width:170px}.quiz-spark{font-size:16px}.quiz-intro-copy{padding:18px 2px 12px}.quiz-intro h1{font-size:clamp(39px,11vw,52px);margin:12px 0 16px;line-height:1.03}.quiz-lead{font-size:16px;line-height:1.55}.quiz-points{display:grid;grid-template-columns:1fr;gap:7px;margin:18px 0 22px}.quiz-points li{width:max-content;max-width:100%;font-size:11px;padding:8px 11px}.quiz-start{width:100%;justify-content:center;min-height:56px}.quiz-privacy-note{text-align:center}.quiz-flow{padding:21px 18px 23px;border-radius:18px}.quiz-flow-top{margin-bottom:14px}.quiz-question h1{font-size:34px;margin:30px 0 8px}.quiz-question>p{font-size:13px;margin-bottom:18px}.quiz-options{grid-template-columns:1fr;gap:9px}.quiz-option{min-height:56px;padding:12px;font-size:13px}.quiz-controls{margin-top:14px}.quiz-result{padding:28px 22px;border-radius:19px}.quiz-result h1{font-size:37px}.quiz-result .button{width:100%;text-align:center}.quiz-result .quiz-restart{margin:12px 0 0;width:100%}.quiz-footer>.wrap{padding-inline:20px}.quiz-footer p{display:none}}
 @media(prefers-reduced-motion:reduce){.quiz-start,.quiz-option,.quiz-progress span{transition:none!important}}
 .quiz-intro{display:flex;justify-content:center;text-align:center;position:relative;isolation:isolate}.quiz-intro:before,.quiz-intro:after{content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none}.quiz-intro:before{width:520px;height:520px;right:4%;top:6%;background:radial-gradient(circle,#ed80b018,transparent 70%)}.quiz-intro:after{width:340px;height:340px;left:3%;bottom:4%;background:radial-gradient(circle,#62476912,transparent 70%)}.quiz-intro-copy{max-width:900px;padding:52px 0}.quiz-intro .eyebrow{margin-inline:auto}.quiz-intro h1{max-width:830px;margin-inline:auto}.quiz-lead{margin-inline:auto}.quiz-points{justify-content:center}.quiz-start{margin-inline:auto}.quiz-privacy-note{margin-bottom:0}
+
+.quiz-page .quiz-result h1{color:#fff7f9}
+
+/* Polished, mobile-first finish for the quiz entry screen. */
+.quiz-intro .eyebrow{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 18px;padding:7px 12px;border:1px solid #f0d4e1;border-radius:999px;background:#fff9fb;color:#b83c72;font-size:11px;letter-spacing:.13em}
+.quiz-intro .eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:#e969a1;box-shadow:0 0 0 4px #e969a11c}
+.quiz-intro h1{text-wrap:balance}
+.quiz-lead{text-wrap:pretty}
+.quiz-points li{min-height:42px;box-shadow:0 3px 12px #39233e08}
+.quiz-start{display:flex;width:min(100%,480px);min-height:66px;align-items:center;justify-content:center;gap:22px;margin:0 auto;padding-inline:26px;font-size:18px;cursor:pointer;box-shadow:0 14px 34px #c5508030}
+.quiz-start span{margin:0;transition:transform .18s ease}
+.quiz-start:hover span{transform:translateX(4px)}
+.quiz-privacy-note{max-width:440px;margin:16px auto 0;color:#766a78;font-size:13px;line-height:1.55;text-wrap:pretty}
+@media(max-width:560px){
+ .quiz-intro .eyebrow{margin-bottom:14px;font-size:10px;padding:7px 11px}
+ .quiz-intro h1{font-size:clamp(40px,11.6vw,52px);line-height:1.02;letter-spacing:-.045em}
+ .quiz-lead{max-width:380px;font-size:16px;line-height:1.58}
+ .quiz-points{gap:10px;margin:22px 0 24px}
+ .quiz-points li{min-height:46px;padding:9px 13px;font-size:12px}
+ .quiz-start{min-height:64px;font-size:17px}
+ .quiz-privacy-note{max-width:370px;margin-top:17px;font-size:12px;line-height:1.55}
+}
