@@ -10,6 +10,7 @@
   if(previous&&typeof previous==='object')attribution={...previous,last_touch:Object.keys(current).length?current:previous.last_touch};
   sessionStorage.setItem('vdalo-funnel-attribution',JSON.stringify(attribution));
  }catch{}
+ try{const quiz=JSON.parse(sessionStorage.getItem('vdalo-quiz-context')||'null');if(quiz&&quiz.recommendation_route===config.landing_route&&current.utm_campaign==='hotel_quiz')attribution.quiz_answers=quiz;}catch{}
  window.dataLayer=window.dataLayer||[];
  function track(event,detail={}){
   const last=attribution.last_touch||{},first=attribution.first_touch||{};
@@ -68,6 +69,7 @@
    const response=await fetch(config.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),signal:controller.signal});
    const result=await response.json();if(!response.ok||result.ok!==true){if(result.errors)showErrors(result.errors);throw new Error(result.message||'Не вдалося підтвердити отримання запиту.');}
    track('form_success',{lead_id:result.leadId,selected_process:data.selected_process||'',has_current_pms:Boolean(data.current_pms)});
+   try{sessionStorage.removeItem('vdalo-quiz-context');}catch{}
    form.dataset.state='success';form.hidden=true;const success=form.parentElement.querySelector('.ml-success');success.hidden=false;success.focus();
   }catch(error){form.dataset.state='error';status.dataset.state='error';status.textContent=error.name==='AbortError'?'Відповідь затримується. Отримання запиту не підтверджено. Спробуйте пізніше.':error.message==='Failed to fetch'?'Немає зв’язку із сервером. Перевірте інтернет.':error.message;track('form_error',{reason:'delivery'});}
   finally{clearTimeout(timer);submit.disabled=false;submit.innerHTML=label;form.removeAttribute('aria-busy');}

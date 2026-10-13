@@ -11,6 +11,29 @@
 @media(max-width:1050px){.ds2 .integrations-layout{grid-template-columns:1fr;gap:36px}.ds2 .integration-flow{max-width:680px}}
 @media(max-width:560px){.ds2 .integration-channels{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ds2 .integration-channels li{min-height:70px;padding:10px}.ds2 .integration-hub strong{font-size:22px}.ds2 .integration-direct-note{font-size:12px}.ds2 .integration-bottom{align-items:flex-start;flex-direction:column}}
 
+/* Keep channel tiles visually clear of the hotel hub and give the hub a strong, quiet anchor. */
+.ds2 .integration-orbit{min-height:470px}
+.ds2 .orbit-ring-one{width:370px;height:370px}
+.ds2 .orbit-ring-two{width:250px;height:250px}
+.ds2 .integration-channels li{box-sizing:border-box;width:156px;min-height:60px;padding:10px 12px;border-radius:14px;animation:none}
+.ds2 .integration-channels li:nth-child(1){top:2%;left:calc(50% - 78px)}
+.ds2 .integration-channels li:nth-child(2){top:21%;right:1.5%}
+.ds2 .integration-channels li:nth-child(3){right:1.5%;bottom:21%}
+.ds2 .integration-channels li:nth-child(4){bottom:2%;left:calc(50% - 78px)}
+.ds2 .integration-channels li:nth-child(5){bottom:21%;left:1.5%}
+.ds2 .integration-channels li:nth-child(6){top:21%;left:1.5%}
+.ds2 .integration-hub{box-sizing:border-box;width:min(100%,286px);min-height:150px;display:grid;grid-template-columns:46px minmax(0,1fr);align-items:center;gap:14px;padding:23px 22px;border:1px solid #ffffff24;border-radius:22px;box-shadow:0 18px 42px #39233e20;text-align:left}
+.ds2 .integration-hub:before{inset:-5px;border-color:#f28ab955;border-radius:27px;opacity:.45}
+.ds2 .integration-hub-mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #ffffff38;border-radius:14px;background:#ffffff12;color:#f49ac0}
+.ds2 .integration-hub-mark .ui-icon{width:23px;height:23px}
+.ds2 .integration-hub-copy{min-width:0}
+.ds2 .integration-hub-label{display:block;margin:0 0 8px;color:#f4b2ce;font-size:9px;font-weight:750;letter-spacing:.12em;line-height:1.3}
+.ds2 .integration-hub strong{display:block;font-size:23px;line-height:1.12;letter-spacing:-.035em}
+.ds2 .integration-hub p{margin:8px 0 0;color:#e4d7e5;font-size:11px;line-height:1.45}
+@media(max-width:1100px){.ds2 .integration-orbit{min-height:450px}}
+@media(max-width:767px){.ds2 .integration-orbit{min-height:0}.ds2 .integration-hub{grid-template-columns:42px minmax(0,1fr);gap:12px;min-height:122px;padding:19px 17px}.ds2 .integration-hub-mark{width:40px;height:40px;border-radius:12px}.ds2 .integration-hub-label{margin-bottom:6px}.ds2 .integration-hub strong{font-size:21px}.ds2 .integration-hub p{margin-top:6px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.ds2 .integration-channels li{animation:none}}
+
 .ds2 .guest-self-service{background:#fff}
 .ds2 .guest-self-service-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}
 .ds2 .guest-self-service-lead{display:flex;flex-direction:column;gap:24px}

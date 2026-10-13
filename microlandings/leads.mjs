@@ -6,6 +6,13 @@ const roles=['owner','manager','operations','reception','other'];
 const propertyTypes=['hotel','apartments','resort','hostel','other'];
 const flags=['interview_interest','sales_interest','report_interest','pilot_interest','feedback_interest'];
 const contactValid=value=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)||(/^[+()\d\s.-]+$/.test(value)&&value.replace(/\D/g,'').length>=9&&value.replace(/\D/g,'').length<=15);
+const quizEnums={property_format:['hotel','apartments','glamping','hostel','multiple','other'],property_type:['hotel','apartments','resort','hostel','other'],room_range:['1-10','11-30','31-80','81+','unknown'],pms_status:['none','spreadsheets','manual_gaps','satisfied','switching'],main_pain:['channels','checkin','night_calls','power','direct','other'],intent:['best_fit','audit','pms_check','switch','trial','research'],recommendation_route:['/47','/50','/53','/54','/55','/audit','/pms-check','/switch','/trial','/research']};
+function cleanQuizAnswers(value){
+ if(!value||typeof value!=='object'||Array.isArray(value))return null;
+ const clean={};for(const [key,allowed] of Object.entries(quizEnums))if(typeof value[key]==='string'&&allowed.includes(value[key]))clean[key]=value[key];
+ if(typeof value.sms_code==='string'&&/^\d{1,2}$/.test(value.sms_code))clean.sms_code=value.sms_code;
+ return Object.keys(clean).length?clean:null;
+}
 export function validateRequest(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))return {errors:{form:'Перевірте формат запиту.'}};
  const offer=getOffer(raw.offer_id);
@@ -43,7 +50,7 @@ export function makePayload(offer,data,raw){
  if(offer.extra==='survey'){
   route=data.interview_interest?'research_interview_qualification':data.sales_interest?(data.pms_usage==='pms'&&data.pms_satisfaction==='dissatisfied'?'pms_check_qualification':'audit_or_trial_qualification'):data.report_interest?'report_delivery_only':'research_only_no_outreach';
  }
- return {lead_id:id,property_id:null,offer_id:offer.id,offer_status:offer.status,landing_route:offer.route,stage:'NEW',proposed_next_step:route,submitted_at:new Date().toISOString(),contact:{name:data.name,property_name:data.property,phone_or_email:data.contact},qualification:{property_type:data.property_type,city:data.city,room_count:data.rooms?Number(data.rooms):null,decision_role:data.role,current_PMS:data.current_pms,main_problem:data.note,selected_process:data.selected_process,pms_usage:data.pms_usage,pms_satisfaction:data.pms_satisfaction,pilot_interest:data.pilot_interest,feedback_interest:data.feedback_interest},attribution:{first_touch:acquisition(attribution.first_touch),last_touch:acquisition(attribution.last_touch),entry_offer:getOffer(attribution.entry_offer)?.id||offer.id,converted_offer:offer.id,first_touch_at:text(attribution.first_touch_at,40),latest_touch_at:new Date().toISOString()},permissions:{respond_to_request:offer.extra!=='survey'&&data.consent,research_interview:data.interview_interest,product_information:data.sales_interest,report_delivery:data.report_interest},source:'vdalo-microlandings'};
+ return {lead_id:id,property_id:null,offer_id:offer.id,offer_status:offer.status,landing_route:offer.route,stage:'NEW',proposed_next_step:route,submitted_at:new Date().toISOString(),contact:{name:data.name,property_name:data.property,phone_or_email:data.contact},qualification:{property_type:data.property_type,city:data.city,room_count:data.rooms?Number(data.rooms):null,decision_role:data.role,current_PMS:data.current_pms,main_problem:data.note,selected_process:data.selected_process,pms_usage:data.pms_usage,pms_satisfaction:data.pms_satisfaction,pilot_interest:data.pilot_interest,feedback_interest:data.feedback_interest,quiz_answers:cleanQuizAnswers(attribution.quiz_answers)},attribution:{first_touch:acquisition(attribution.first_touch),last_touch:acquisition(attribution.last_touch),entry_offer:getOffer(attribution.entry_offer)?.id||offer.id,converted_offer:offer.id,first_touch_at:text(attribution.first_touch_at,40),latest_touch_at:new Date().toISOString()},permissions:{respond_to_request:offer.extra!=='survey'&&data.consent,research_interview:data.interview_interest,product_information:data.sales_interest,report_delivery:data.report_interest},source:'vdalo-microlandings'};
 }
 const counters=new Map();
 function rateExceeded(req){

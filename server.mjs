@@ -2,6 +2,7 @@ import http from 'node:http';
 import {offers} from './microlandings/content.mjs';
 import {renderMicrolanding,renderDirectory,renderFunnelPrivacy} from './microlandings/render.mjs';
 import {renderSmsGo} from './microlandings/sms-go.mjs';
+import {renderQuizPage} from './microlandings/quiz.mjs';
 import {renderSmsTrial} from './microlandings/sms-trial.mjs';
 import {handleFunnelLead} from './microlandings/leads.mjs';
 import {renderVideoLanding,renderCalculator,assetNames} from './microlandings/top5.mjs';
@@ -122,6 +123,8 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/sitemap.xml')return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${publicSitemapRoutes.map(route=>`<url><loc>https://www.vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
+  if(pathname==='/q/') {res.writeHead(308,{Location:'/q'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/q')return send(res,200,renderQuizPage(url.searchParams));
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/go')return send(res,200,renderSmsGo(url.searchParams));
   if(pathname==='/go/trial')return send(res,200,renderSmsTrial(url.searchParams));
@@ -141,6 +144,10 @@ const server=http.createServer(async(req,res)=>{
   const offer=offers.find(o=>o.route===pathname||o.route+'/'===pathname);
   if(offer){if(pathname.endsWith('/')){res.writeHead(307,{Location:offer.route+url.search});return res.end();}return send(res,200,renderMicrolanding(offer));}
   if(/^\/funnel-assets\/(funnel\.css|funnel\.js)$/.test(pathname)){
+   const filename=path.join(root,'microlandings','public',path.basename(pathname));
+   const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
+  }
+  if(/^\/quiz-assets\/quiz\.(css|js)$/.test(pathname)){
    const filename=path.join(root,'microlandings','public',path.basename(pathname));
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }
