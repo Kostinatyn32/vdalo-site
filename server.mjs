@@ -147,7 +147,7 @@ const server=http.createServer(async(req,res)=>{
    const filename=path.join(root,'microlandings','public',path.basename(pathname));
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }
-  if(/^\/quiz-assets\/quiz\.(css|js)$/.test(pathname)){
+  if(/^\/quiz-assets\/(?:quiz\.(?:css|js)|hotel-reception\.webp)$/.test(pathname)){
    const filename=path.join(root,'microlandings','public',path.basename(pathname));
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }

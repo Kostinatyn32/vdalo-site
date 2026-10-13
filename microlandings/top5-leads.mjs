@@ -4,6 +4,16 @@ const clean=(v,n=180)=>typeof v==='string'?v.trim().slice(0,n):'';
 const funnels=new Set(['staff','nights','overbook','commission','blackout']);
 const sources=new Set(['sms','sms2','email','direct','website','']);
 const buckets=new Set(['1-10','11-30','31+','apart']);
+const quizEnums={property_format:['hotel','apartments','glamping','hostel','multiple','other'],property_type:['hotel','apartments','resort','hostel','other'],room_range:['1-10','11-30','31-80','81+','unknown'],pms_status:['none','spreadsheets','manual_gaps','satisfied','switching'],main_pain:['channels','checkin','night_calls','power','direct'],intent:['solution','calculator']};
+const quizDestinations={channels:{solution:['/55','overbook'],calculator:['/k3','overbook']},checkin:{solution:['/53','staff'],calculator:['/k1','staff']},night_calls:{solution:['/54','nights'],calculator:['/k2','nights']},power:{solution:['/50','blackout'],calculator:['/k5','blackout']},direct:{solution:['/47','commission'],calculator:['/k4','commission']}};
+function cleanQuizContext(raw,funnel){
+ const value=raw.quiz_answers;if(raw.utm_campaign!=='hotel_quiz'||!value||typeof value!=='object'||Array.isArray(value))return null;
+ const expected=quizDestinations[value.main_pain]?.[value.intent];
+ if(!expected||expected[0]!==raw.quiz_landing_route||expected[0]!==value.recommendation_route||expected[1]!==funnel)return null;
+ const clean={};for(const [key,allowed] of Object.entries(quizEnums))if(typeof value[key]==='string'&&allowed.includes(value[key]))clean[key]=value[key];
+ if(typeof value.sms_code==='string'&&/^\d{1,2}$/.test(value.sms_code))clean.sms_code=value.sms_code;
+ return ['property_format','property_type','room_range','pms_status','main_pain','intent'].every(key=>clean[key])?clean:null;
+}
 const limiters=new Map();
 function rateExceeded(req){const key=req.socket?.remoteAddress||'unknown',now=Date.now();for(const [k,v] of limiters)if(v.until<now)limiters.delete(k);if(limiters.size>5000&&!limiters.has(key))return true;const b=limiters.get(key)||{count:0,until:now+60000};b.count++;limiters.set(key,b);return b.count>12;}
 const reply=(res,status,data)=>{res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});res.end(JSON.stringify(data));};
@@ -28,7 +38,8 @@ export async function handleTop5Lead(req,res,{sendRequest=fetch,env=process.env}
   const endpoint=env.VDALO_TRIAL_WEBHOOK_URL||env.VDALO_LEAD_WEBHOOK_URL;
   if(!endpoint)return reply(res,503,{ok:false,message:'Приймання запитів на тест ще не підключене. Запит не надіслано.'});
   const calc=typeof raw.calc==='string'?raw.calc.slice(0,4000):'';
-  const payload={lead_id:randomUUID(),kind:'trial_request',status:'pending_contact',trial_days:14,requires_card:false,submitted_at:new Date().toISOString(),contact:{email,phone,hotel_name:hotel||null,room_range:rooms},attribution:{source,code,funnel,video,watched_percent:[0,25,50,75,100].reduce((best,value)=>Math.abs(value-watched)<Math.abs(best-watched)?value:best,0),calculator:calc||null,utm:Object.fromEntries(['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k=>[k,clean(raw[k],150)]).filter(([,v])=>v))},permissions:{respond_to_request:true,consent:true},source_system:'vdalo-top5-funnels'};
+  const quizAnswers=cleanQuizContext(raw,funnel);
+  const payload={lead_id:randomUUID(),kind:'trial_request',status:'pending_contact',trial_days:14,requires_card:false,submitted_at:new Date().toISOString(),contact:{email,phone,hotel_name:hotel||null,room_range:rooms},...(quizAnswers?{qualification:{quiz_answers:quizAnswers}}:{}),attribution:{source,code,funnel,video,watched_percent:[0,25,50,75,100].reduce((best,value)=>Math.abs(value-watched)<Math.abs(best-watched)?value:best,0),calculator:calc||null,utm:Object.fromEntries(['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].map(k=>[k,clean(raw[k],150)]).filter(([,v])=>v))},permissions:{respond_to_request:true,consent:true},source_system:'vdalo-top5-funnels'};
   const response=await sendRequest(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':payload.lead_id,...(env.VDALO_WEBHOOK_BEARER_TOKEN?{Authorization:`Bearer ${env.VDALO_WEBHOOK_BEARER_TOKEN}`}:{})},body:JSON.stringify(payload),signal:AbortSignal.timeout(10000),redirect:'error'});await response.body?.cancel();
   if(!response.ok)return reply(res,502,{ok:false,message:'Не вдалося підтвердити отримання запиту. Спробуйте пізніше.'});
   return reply(res,200,{ok:true,leadId:payload.lead_id});
