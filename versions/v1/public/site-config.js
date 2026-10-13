@@ -1,7 +1,7 @@
 /* Values that require confirmation stay empty until the team supplies them. */
 window.VDALO_CONFIG = {
-  trialDays: null, // TODO(Oleg): confirm trial duration
-  trialRequiresCard: null, // TODO(Oleg): confirm card requirement
+  trialDays: 14,
+  trialRequiresCard: false,
   accessTimeText: null, // TODO(Oleg): confirm access setup time
   responseTimeText: null, // TODO(Oleg): confirm response time
   implementationDaysText: null, // TODO(Oleg): confirm implementation timeline

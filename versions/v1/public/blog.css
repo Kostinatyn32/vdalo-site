@@ -29,3 +29,9 @@
 @media(max-width:980px){.blog-case-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.blog-case-card-body{padding:20px}}
 @media(max-width:600px){.blog-case-grid{grid-template-columns:1fr;gap:14px;margin:24px 0}.blog-case-card{border-radius:18px}.blog-case-thumb{aspect-ratio:16/9}.blog-case-card-body{gap:10px;padding:19px}.blog-case-card-body>strong{font-size:1.16rem}.blog-case-lead{font-size:.9rem}.blog-case-result{padding:10px 12px}.blog-case-intro{font-size:.98rem}}
 @media(prefers-reduced-motion:reduce){.blog-case-card{transition:none}}
+@media(max-width:600px){.article-header h1{overflow-wrap:anywhere}}
+
+/* Keep the blog landing title and article cards easy to scan. */
+.blog-hero h1{font-size:clamp(3rem,5.2vw,4.5rem);line-height:1.04;letter-spacing:-.05em}
+.blog-articles .blog-featured-copy strong{font-size:clamp(1.2rem,1.7vw,1.5rem);line-height:1.2;letter-spacing:-.025em}
+@media(max-width:600px){.blog-hero h1{font-size:clamp(2rem,8vw,2.65rem);line-height:1.06}.blog-articles .blog-featured-copy strong{font-size:clamp(1.25rem,6vw,1.55rem)}}

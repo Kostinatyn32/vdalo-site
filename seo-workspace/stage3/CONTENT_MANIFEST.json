@@ -1,0 +1,1131 @@
+{
+  "site": "https://www.vdalo.tech",
+  "stage": "3-delta-only",
+  "created_at": "2026-10-13",
+  "source_of_truth": "existing repo /seo-workspace/; this is a non-authoritative candidate pack",
+  "source_url_count": 38,
+  "content_proposals_count": 31,
+  "entries": [
+    {
+      "id": "VDALO-01",
+      "path": "/",
+      "page_type": "commercial",
+      "decision": "OPTIONAL",
+      "proposal_file": "seo-workspace/stage3/content/01_home.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як пов’язані бронювання, заселення та робота команди",
+      "planned_outlinks": [
+        "/hotel-booking-calendar",
+        "/pricing"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/solutions",
+          "approved_matrix_anchor": "усі рішення для щоденної роботи готелю"
+        },
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "календар і шахматка бронювань"
+        },
+        {
+          "target": "/hotel-automation",
+          "approved_matrix_anchor": "сценарії автоматизації готелю"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "умови та тарифи VDALO"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "приклади роботи з готельними процесами"
+        },
+        {
+          "target": "/about",
+          "approved_matrix_anchor": "хто створює VDALO"
+        },
+        {
+          "target": "/blog",
+          "approved_matrix_anchor": "практичні матеріали про PMS і процеси готелю"
+        },
+        {
+          "target": "/tools/",
+          "approved_matrix_anchor": "інструменти для вибору PMS і оцінки економіки"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-02",
+      "path": "/solutions",
+      "page_type": "commercial",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/02_solutions.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як визначити, яке рішення потрібне готелю насамперед",
+      "planned_outlinks": [
+        "/hotel-booking-calendar",
+        "/hotel-check-in",
+        "/hotel-operations",
+        "/guest-communication",
+        "/integrations",
+        "/pricing"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "керування бронюваннями у календарі"
+        },
+        {
+          "target": "/hotel-check-in",
+          "approved_matrix_anchor": "сценарій заселення та виїзду гостей"
+        },
+        {
+          "target": "/hotel-operations",
+          "approved_matrix_anchor": "робота служби рецепції та housekeeping"
+        },
+        {
+          "target": "/guest-communication",
+          "approved_matrix_anchor": "комунікація з гостями"
+        },
+        {
+          "target": "/hotel-automation",
+          "approved_matrix_anchor": "автоматизація повторюваних задач"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "доступні інтеграції та умови підключення"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "як формується вартість"
+        },
+        {
+          "target": "/registration",
+          "approved_matrix_anchor": "почати користуватися VDALO"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-03",
+      "path": "/integrations",
+      "page_type": "commercial",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/03_integrations.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Що перевірити до підключення зовнішніх систем",
+      "planned_outlinks": [
+        "/blog/channel-manager-ical-gotelyu",
+        "/hotel-booking-calendar",
+        "/contact"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/channel-manager-ical-gotelyu",
+          "approved_matrix_anchor": "різниця між channel manager та iCal"
+        },
+        {
+          "target": "/cases/hotel-booking-reconciliation",
+          "approved_matrix_anchor": "приклад звіряння бронювань"
+        },
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "взаємодія інтеграцій із календарем бронювань"
+        },
+        {
+          "target": "/contact",
+          "approved_matrix_anchor": "уточнити підтримуваний тип підключення"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-04",
+      "path": "/pricing",
+      "page_type": "commercial",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/04_pricing.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як порівнювати повну вартість PMS, а не лише ціну тарифу",
+      "planned_outlinks": [
+        "/solutions",
+        "/integrations",
+        "/offer",
+        "/refunds",
+        "/contact"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/solutions",
+          "approved_matrix_anchor": "порівняти, які задачі охоплюють рішення"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "які підключення доступні та на яких умовах"
+        },
+        {
+          "target": "/offer",
+          "approved_matrix_anchor": "договірні умови користування"
+        },
+        {
+          "target": "/refunds",
+          "approved_matrix_anchor": "умови повернення коштів"
+        },
+        {
+          "target": "/contact",
+          "approved_matrix_anchor": "уточнити вартість для вашого об'єкта"
+        },
+        {
+          "target": "/registration",
+          "approved_matrix_anchor": "зареєструватися у VDALO"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-05",
+      "path": "/hotel-booking-calendar",
+      "page_type": "product",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/05_booking_calendar.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як користуватися календарем бронювань під час зміни",
+      "planned_outlinks": [
+        "/blog/shakhmatka-bronyuvan-gotelyu",
+        "/blog/channel-manager-ical-gotelyu"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/shakhmatka-bronyuvan-gotelyu",
+          "approved_matrix_anchor": "як читати шахматку бронювань"
+        },
+        {
+          "target": "/blog/channel-manager-ical-gotelyu",
+          "approved_matrix_anchor": "як синхронізується доступність номерів"
+        },
+        {
+          "target": "/cases/direct-bookings-calendar",
+          "approved_matrix_anchor": "приклад роботи з прямими бронюваннями"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "умови використання календаря"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-06",
+      "path": "/hotel-check-in",
+      "page_type": "product",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/06_checkin.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Що має бути готове до прибуття гостя",
+      "planned_outlinks": [
+        "/blog/pidhotovka-zaselennya-gostya",
+        "/hotel-operations"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/pidhotovka-zaselennya-gostya",
+          "approved_matrix_anchor": "чекліст підготовки гостя до заселення"
+        },
+        {
+          "target": "/cases/night-self-checkin-germany",
+          "approved_matrix_anchor": "розбір нічного самозаселення у Німеччині"
+        },
+        {
+          "target": "/hotel-operations",
+          "approved_matrix_anchor": "як готовність номеру впливає на заселення"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-07",
+      "path": "/hotel-operations",
+      "page_type": "product",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/07_operations.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як передавати готовність номера між службами без втрати контексту",
+      "planned_outlinks": [
+        "/blog/status-gotovnosti-nomera-housekeeping",
+        "/hotel-check-in"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/status-gotovnosti-nomera-housekeeping",
+          "approved_matrix_anchor": "статуси готовності номеру в housekeeping"
+        },
+        {
+          "target": "/hotel-check-in",
+          "approved_matrix_anchor": "процес заселення та виїзду"
+        },
+        {
+          "target": "/cases/guest-services-glamping",
+          "approved_matrix_anchor": "робочі сценарії гостьових сервісів глемпінгу"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-08",
+      "path": "/guest-communication",
+      "page_type": "product",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/08_guest_communication.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Які повідомлення справді допомагають гостю на різних етапах проживання",
+      "planned_outlinks": [
+        "/hotel-check-in",
+        "/blog/yak-gotelyu-prodavaty-dodatkovi-poslugy"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/yak-gotelyu-prodavaty-dodatkovi-poslugy",
+          "approved_matrix_anchor": "коли пропонувати гостю додаткові послуги"
+        },
+        {
+          "target": "/cases/guest-services-glamping",
+          "approved_matrix_anchor": "досвід гостьових сервісів глемпінгу"
+        },
+        {
+          "target": "/hotel-check-in",
+          "approved_matrix_anchor": "повідомлення перед прибуттям гостя"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-09",
+      "path": "/hotel-automation",
+      "page_type": "commercial",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/09_automation.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Які процеси готелю варто автоматизувати першими",
+      "planned_outlinks": [
+        "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+        "/solutions",
+        "/integrations"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+          "approved_matrix_anchor": "що автоматизувати в готелі спочатку"
+        },
+        {
+          "target": "/solutions",
+          "approved_matrix_anchor": "рішення за окремими задачами готелю"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "зовнішні системи й обмеження інтеграцій"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "приклади перевірених сценаріїв"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-10",
+      "path": "/registration",
+      "page_type": "conversion",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-11",
+      "path": "/about",
+      "page_type": "trust",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-12",
+      "path": "/authors/oleh-stepeniev",
+      "page_type": "trust",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-13",
+      "path": "/contact",
+      "page_type": "trust",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-14",
+      "path": "/privacy",
+      "page_type": "legal",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-15",
+      "path": "/offer",
+      "page_type": "legal",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-16",
+      "path": "/refunds",
+      "page_type": "legal",
+      "decision": "NO",
+      "status": "NO_BLOCK_PLANNED",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "no_source_verified": true,
+      "reason": "SEO Master Plan does not recommend a bottom SEO content block for this functional, trust or legal page. Keep normal user-facing content and existing links."
+    },
+    {
+      "id": "VDALO-17",
+      "path": "/cases",
+      "page_type": "case_hub",
+      "decision": "OPTIONAL",
+      "proposal_file": "seo-workspace/stage3/content/17_cases_hub.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як читати кейси автоматизації готелю",
+      "planned_outlinks": [
+        "/cases/guest-services-glamping",
+        "/cases/direct-bookings-calendar",
+        "/cases/hotel-booking-reconciliation",
+        "/cases/night-self-checkin-germany",
+        "/cases/hotel-data-migration"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/cases/guest-services-glamping",
+          "approved_matrix_anchor": "гостьові сервіси для глемпінгу"
+        },
+        {
+          "target": "/cases/direct-bookings-calendar",
+          "approved_matrix_anchor": "прямі бронювання та календар"
+        },
+        {
+          "target": "/cases/hotel-booking-reconciliation",
+          "approved_matrix_anchor": "звіряння бронювань між системами"
+        },
+        {
+          "target": "/cases/night-self-checkin-germany",
+          "approved_matrix_anchor": "нічне самозаселення у Німеччині"
+        },
+        {
+          "target": "/cases/hotel-data-migration",
+          "approved_matrix_anchor": "перенесення даних готелю"
+        },
+        {
+          "target": "/cases/booking-widget-study-2118",
+          "approved_matrix_anchor": "дослідження віджета бронювання"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-18",
+      "path": "/cases/guest-services-glamping",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/18_glamping.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Чим гостьовий сервіс у глемпінгу відрізняється від класичного готелю",
+      "planned_outlinks": [
+        "/guest-communication",
+        "/blog/yak-gotelyu-prodavaty-dodatkovi-poslugy"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/guest-communication",
+          "approved_matrix_anchor": "сценарії комунікації з гостями"
+        },
+        {
+          "target": "/blog/yak-gotelyu-prodavaty-dodatkovi-poslugy",
+          "approved_matrix_anchor": "організація продажу додаткових послуг"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "інші готельні кейси"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-19",
+      "path": "/cases/direct-bookings-calendar",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/19_direct_booking_case.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Чому пряме бронювання і календар оператора — різні етапи",
+      "planned_outlinks": [
+        "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+        "/hotel-booking-calendar"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+          "approved_matrix_anchor": "як працюють прямі бронювання через сайт"
+        },
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "календар для роботи з бронюваннями"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "інші кейси VDALO"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-20",
+      "path": "/cases/hotel-booking-reconciliation",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/20_reconciliation_case.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Як розібрати розбіжність між двома записами про бронювання",
+      "planned_outlinks": [
+        "/integrations",
+        "/blog/channel-manager-ical-gotelyu"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "інтеграції та синхронізація"
+        },
+        {
+          "target": "/blog/channel-manager-ical-gotelyu",
+          "approved_matrix_anchor": "відмінності channel manager та iCal"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "інші приклади роботи з готельними даними"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-21",
+      "path": "/cases/night-self-checkin-germany",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/21_night_checkin.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Що потрібно передбачити для нічного самостійного заселення",
+      "planned_outlinks": [
+        "/hotel-check-in",
+        "/blog/pidhotovka-zaselennya-gostya"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-check-in",
+          "approved_matrix_anchor": "сценарії заселення гостя"
+        },
+        {
+          "target": "/blog/pidhotovka-zaselennya-gostya",
+          "approved_matrix_anchor": "чекліст підготовки до заселення"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "інші готельні кейси"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-22",
+      "path": "/cases/hotel-data-migration",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/22_data_migration_case.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Як перевіряти готельні дані після переходу на нову систему",
+      "planned_outlinks": [
+        "/blog/perehid-na-pms-bez-vtraty-danyh"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/perehid-na-pms-bez-vtraty-danyh",
+          "approved_matrix_anchor": "етапи переходу на нову PMS"
+        },
+        {
+          "target": "/contact",
+          "approved_matrix_anchor": "обговорити міграцію для вашого об'єкта"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "інші кейси VDALO"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-23",
+      "path": "/cases/booking-widget-study-2118",
+      "page_type": "case",
+      "decision": "YES_IF_PROOF",
+      "proposal_file": "seo-workspace/stage3/content/23_widget_study.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_CASE_PROOF",
+      "h2": "Як оцінювати віджет бронювання без підміни метрик",
+      "planned_outlinks": [
+        "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+          "approved_matrix_anchor": "маршрут гостя через віджет бронювання"
+        },
+        {
+          "target": "/cases/direct-bookings-calendar",
+          "approved_matrix_anchor": "приклад роботи з прямими бронюваннями"
+        },
+        {
+          "target": "/cases",
+          "approved_matrix_anchor": "усі кейси та дослідження"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-24",
+      "path": "/blog",
+      "page_type": "blog_hub",
+      "decision": "OPTIONAL",
+      "proposal_file": "seo-workspace/stage3/content/24_blog_hub.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "З чого почати, якщо ви розбираєтеся з PMS для готелю",
+      "planned_outlinks": [
+        "/blog/shcho-take-pms-dlya-gotelyu",
+        "/blog/yak-obraty-pms-dlya-gotelyu",
+        "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+        "/blog/shcho-avtomatyzuvaty-v-goteli-pershym"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/shcho-take-pms-dlya-gotelyu",
+          "approved_matrix_anchor": "що таке PMS і як вона працює"
+        },
+        {
+          "target": "/blog/yak-obraty-pms-dlya-gotelyu",
+          "approved_matrix_anchor": "як обрати PMS для свого готелю"
+        },
+        {
+          "target": "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+          "approved_matrix_anchor": "що автоматизувати насамперед"
+        },
+        {
+          "target": "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+          "approved_matrix_anchor": "прямі бронювання та віджет"
+        },
+        {
+          "target": "/blog/turystychnyi-zbir-gotel-ukraina",
+          "approved_matrix_anchor": "туристичний збір: правила для готелю в Україні"
+        },
+        {
+          "target": "/tools/",
+          "approved_matrix_anchor": "корисні інструменти для готелю"
+        },
+        {
+          "target": "/authors/oleh-stepeniev",
+          "approved_matrix_anchor": "публікації автора Oleh Stepeniev"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-25",
+      "path": "/blog/shcho-take-pms-dlya-gotelyu",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/25_what_is_pms.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Які запитання поставити під час першої демонстрації PMS",
+      "planned_outlinks": [
+        "/blog/yak-obraty-pms-dlya-gotelyu",
+        "/solutions"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/",
+          "approved_matrix_anchor": "PMS для управління готелем VDALO"
+        },
+        {
+          "target": "/blog/yak-obraty-pms-dlya-gotelyu",
+          "approved_matrix_anchor": "критерії вибору PMS"
+        },
+        {
+          "target": "/solutions",
+          "approved_matrix_anchor": "які задачі вирішує PMS"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-26",
+      "path": "/blog/yak-obraty-pms-dlya-gotelyu",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/26_choose_pms.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як перевірити PMS за своїм сценарієм, а не за рейтингом функцій",
+      "planned_outlinks": [
+        "/tools/pms-checklist/",
+        "/integrations",
+        "/pricing"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/tools/pms-checklist/",
+          "approved_matrix_anchor": "чекліст для порівняння PMS"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "перевірка потрібних інтеграцій"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "структура тарифів та витрат"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-27",
+      "path": "/blog/yak-gotelyu-prodavaty-dodatkovi-poslugy",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/27_upsell.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Коли пропонувати додаткову послугу гостю, щоб це було доречно",
+      "planned_outlinks": [
+        "/guest-communication",
+        "/tools/hotel-profitability-calculator/"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/guest-communication",
+          "approved_matrix_anchor": "робота з повідомленнями гостям"
+        },
+        {
+          "target": "/cases/guest-services-glamping",
+          "approved_matrix_anchor": "гостьові сервіси у глемпінгу: приклад"
+        },
+        {
+          "target": "/tools/hotel-profitability-calculator/",
+          "approved_matrix_anchor": "оцінка економіки готельного об'єкта"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-28",
+      "path": "/blog/pryami-bronyuvannya-ta-vidzhet-gotelyu",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/28_direct_bookings.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як перевірити шлях гостя від вибору дат до підтвердженого бронювання",
+      "planned_outlinks": [
+        "/cases/booking-widget-study-2118",
+        "/hotel-booking-calendar"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/cases/booking-widget-study-2118",
+          "approved_matrix_anchor": "методика дослідження віджета бронювання"
+        },
+        {
+          "target": "/cases/direct-bookings-calendar",
+          "approved_matrix_anchor": "приклад прямих бронювань"
+        },
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "робота з бронюваннями після підтвердження"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-29",
+      "path": "/blog/perehid-na-pms-bez-vtraty-danyh",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/29_migration.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Контрольний список приймання міграції готельних даних",
+      "planned_outlinks": [
+        "/integrations",
+        "/cases/hotel-data-migration",
+        "/contact"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/cases/hotel-data-migration",
+          "approved_matrix_anchor": "реальний приклад міграції даних"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "перевірка форматів і сумісності"
+        },
+        {
+          "target": "/contact",
+          "approved_matrix_anchor": "обговорити умови перенесення"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-30",
+      "path": "/blog/shakhmatka-bronyuvan-gotelyu",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/30_chessboard.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як прочитати шахматку бронювань у трьох робочих ситуаціях",
+      "planned_outlinks": [
+        "/hotel-booking-calendar",
+        "/blog/channel-manager-ical-gotelyu"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-booking-calendar",
+          "approved_matrix_anchor": "календар бронювань у VDALO"
+        },
+        {
+          "target": "/blog/channel-manager-ical-gotelyu",
+          "approved_matrix_anchor": "як синхронізувати канали бронювання"
+        },
+        {
+          "target": "/cases/hotel-booking-reconciliation",
+          "approved_matrix_anchor": "звіряння бронювань: практичний приклад"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-31",
+      "path": "/blog/channel-manager-ical-gotelyu",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/31_channel_manager_ical.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Чому iCal не варто вважати повною заміною channel manager",
+      "planned_outlinks": [
+        "/integrations",
+        "/blog/shakhmatka-bronyuvan-gotelyu"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "сумісність та інтеграції VDALO"
+        },
+        {
+          "target": "/cases/hotel-booking-reconciliation",
+          "approved_matrix_anchor": "приклад усунення розбіжностей у бронюваннях"
+        },
+        {
+          "target": "/blog/shakhmatka-bronyuvan-gotelyu",
+          "approved_matrix_anchor": "робота з доступністю номерів у шахматці"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-32",
+      "path": "/blog/pidhotovka-zaselennya-gostya",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/32_pre_checkin.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Чекліст рецепції перед прибуттям гостя",
+      "planned_outlinks": [
+        "/hotel-check-in"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-check-in",
+          "approved_matrix_anchor": "процес заселення у VDALO"
+        },
+        {
+          "target": "/hotel-operations",
+          "approved_matrix_anchor": "статуси готовності номерів"
+        },
+        {
+          "target": "/cases/night-self-checkin-germany",
+          "approved_matrix_anchor": "нічне самозаселення: окремий сценарій"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-33",
+      "path": "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/33_what_automate_first.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як визначити першу автоматизацію за користю та ризиком",
+      "planned_outlinks": [
+        "/hotel-operations",
+        "/hotel-automation",
+        "/tools/hotel-profitability-calculator/"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-automation",
+          "approved_matrix_anchor": "сценарії автоматизації готелю"
+        },
+        {
+          "target": "/tools/hotel-profitability-calculator/",
+          "approved_matrix_anchor": "модель рентабельності готелю"
+        },
+        {
+          "target": "/hotel-operations",
+          "approved_matrix_anchor": "операційні процеси готелю"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-34",
+      "path": "/blog/status-gotovnosti-nomera-housekeeping",
+      "page_type": "blog",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/34_housekeeping.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Коли номер дійсно можна повернути в доступний фонд",
+      "planned_outlinks": [
+        "/hotel-operations",
+        "/blog/pidhotovka-zaselennya-gostya"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/hotel-operations",
+          "approved_matrix_anchor": "керування статусами номерів"
+        },
+        {
+          "target": "/blog/pidhotovka-zaselennya-gostya",
+          "approved_matrix_anchor": "підготовка номерів до прибуття гостя"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-35",
+      "path": "/blog/turystychnyi-zbir-gotel-ukraina",
+      "page_type": "blog",
+      "decision": "YES_IF_UPDATED",
+      "proposal_file": "seo-workspace/stage3/content/35_tourism_tax.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "REQUIRES_LAW_REVIEW",
+      "h2": "Як перевірити актуальні правила туристичного збору для свого об’єкта",
+      "planned_outlinks": [
+        "/blog"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog",
+          "approved_matrix_anchor": "практичні матеріали для керівника готелю"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-36",
+      "path": "/tools/",
+      "page_type": "tool_hub",
+      "decision": "OPTIONAL",
+      "proposal_file": "seo-workspace/stage3/content/36_tools_hub.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Який інструмент використати для наступного управлінського рішення",
+      "planned_outlinks": [
+        "/tools/pms-checklist/",
+        "/tools/hotel-profitability-calculator/"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/tools/pms-checklist/",
+          "approved_matrix_anchor": "чекліст вибору PMS"
+        },
+        {
+          "target": "/tools/hotel-profitability-calculator/",
+          "approved_matrix_anchor": "калькулятор прибутковості готелю"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-37",
+      "path": "/tools/pms-checklist/",
+      "page_type": "tool",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/37_pms_checklist.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як перетворити результати чекліста на план перевірки PMS",
+      "planned_outlinks": [
+        "/blog/yak-obraty-pms-dlya-gotelyu",
+        "/integrations",
+        "/pricing"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/yak-obraty-pms-dlya-gotelyu",
+          "approved_matrix_anchor": "як використовувати критерії вибору PMS"
+        },
+        {
+          "target": "/integrations",
+          "approved_matrix_anchor": "звірити підтримувані інтеграції"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "порівняти тарифи та умови"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    },
+    {
+      "id": "VDALO-38",
+      "path": "/tools/hotel-profitability-calculator/",
+      "page_type": "tool",
+      "decision": "YES_IF_VALUE",
+      "proposal_file": "seo-workspace/stage3/content/38_profit_calculator.md",
+      "status": "DRAFT_READY_FOR_CODEX_REVIEW",
+      "implementation_status": "PENDING_UNVERIFIED",
+      "evidence_gate": "VERIFY_PRESENT_CONTENT_AND_BUSINESS_FACTS",
+      "h2": "Як читати розрахунок прибутковості готелю і не переплутати показники",
+      "planned_outlinks": [
+        "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+        "/pricing"
+      ],
+      "matrix_candidates": [
+        {
+          "target": "/blog/shcho-avtomatyzuvaty-v-goteli-pershym",
+          "approved_matrix_anchor": "як визначити пріоритети автоматизації"
+        },
+        {
+          "target": "/pricing",
+          "approved_matrix_anchor": "перевірити фактичну вартість продукту"
+        },
+        {
+          "target": "/tools/",
+          "approved_matrix_anchor": "інші інструменти для готелю"
+        }
+      ],
+      "no_source_verified": true,
+      "notes": "Use only if missing and genuinely new in the live repo; respect existing implementation."
+    }
+  ]
+}

@@ -422,3 +422,55 @@
 @media(max-width:767px){.ds2 .problem-solution-sequence{padding-block:44px 52px}.ds2 .problem-sequence-heading{margin-bottom:22px;text-align:left}.ds2 .problem-sequence-heading h2{font-size:31px}.ds2 .problem-sequence-heading>p:last-child{margin:10px 0 0;font-size:15px}.ds2 .problem-card-grid{grid-template-columns:1fr;gap:12px}.ds2 .problem-card{display:grid;grid-template-columns:minmax(104px,.7fr) minmax(0,1.3fr);align-items:stretch;border-radius:16px}.ds2 .problem-card-photo{min-height:100%;aspect-ratio:auto}.ds2 .problem-card-copy{align-self:center;padding:15px 16px}.ds2 .problem-card-copy .eyebrow{margin-bottom:7px;font-size:9px}.ds2 .problem-card-copy h3{font-size:18px;line-height:1.18}.ds2 .problem-card-copy>p:last-child{margin-top:7px;font-size:12px;line-height:1.45}}
 @media(max-width:360px){.ds2 .problem-card{grid-template-columns:92px minmax(0,1fr)}.ds2 .problem-card-copy{padding:13px}.ds2 .problem-card-copy h3{font-size:17px}.ds2 .problem-card-copy>p:last-child{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.ds2 .problem-card-photo img{transition:none}}
+
+/* Channels orbit a clear hotel workspace; on small screens they become a calm grid. */
+.ds2 .integrations-heading .integration-direct-note{display:none}
+.ds2 .integrations-section .integrations-layout{grid-template-columns:minmax(0,.82fr) minmax(480px,1.18fr);align-items:center;gap:clamp(28px,5vw,72px)}
+.ds2 .integrations-section .integrations-heading h2{max-width:620px;text-wrap:balance}
+.ds2 .integration-flow{width:100%;max-width:760px;margin:28px auto 0}
+.ds2 .integration-orbit{position:relative;display:grid;place-items:center;min-height:480px;isolation:isolate}
+.ds2 .orbit-ring{position:absolute;z-index:-1;border:1px solid #39233e18;border-radius:50%;pointer-events:none}
+.ds2 .orbit-ring-one{width:390px;height:390px}
+.ds2 .orbit-ring-two{width:270px;height:270px;border-style:dashed;opacity:.7}
+.ds2 .integration-channels{position:absolute;inset:0;display:block;margin:0;padding:0;list-style:none}
+.ds2 .integration-channels li{position:absolute;width:180px;min-height:64px;padding:11px 14px;box-shadow:0 10px 28px #39233e12;animation:channel-orbit-breathe 5.5s ease-in-out infinite}
+.ds2 .integration-channels li:nth-child(1){top:4%;left:calc(50% - 90px);animation-delay:-.5s}
+.ds2 .integration-channels li:nth-child(2){top:23%;right:1%;animation-delay:-1.5s}
+.ds2 .integration-channels li:nth-child(3){right:5%;bottom:12%;animation-delay:-2.5s}
+.ds2 .integration-channels li:nth-child(4){bottom:1%;left:calc(50% - 90px);animation-delay:-3.5s}
+.ds2 .integration-channels li:nth-child(5){bottom:12%;left:5%;animation-delay:-4.5s}
+.ds2 .integration-channels li:nth-child(6){top:23%;left:1%;animation-delay:-5s}
+.ds2 .integration-channels li img{max-width:100%;max-height:32px;object-fit:contain}
+.ds2 .integration-hub{position:relative;z-index:1;width:min(100%,290px);min-height:160px;display:flex;flex-direction:column;justify-content:center;padding:25px 20px;border-radius:24px;box-shadow:0 18px 44px #39233e25}
+.ds2 .integration-hub:before{content:'';position:absolute;inset:-8px;border:1px solid #f28ab9;border-radius:30px;opacity:.65;pointer-events:none}
+.ds2 .integration-hub strong{font-size:27px}
+.ds2 .integration-qualification{max-width:550px;margin:12px auto 0;text-align:center;font-size:12px;line-height:1.55}
+.ds2 .direct-booking-section{background:#fff5f7}
+.ds2 .direct-booking-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);align-items:center;gap:clamp(32px,7vw,100px)}
+.ds2 .direct-booking-layout h2{max-width:690px;font:800 clamp(34px,4.1vw,54px)/1.06 'Inter Tight',sans-serif;letter-spacing:-.04em;text-wrap:balance}
+.ds2 .direct-booking-layout .large-copy{max-width:670px;margin:18px 0 26px;color:#625763;font-size:17px;line-height:1.65}
+.ds2 .direct-booking-flow{padding:24px;border:1px solid #eadde5;border-radius:24px;background:#fff;box-shadow:0 14px 38px #39233e0c}
+.ds2 .direct-booking-sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ds2 .direct-booking-sources span{display:grid;place-items:center;min-height:54px;padding:10px;border:1px solid #eadde5;border-radius:12px;background:#fff9fb;color:var(--plum);font-size:14px;font-weight:650;text-align:center}
+.ds2 .direct-booking-arrows{display:block;padding:9px 0;color:#c3487c;font-size:25px;text-align:center}
+.ds2 .direct-booking-engine{display:grid;gap:7px;padding:20px;border-radius:16px;background:var(--plum);color:var(--soft);text-align:center}
+.ds2 .direct-booking-engine span{color:#f29bc0;font-size:10px;font-weight:700;letter-spacing:.1em}
+.ds2 .direct-booking-engine strong{font:750 24px/1.2 'Inter Tight',sans-serif}
+.ds2 .direct-booking-engine small{color:#e0d5e3;font-size:12px;line-height:1.5}
+@keyframes channel-orbit-breathe{0%,100%{transform:translateY(0);box-shadow:0 10px 28px #39233e12}50%{transform:translateY(-4px);box-shadow:0 14px 34px #39233e19}}
+@media(max-width:1100px){.ds2 .integrations-section .integrations-layout{grid-template-columns:1fr;gap:12px}.ds2 .integrations-section .integrations-heading{max-width:760px}.ds2 .integration-orbit{min-height:450px}.ds2 .direct-booking-layout{gap:36px}}
+@media(max-width:767px){.ds2 .integration-flow{margin-top:20px}.ds2 .integration-orbit{display:flex;flex-direction:column;gap:16px;min-height:0}.ds2 .orbit-ring{display:none}.ds2 .integration-channels{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}.ds2 .integration-channels li{position:static;display:flex;width:auto;min-width:0;min-height:58px;padding:10px;animation:none}.ds2 .integration-channels li img{max-height:27px}.ds2 .integration-hub{width:100%;min-height:142px;padding:22px 16px;border-radius:18px}.ds2 .integration-hub:before{inset:-5px;border-radius:23px}.ds2 .integration-qualification{margin-top:12px}.ds2 .integrations-section .integrations-heading h2{font-size:clamp(34px,9vw,46px)}.ds2 .direct-booking-layout{grid-template-columns:1fr;gap:24px}.ds2 .direct-booking-layout h2{font-size:36px}.ds2 .direct-booking-layout .large-copy{font-size:15px}.ds2 .direct-booking-layout>.button{width:100%;justify-content:center}.ds2 .direct-booking-flow{padding:16px;border-radius:18px}.ds2 .direct-booking-sources span{font-size:12px;min-height:50px}}
+@media(min-width:768px) and (max-height:850px){.ds2 .hero-v3{padding-block:32px 38px}.ds2 .hero-v3 .hero-v2-grid{gap:clamp(26px,3.8vw,52px);align-items:center}.ds2 .hero-v3 h1{font-size:clamp(58px,5.8vw,78px);margin-bottom:16px}.ds2 .hero-v3 .hero-v2-description{font-size:16px;line-height:1.5}.ds2 .hero-v3 .hero-v2-actions{margin-top:20px}.ds2 .hero-v3 .hero-v2-note{margin-top:10px}.ds2 .hero-v3 .hero-v2-photo{min-height:0}.ds2 .hero-v3 .hero-v2-photo>img{height:min(56vh,430px)}.ds2 .hero-v3 figcaption{margin-top:9px}}
+@media(prefers-reduced-motion:reduce){.ds2 .integration-channels li{animation:none}}
+.ds2 .room-count-control{min-width:0}
+.ds2 .estimator-range-label{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px;color:var(--plum);font-size:14px;font-weight:650}
+.ds2 .estimator-range-label output{color:#87375f;font-variant-numeric:tabular-nums}
+.ds2 #hotel-room-slider{display:block;width:100%;height:24px;margin:0;accent-color:#d84685;cursor:pointer;touch-action:pan-y}
+.ds2 #hotel-room-slider:focus-visible{outline:3px solid #d8468580;outline-offset:4px;border-radius:8px}
+.ds2 .estimator-range-note{margin:2px 0 12px;color:var(--muted);font-size:11px;line-height:1.5}
+.ds2 .room-count-control .estimator-input{display:grid;gap:7px}
+.ds2 .module-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ds2 .module-presets button{min-height:42px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--plum);font-size:12px;font-weight:600;text-align:left;cursor:pointer}
+.ds2 .module-presets button[aria-pressed="true"]{border-color:#d84685;background:#fff0f6;box-shadow:inset 0 0 0 1px #d84685;color:#54263f}
+.ds2 .module-presets button:focus-visible{outline:3px solid #d8468580;outline-offset:2px}
+@media(max-width:767px){.ds2 .module-presets{grid-template-columns:1fr 1fr}.ds2 .module-presets button{font-size:11px;padding:8px}}

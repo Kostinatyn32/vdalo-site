@@ -26,22 +26,27 @@ import {renderSeoPage,seoRoutes} from './versions/v1/seo-pages.mjs';
 import {homeCssBundle,siteCssBundle} from './versions/v1/assets.mjs';
 import {renderOfferPage,renderRefundPage} from './versions/v1/legal.mjs';
 import {renderAuthorPage} from './versions/v1/author-page.mjs';
+import {handleWayForPay} from './payments/wayforpay.mjs';
+import {applySitewideSchema} from './versions/v1/schema.mjs';
+import {getPublicSitemapRoutes} from './versions/v1/sitemap.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
 const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4'};
 const gtmHead=`<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PKDT7MMT');</script>`;
 const gtmBody=`<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PKDT7MMT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+const publicSitemapRoutes=getPublicSitemapRoutes({seoRoutes:seoRoutes(),caseSlugs,pmsArticle,pmsChoiceArticle,editorialArticles,secondPassArticles});
+const indexableSchemaRoutes=new Set(publicSitemapRoutes);
 function withTagManager(html){
  const withHead=html.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
  return withHead.replace(/<body(?:\s[^>]*)?>/i,opening=>opening+gtmBody);
 }
 function send(res,status,text,type='text/html; charset=utf-8'){
- const body=type.toLowerCase().startsWith('text/html')?withTagManager(text):text;
+ const body=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(text,res._schemaPath||'',indexableSchemaRoutes)):text;
  res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(body);
 }
 function sendCompressed(req,res,status,data,type,cache='no-store'){
- const source=type.toLowerCase().startsWith('text/html')?withTagManager(Buffer.isBuffer(data)?data.toString('utf8'):data):data;
+ const source=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(Buffer.isBuffer(data)?data.toString('utf8'):data,res._schemaPath||'',indexableSchemaRoutes)):data;
  const body=Buffer.isBuffer(source)?source:Buffer.from(source);
  const compressed=body.length>=1024&&/\bgzip\b/.test(req.headers['accept-encoding']||'');
  res.writeHead(status,{'Content-Type':type,'Cache-Control':cache,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY','Vary':'Accept-Encoding',...(compressed?{'Content-Encoding':'gzip'}:{})});
@@ -69,6 +74,11 @@ const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
   const pathname=decodeURIComponent(url.pathname);
+  res._schemaPath=pathname;
+  // Keep the original payment endpoint working for pages opened under /v1.
+  // Some checkout links still submit to /v1/api/payments/* instead of /api/payments/*.
+  const paymentPath=pathname.startsWith('/v1/api/payments/')?pathname.slice(3):pathname;
+  if(paymentPath.startsWith('/api/payments/'))return await handleWayForPay(req,res,paymentPath);
   if(pathname==='/api/funnel/leads')return await handleFunnelLead(req,res);
   if(pathname==='/api/funnels/top5')return await handleTop5Lead(req,res);
   if(pathname==='/api/tools/pms-report')return await handlePmsReport(req,res);
@@ -84,7 +94,7 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/cases/' || caseSlugs.some(slug=>pathname===`${slug}/`)) {res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/cases')return send(res,200,prefix(renderCaseList(),'v1'));
   if(caseSlugs.includes(pathname))return send(res,200,prefix(renderCase(pathname.slice('/cases/'.length)),'v1'));
-  if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://vdalo.tech'}),'v1'));
+  if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://www.vdalo.tech'}),'v1'));
   if(pathname==='/authors/oleh-stepeniev/'){res.writeHead(308,{Location:'/authors/oleh-stepeniev'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/authors/oleh-stepeniev')return send(res,200,prefix(renderAuthorPage(),'v1'));
   if(pathname==='/tools'){res.writeHead(308,{Location:'/tools/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
@@ -107,9 +117,9 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/privacy')return send(res,200,prefix(privacyPage(),'v1'));
   if(pathname==='/offer')return send(res,200,prefix(renderOfferPage(),'v1'));
   if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
-  if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
-  if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
-  if(pathname==='/sitemap.xml'){const pages=['/','/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/authors/oleh-stepeniev','/contact','/privacy','/offer','/refunds','/cases',...caseSlugs,'/blog',pmsArticle.slug,pmsChoiceArticle.slug,...editorialArticles.map(article=>article.slug),...secondPassArticles.map(article=>article.slug),'/tools/','/tools/pms-checklist/','/tools/hotel-profitability-calculator/'];return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${pages.map(route=>`<url><loc>https://vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');}
+  if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://www.vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
+  if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://www.vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
+  if(pathname==='/sitemap.xml')return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${publicSitemapRoutes.map(route=>`<url><loc>https://www.vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
   if(pathname==='/go/') {res.writeHead(308,{Location:'/go'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}

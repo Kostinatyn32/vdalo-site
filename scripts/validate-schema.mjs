@@ -1,0 +1,136 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+process.env.VERCEL = '1';
+const [render, cases, blog, editorial, secondPass, pms, pmsChoice, tools, seo, legal, author, legacyServer, sitemap] = await Promise.all([
+  import('../versions/v1/render.mjs'),
+  import('../versions/v1/cases.mjs'),
+  import('../versions/v1/blog.mjs'),
+  import('../versions/v1/article-library.mjs'),
+  import('../versions/v1/article-second-pass.mjs'),
+  import('../versions/v1/article-pms.mjs'),
+  import('../versions/v1/article-pms-choice.mjs'),
+  import('../versions/v1/tools.mjs'),
+  import('../versions/v1/seo-pages.mjs'),
+  import('../versions/v1/legal.mjs'),
+  import('../versions/v1/author-page.mjs'),
+  import('../versions/v1/server.mjs'),
+  import('../versions/v1/sitemap.mjs'),
+]);
+const { applySitewideSchema } = await import('../versions/v1/schema.mjs');
+const origin = 'https://www.vdalo.tech';
+const serviceRoutes = new Set(['/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation']);
+const renderers = new Map([
+  ['/', () => render.renderPage({ origin, full: true })],
+  ...seo.seoRoutes().map(path => [path, () => seo.renderSeoPage(path)]),
+  ['/authors/oleh-stepeniev', () => author.renderAuthorPage()],
+  ['/privacy', () => legacyServer.privacyPage()],
+  ['/offer', () => legal.renderOfferPage()],
+  ['/refunds', () => legal.renderRefundPage()],
+  ['/cases', () => cases.renderCaseList()],
+  ...cases.caseData.map(item => [`/cases/${item.slug}`, () => cases.renderCase(item.slug)]),
+  ['/blog', () => blog.renderBlogPage({ origin })],
+  [pms.pmsArticle.slug, () => pms.renderPmsArticle()],
+  [pmsChoice.pmsChoiceArticle.slug, () => pmsChoice.renderPmsChoiceArticle()],
+  ...editorial.editorialArticles.map(item => [item.slug, () => editorial.renderEditorialArticle(item.slug)]),
+  ...secondPass.secondPassArticles.map(item => [item.slug, () => secondPass.renderSecondPassArticle(item.slug)]),
+  ['/tools/', () => tools.renderToolsIndex()],
+  ['/tools/pms-checklist/', () => tools.renderPmsChecklist()],
+  ['/tools/hotel-profitability-calculator/', () => tools.renderHotelProfitabilityCalculator()],
+]);
+const sitemapRoutes = sitemap.getPublicSitemapRoutes({seoRoutes:seo.seoRoutes(),caseSlugs:cases.caseSlugs,pmsArticle:pms.pmsArticle,pmsChoiceArticle:pmsChoice.pmsChoiceArticle,editorialArticles:editorial.editorialArticles,secondPassArticles:secondPass.secondPassArticles});
+const routes = sitemapRoutes.map(path => [path, renderers.get(path)]);
+const indexableRoutes = new Set(routes.map(([path]) => path));
+const errors = [];
+const rows = [];
+
+function typesOf(node) { return new Set(Array.isArray(node?.['@type']) ? node['@type'] : [node?.['@type']]); }
+function flatten(json) { return Array.isArray(json?.['@graph']) ? json['@graph'] : [json]; }
+function validDateOnly(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+function expectedType(path) {
+  if (path === '/about') return 'AboutPage';
+  if (path === '/contact') return 'ContactPage';
+  if (path === '/authors/oleh-stepeniev') return 'ProfilePage';
+  if (['/solutions','/integrations','/blog','/cases','/tools/'].includes(path)) return 'CollectionPage';
+  return 'WebPage';
+}
+
+for (const [path, renderHtml] of routes) {
+  if (!renderHtml) { errors.push(`${path}: sitemap route has no matching HTML renderer`); continue; }
+  const rawHtml = renderHtml();
+  const html = applySitewideSchema(rawHtml, path, indexableRoutes);
+  const blocks = [...html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  if (blocks.length !== 1) { errors.push(`${path}: expected one JSON-LD script, found ${blocks.length}`); continue; }
+  let graph;
+  try { graph = flatten(JSON.parse(blocks[0][1])); }
+  catch (error) { errors.push(`${path}: invalid JSON-LD (${error.message})`); continue; }
+
+  const ids = graph.map(node => node['@id']).filter(Boolean);
+  if (new Set(ids).size !== ids.length) errors.push(`${path}: duplicate @id in graph`);
+  const byId = new Map(graph.filter(node => node['@id']).map(node => [node['@id'], node]));
+  const page = graph.find(node => node['@id'] === `${origin}${path}#webpage`);
+  if (!page) errors.push(`${path}: missing canonical WebPage node`);
+  else {
+    if (!typesOf(page).has(expectedType(path))) errors.push(`${path}: expected ${expectedType(path)}, got ${[...typesOf(page)].join(',')}`);
+    if (!page.name || !page.description) errors.push(`${path}: WebPage is missing a visible page name or description`);
+  }
+  if (!byId.has(`${origin}/#website`)) errors.push(`${path}: missing shared WebSite node`);
+  if (!byId.has(`${origin}/#organization`)) errors.push(`${path}: missing shared Organization node`);
+  for (const node of graph) {
+    const nodeTypes = typesOf(node);
+    if (['SoftwareApplication','FAQPage','AggregateRating','Review','Offer'].some(type => nodeTypes.has(type))) errors.push(`${path}: unsupported/unsubstantiated schema type ${[...nodeTypes].join(',')}`);
+    for (const key of ['isPartOf','publisher','provider','mainEntity','mainEntityOfPage']) {
+      const ref = node[key]?.['@id'];
+      if (ref && ref.startsWith(`${origin}/`) && !byId.has(ref) && !ref.endsWith('#organization')) errors.push(`${path}: dangling ${key} reference ${ref}`);
+    }
+  }
+  const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1] || '';
+  if (canonical !== `${origin}${path}` && !(path === '/' && canonical === `${origin}/`)) errors.push(`${path}: canonical mismatch (${canonical})`);
+
+  const isAnyBlogArticle = path.startsWith('/blog/') && path !== '/blog';
+  const isCaseArticle = path.startsWith('/cases/') && path !== '/cases';
+  if (isAnyBlogArticle || isCaseArticle) {
+    const article = graph.find(node => typesOf(node).has('BlogPosting') || typesOf(node).has('Article'));
+    if (!article) errors.push(`${path}: missing article entity`);
+    else {
+      const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+      if (article.datePublished && (!datePattern.test(article.datePublished) || !validDateOnly(article.datePublished))) errors.push(`${path}: invalid datePublished`);
+      if (article.dateModified && (!datePattern.test(article.dateModified) || !validDateOnly(article.dateModified))) errors.push(`${path}: invalid dateModified`);
+      if (isCaseArticle && article.datePublished) errors.push(`${path}: case schema includes a publication date absent from visible content`);
+      if (article.datePublished && !new RegExp(`<time\\b[^>]*datetime=["']${article.datePublished}["']`, 'i').test(html)) errors.push(`${path}: datePublished is not represented by a visible article time`);
+      if (article.dateModified && !isCaseArticle && !new RegExp(`<time\\b[^>]*datetime=["']${article.dateModified}["']`, 'i').test(html)) errors.push(`${path}: dateModified is not represented by a visible article time`);
+      if (article.dateModified && isCaseArticle) {
+        const [,year,month,day] = article.dateModified.match(/^(\d{4})-(\d{2})-(\d{2})$/) || [];
+        const months = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+        if (!html.includes(`оновлено ${Number(day)} ${months[Number(month)-1]} ${year}`)) errors.push(`${path}: dateModified is not represented in visible case text`);
+      }
+      if (article.url !== canonical || !article.headline || !article.image) errors.push(`${path}: article is missing canonical URL, headline, or image`);
+      if (article.author?.url !== `${origin}/authors/oleh-stepeniev`) errors.push(`${path}: author is not linked to author profile`);
+      if (article.publisher?.['@id'] !== `${origin}/#organization`) errors.push(`${path}: publisher is not linked to shared Organization`);
+    }
+  }
+  if (path === '/authors/oleh-stepeniev' && !graph.some(node => typesOf(node).has('Person'))) errors.push(`${path}: missing author Person entity`);
+  if (serviceRoutes.has(path)) {
+    const service = graph.find(node => typesOf(node).has('Service'));
+    if (!service) errors.push(`${path}: missing Service entity`);
+    else if (service.provider?.['@id'] !== `${origin}/#organization`) errors.push(`${path}: Service provider reference is invalid`);
+  }
+  const crumb = graph.find(node => typesOf(node).has('BreadcrumbList'));
+  if (crumb && (!Array.isArray(crumb.itemListElement) || crumb.itemListElement.some((item,index) => !Number.isInteger(item.position) || !item.name || (index < crumb.itemListElement.length - 1 && !item.item)))) errors.push(`${path}: malformed BreadcrumbList`);
+  rows.push({ path, type: expectedType(path), canonical, graphNodes: graph.length, hasArticle: Boolean(graph.find(node => typesOf(node).has('BlogPosting') || typesOf(node).has('Article'))), hasService: Boolean(graph.find(node => typesOf(node).has('Service'))), hasBreadcrumb: Boolean(crumb) });
+}
+
+if (new Set(routes.map(([path]) => path)).size !== routes.length) errors.push('Route matrix includes duplicates.');
+const appIcon = await readFile(new URL('../versions/v1/public/assets/vdalo-app-icon.svg', import.meta.url), 'utf8');
+if (!/viewBox=["']0 0 512 512["']/.test(appIcon)) errors.push('Organization logo app icon is missing its square 512 by 512 viewBox.');
+const outputDir = new URL('../seo-workspace/schema/', import.meta.url);
+await mkdir(outputDir, { recursive: true });
+const csv = ['path,page_type,canonical,graph_nodes,article,service,breadcrumb', ...rows.map(row => [row.path,row.type,row.canonical,row.graphNodes,row.hasArticle,row.hasService,row.hasBreadcrumb].map(value => `"${String(value).replace(/"/g,'""')}"`).join(','))].join('\n') + '\n';
+await writeFile(new URL('SCHEMA_PAGE_MATRIX.csv', outputDir), csv, 'utf8');
+const report = `# JSON-LD local validation report\n\n- Date: ${new Date().toISOString().slice(0,10)}\n- Rendered indexable routes: ${routes.length}\n- Passed routes: ${rows.length}\n- Errors: ${errors.length}\n- Method: direct server-template rendering, centralized schema transformation, JSON parsing, node-ID/reference checks, page-type checks, and content-policy checks.\n- External Google Rich Results Test and Schema.org Validator: not run; local changes are not deployed and those validators need public URLs.\n\n## Results\n\n${errors.length ? errors.map(error => `- FAIL: ${error}`).join('\n') : 'All local assertions passed.'}\n`;
+await writeFile(new URL('SCHEMA_VALIDATION_REPORT.md', outputDir), report, 'utf8');
+console.log(`Validated ${rows.length}/${routes.length} routes; ${errors.length} errors.`);
+if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1; }
