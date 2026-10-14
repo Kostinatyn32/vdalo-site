@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>VDALO: керуйте готелем вдало</title>
-<meta name="description" content="Бронювання, заселення, чеки й прибирання: на автоматі. 20 секунд, щоб побачити, як це працює.">
+<meta name="description" content="Подивіться, як VDALO допомагає впорядкувати бронювання, підготовку до заїзду та інформацію для гостей.">
 <meta name="theme-color" content="#39233E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -108,15 +108,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     <p class="go-mobile-copy" id="go-mobile-copy"></p>
     <p class="go-proof" id="go-proof"><span aria-hidden="true">✓</span><span id="go-proof-copy"></span></p>
     <ul id="go-list">
-      <li>Booking і Airbnb без овербукінгу</li>
-      <li>Гості реєструються самі: з телефона</li>
-      <li>Чеки, туристичний збір і прибирання: на автоматі</li>
+      <li>Бронювання з підключених каналів у спільному календарі</li>
+      <li>Інструкції та дані гостя доступні команді до заїзду</li>
+      <li>Щоденні процеси об’єкта в одному робочому просторі</li>
     </ul>
   </div>
 
   <div class="go-cta">
-    <button type="button" class="go-btn" id="go-cta">Спробувати 14 днів безкоштовно</button>
-    <p class="go-note">Без картки · Доступ одразу після реєстрації</p>
+    <button type="button" class="go-btn" id="go-cta">Запросити 14-денний тест</button>
+    <p class="go-note">Після заявки узгодимо налаштування та дату старту.</p>
   </div>
   </div>
 </main>
@@ -127,23 +127,24 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     <div class="go-grip" aria-hidden="true"></div>
     <!-- TODO(Codex): create the account through the site's existing registration (trial) flow and start the 14-day trial; keep the hidden fields -->
     <form id="go-form" novalidate>
-      <h2 id="go-sheet-title">Відкрийте VDALO на 14 днів</h2>
-      <p id="go-sheet-sub">Безкоштовно, без картки. Доступ: одразу після реєстрації.</p>
-      <label class="go-field"><span>E-mail для зв’язку *</span>
-        <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua" required>
+      <h2 id="go-sheet-title">Запросити 14-денний тест</h2>
+      <p id="go-sheet-sub">Залиште телефон. Команда VDALO узгодить налаштування та дату старту.</p>
+      <label class="go-field"><span>E-mail (необов’язково)</span>
+        <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua">
       </label>
       <label class="go-field"><span>Телефон *</span>
         <input class="go-input" id="go-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380 __ ___ __ __" required>
       </label>
+      <label class="go-field"><span>Як зручніше зв’язатися?</span><select class="go-input" id="go-contact-method" name="contact_method"><option value="phone">Телефонний дзвінок</option><option value="viber">Viber</option><option value="telegram">Telegram</option></select></label>
       <label class="go-field"><span>Назва готелю (необов’язково)</span>
         <input class="go-input" id="go-hotel" name="hotel" type="text" autocomplete="organization" placeholder="Готель «Карпати»">
       </label>
       <div class="go-field"><span>Скільки номерів? (необов’язково)</span>
         <div class="go-chips" data-name="rooms">
-          <button type="button" class="go-chip" aria-pressed="false" data-v="1-10">до 10</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="11-30">11–30</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="31+">31+</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="apart">апартаменти</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="1-5">1–5</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="6-12">6–12</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="13-40">13–40</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="41+">41+</button>
         </div>
       </div>
       <input type="hidden" name="rooms" id="go-rooms">
@@ -153,8 +154,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
       <input type="hidden" name="video" id="go-video-name">
       <input type="hidden" name="watched" id="go-watched">
       <div class="go-err" id="go-err" role="alert"></div>
-      <button type="submit" class="go-submit">Отримати доступ на 14 днів</button>
-      <p class="go-small">Без картки. Після 14 днів: тариф від 390 грн/міс, або просто не продовжуєте. Натискаючи кнопку, ви погоджуєтесь з умовами та обробкою даних.</p>
+      <button type="submit" class="go-submit">Надіслати запит</button>
+      <p class="go-small">Надсилаючи форму, ви погоджуєтесь на обробку даних для відповіді на запит. <a href="/privacy">Політика конфіденційності</a>.</p>
     </form>
     <div class="go-thanks" aria-live="polite">
       <b aria-hidden="true">✓</b>
@@ -164,11 +165,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
   </div>
 </div>
 
-<script src="/go/vdalo-videos.js?v=5"></script>
-<script src="/go/vdalo-videos-more.js?v=5"></script>
-<script src="/go/vdalo-videos-fx.js?v=5"></script>
-<script src="/go/vdalo-videos-top5.js?v=5"></script>
-<script src="/go/vdalo-videos-funnels.js?v=5"></script>
+<script src="/go/vdalo-videos.js?v=7"></script>
+<script src="/go/vdalo-videos-more.js?v=7"></script>
+<script src="/go/vdalo-videos-fx.js?v=7"></script>
+<script src="/go/vdalo-videos-top5.js?v=7"></script>
+<script src="/go/vdalo-videos-funnels.js?v=7"></script>
 <script>
 (() => {
   'use strict';
@@ -192,26 +193,26 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
   // ТОП-5 ВОРОНОК: тексти сторінки під біль із SMS. Відео без воронки → тексти за замовчуванням (DEFAULT_COPY).
   // price: null: бейдж ціни ховається (для овербукінгу: канали не входять у Start за 390 грн).
   const FUNNELS = {
-    staff: { art: 'staff-checkin.webp', eyebrow: 'ЗАЇЗД БЕЗ АДМІНА', proof: 'Документи й оплата: ще до приїзду', videos: ['s-qr', 't-guest-lobby', 't-guest-chat', 's-vacancy', 's-newbie', 's-three', 'p-shift', 'f-queue', 'm-guest', 'f-burnout'], copy: 'Навіть без адміністратора гість може пройти заселення, надіслати документи й оплатити онлайн.',
-      h1: 'Гості заселяються, <em>навіть коли адміна немає</em>',
-      li: ['QR на рецепції: гість реєструється з телефона', 'Документи, підпис і оплата: ще до приїзду', 'Новачок не продасть зайнятий номер'],
-      title: '14 днів VDALO: почніть із QR-заселення', sub: 'Безкоштовно, без картки. Доступ: одразу після реєстрації.' },
+    staff: { art: 'staff-checkin.webp', eyebrow: 'ПІДГОТОВКА ДО ЗАЇЗДУ', proof: 'Інструкції та дані гостя до приїзду', videos: ['s-qr', 't-guest-lobby', 't-guest-chat', 's-vacancy', 's-newbie', 's-three', 'p-shift', 'f-queue', 'm-guest', 'f-burnout'], copy: 'QR-сторінка допомагає гостю заздалегідь ознайомитися з інструкціями та підготувати дані для заїзду.',
+      h1: 'Підготуйте заїзд <em>до приїзду гостя</em>',
+      li: ['QR на рецепції: гість відкриває сторінку з телефона', 'Дані гостя та інструкції до заїзду зібрані завчасно', 'Актуальні бронювання видно в спільному календарі'],
+      title: 'Запросити тест на 14 днів', sub: 'Надішліть запит. Команда VDALO узгодить налаштування та дату старту.' },
     nights: { art: 'night-answers.webp', eyebrow: 'МЕНШЕ НІЧНИХ ДЗВІНКІВ', proof: 'Важлива інформація: у гостя під рукою', videos: ['n-timeline', 't-night-repeat', 't-night-sleep', 'night', 'f-tears', 'p-calls', 'f-explode', 'p-vacation'], copy: 'Гість отримує потрібну інформацію заздалегідь: менше однакових дзвінків уночі.',
-      h1: 'Гості знають усе <em>ще до того, як спитають</em>',
-      li: ['Повідомлення гостю в потрібний момент: бронь, дорога, заїзд, виїзд', 'Wi‑Fi, паркінг, як зайти: на гостьовій сторінці', 'На прості питання відповідає ШІ-помічник'],
-      title: '14 днів VDALO: налаштуйте повідомлення гостям', sub: 'Безкоштовно, без картки. Доступ: одразу після реєстрації.' },
+      h1: 'Потрібні інструкції <em>ще до першого запитання</em>',
+      li: ['Повідомлення гостю на ключових етапах проживання', 'Wi‑Fi, паркінг і як зайти: на гостьовій сторінці', 'Посилання на гостьову сторінку можна надіслати у Viber'],
+      title: 'Запросити тест на 14 днів', sub: 'Надішліть запит. Команда VDALO узгодить налаштування та дату старту.' },
     overbook: { art: 'channel-sync.webp', eyebrow: 'КАНАЛИ В ОДНОМУ МІСЦІ', proof: 'Зміни доступності синхронізуються', videos: ['o-7eur', 't-ob-collide', 't-ob-countdown', 't-booking-copy', 't-booking-clicks', 'p-overbook', 'f-twoguests', 'f-excel', 'p-notebook'], price: null, copy: 'Бронювання з різних каналів сходяться в одному календарі: менше ручного перенесення.',
       h1: 'Booking, Airbnb і телефон: <em>в одному календарі</em>',
-      li: ['Бронювання з Booking.com та Airbnb синхронізуються', 'Після продажу номер закривається на підключених каналах', 'Бронювання телефоном теж потрапляють у календар'],
-      title: '14 днів VDALO: підключіть Booking і Airbnb', sub: 'Безкоштовно, без картки. Доступ: одразу після реєстрації.' },
-    commission: { art: 'direct-bookings.webp', eyebrow: 'БРОНЮВАННЯ НАПРЯМУ', proof: 'Гість бронює без зайвих кроків', videos: ['b-share', 'b-pnl', 'b-budget', 'p-commission', 'p-pricing', 'f-noshow'], copy: 'Розвивайте прямі бронювання та бачте, скільки залишається після комісій.',
-      h1: 'Менше комісій: <em>більше прямих бронювань</em>',
-      li: ['Кнопка «Забронювати» на сайті й в Instagram', 'Оплата одразу, без переписок', 'Чистий дохід по кожному каналу: після комісій'],
-      title: '14 днів VDALO: запустіть прямі бронювання', sub: 'Безкоштовно, без картки. Доступ: одразу після реєстрації.' },
-    blackout: { art: 'power-mobile.webp', eyebrow: 'ГОТЕЛЬ ПІД КОНТРОЛЕМ', proof: 'Керуйте процесами просто з телефона', videos: ['e-dark', 'e-fuel', 'e-guests', 'm-mobile', 'phone'], copy: 'Бронювання, оплати й відповіді гостям: під рукою, навіть коли ви не біля рецепції.',
-      h1: 'Світло вимкнули: <em>готель працює</em>',
-      li: ['Бронювання, оплати й канали: з телефона', 'ШІ-помічник відповідає гостям, поки ви з генератором', 'Пальне: окремою статтею в P&L'],
-      title: '14 днів VDALO: готель у вашому телефоні', sub: 'Безкоштовно, без картки. Доступ: одразу після реєстрації.' }
+      li: ['Бронювання з Booking.com та Airbnb відображаються у спільному календарі', 'Доступність оновлюється на підключених каналах', 'Бронювання телефоном можна додати до календаря'],
+      title: 'Запросити тест на 14 днів', sub: 'Надішліть запит. Команда VDALO узгодить налаштування та дату старту.' },
+    commission: { art: 'direct-bookings.webp', eyebrow: 'БРОНЮВАННЯ НАПРЯМУ', proof: 'Відповідь на запит із телефона', videos: ['b-share', 'b-pnl', 'b-budget', 'p-commission', 'p-pricing', 'f-noshow'], copy: 'Надішліть гостю посилання на вільні дати й ціни, щоб скоротити повторні повідомлення.',
+      h1: 'Запити на бронювання <em>у Viber та Instagram</em>',
+      li: ['Посилання для прямого запиту на бронювання', 'Надішліть його гостю у Viber або Instagram', 'Бронювання відображається у календарі'],
+      title: 'Запросити тест на 14 днів', sub: 'Надішліть запит. Команда VDALO узгодить налаштування та дату старту.' },
+    blackout: { art: 'power-mobile.webp', eyebrow: 'ДОСТУП ПІД ЧАС ВІДКЛЮЧЕНЬ', proof: 'Робочі дані з телефона за наявності інтернету', videos: ['e-dark', 'e-fuel', 'e-guests', 'm-mobile', 'phone'], copy: 'Перевіряйте важливі дані з телефона, коли доступні інтернет і мобільний зв’язок.',
+      h1: 'Відключення світла: <em>доступ до роботи з телефона</em>',
+      li: ['Переглядайте робочі дані з телефона за наявності інтернету', 'Інструкції для гостей можна надіслати посиланням', 'Витрати на пальне можна врахувати окремо'],
+      title: 'Запросити тест на 14 днів', sub: 'Надішліть запит. Команда VDALO узгодить налаштування та дату старту.' }
   };
   const VIDEO_FUNNEL = {};
   Object.entries(FUNNELS).forEach(([f, c]) => c.videos.forEach(v => { VIDEO_FUNNEL[v] = f; }));
@@ -277,7 +278,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false');
     go.setAttribute('inert', '');
     vdv.vdv && vdv.vdv.pause();
-    setTimeout(() => document.getElementById('go-email').focus(), 250);
+    setTimeout(() => document.getElementById('go-phone').focus(), 250);
     emit('cta', { video: vdv.dataset.scenario, watched });
   };
   const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); go.removeAttribute('inert'); cta.focus(); };
@@ -307,8 +308,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--pink);outline-o
     const phone = $('go-phone').value.replace(/[^\d+]/g, '');
     const email = $('go-email').value.trim();
     const err = $('go-err');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Перевірте e-mail'; return; }
-    if (phone.replace(/\D/g, '').length < 10) { err.textContent = 'Перевірте номер телефону'; return; }
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Перевірте формат e-mail або залиште поле порожнім'; return; }
+    if (phone.replace(/\D/g, '').length < 9) { err.textContent = 'Перевірте номер телефону'; return; }
     err.textContent = '';
     const data = Object.fromEntries(new FormData(e.target));
     data.phone = phone;

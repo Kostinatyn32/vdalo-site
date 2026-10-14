@@ -3,10 +3,10 @@ import {getOffer} from './content.mjs';
 import {deliveryConfig,deliveryReady,processes,experiments,settings} from './config.mjs';
 const text=(value,max=150)=>typeof value==='string'?value.trim().slice(0,max):'';
 const roles=['owner','manager','operations','reception','other'];
-const propertyTypes=['hotel','apartments','resort','hostel','other'];
+const propertyTypes=['hotel','guesthouse','apartments','resort','hostel','other'];
 const flags=['interview_interest','sales_interest','report_interest','pilot_interest','feedback_interest'];
 const contactValid=value=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)||(/^[+()\d\s.-]+$/.test(value)&&value.replace(/\D/g,'').length>=9&&value.replace(/\D/g,'').length<=15);
-const quizEnums={property_format:['hotel','apartments','glamping','hostel','multiple','other'],property_type:['hotel','apartments','resort','hostel','other'],room_range:['1-10','11-30','31-80','81+','unknown'],pms_status:['none','spreadsheets','manual_gaps','satisfied','switching'],main_pain:['channels','checkin','night_calls','power','direct'],intent:['solution','calculator'],recommendation_route:['/47','/50','/53','/54','/55','/k1','/k2','/k3','/k4','/k5']};
+const quizEnums={property_format:['guesthouse','hotel','apartments','glamping','hostel','multiple','other'],property_type:['hotel','guesthouse','apartments','resort','hostel','other'],room_range:['1-5','6-12','13-40','41+'],pms_status:['none','spreadsheets','manual_gaps','exely','satisfied','switching'],main_pain:['channels','checkin','night_calls','power','direct'],frequency:['daily','weekly','monthly','rare'],intent:['solution','calculator'],recommendation_route:['/47','/50','/53','/54','/55','/k1','/k2','/k3','/k4','/k5']};
 function cleanQuizAnswers(value){
  if(!value||typeof value!=='object'||Array.isArray(value))return null;
  const clean={};for(const [key,allowed] of Object.entries(quizEnums))if(typeof value[key]==='string'&&allowed.includes(value[key]))clean[key]=value[key];

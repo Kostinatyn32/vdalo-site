@@ -130,7 +130,7 @@
  .quiz-lead{grid-area:lead;font-size:15px;line-height:1.48}
  .quiz-support{grid-area:support;margin-top:10px;font-size:14px;line-height:1.47}
  .quiz-visual{grid-area:image;grid-column:auto;grid-row:auto;width:100%;height:clamp(146px,42vw,184px);min-height:0;margin:17px 0 0;border-radius:47% 12px 12px 47% / 55% 12px 12px 55%;box-shadow:0 12px 28px #4b303114}
- .quiz-visual img{object-position:68% 56%}
+ .quiz-visual img{object-position:58% 22%}
  .quiz-start{grid-area:action;width:100%;min-height:58px;margin-top:18px;padding:10px 14px 10px 18px;gap:12px;border-radius:8px;font-size:15px}
  .quiz-start span{flex-basis:34px;width:34px;height:34px;font-size:21px}
  .quiz-privacy-note{grid-area:trust;margin:10px 0 0;text-align:center;font-size:11px;line-height:1.5}
@@ -154,6 +154,7 @@
 .quiz-option[aria-pressed="true"]{border-color:#d84e85;background:#fff4f8;box-shadow:0 0 0 2px #d84e8522}
 .quiz-option-art{display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border:1px solid #efd7e2;border-radius:15px;background:linear-gradient(145deg,#fff4f8,#f5e6ed);color:#8e3b65;box-shadow:inset 0 1px 0 #fff}
 .quiz-result-context{margin:8px 0;color:#d9c9d9!important;font-size:14px;line-height:1.55!important}
+.quiz-result-actions{display:grid;gap:10px;justify-items:start;margin-top:22px}.quiz-result-secondary{display:inline-flex;align-items:center;gap:10px;padding:12px 2px;color:#fff7f9;font-size:15px;font-weight:700;text-decoration:underline;text-underline-offset:4px}.quiz-result-secondary:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:4px}
 .quiz-option-art svg{display:block;width:34px;height:34px}
 .quiz-option-label{max-width:calc(100% - 58px);font-size:14px;line-height:1.4}
 .quiz-option-mark{position:absolute;top:9px;right:10px;flex-basis:auto;width:25px;height:25px;border-radius:8px;background:#f8e7ef;color:#b83c72;font-size:10px}
@@ -169,6 +170,7 @@
  .quiz-option-label{max-width:calc(100% - 50px);font-size:13px}
  .quiz-option-mark{top:7px;right:8px;width:23px;height:23px;font-size:9px}
  .quiz-result .button{gap:10px;padding-inline:14px;font-size:14px}
+ .quiz-result-actions{width:100%;gap:6px}.quiz-result-actions .button{width:100%;text-align:center}.quiz-result-secondary{justify-content:center;width:100%;min-height:44px;font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){.quiz-result .button{transition:none}.quiz-result .button:hover{transform:none}}
 @media(max-width:620px){

@@ -28,4 +28,12 @@
 .tt-seo-city-links{display:grid;grid-template-columns:1fr 1fr;gap:9px 28px;margin:14px 0 22px;padding-left:22px}
 .tt-seo-city-links li{padding-left:3px;color:var(--tt-muted);line-height:1.65}
 .tt-seo-city-links a{color:#8f2b68;text-decoration-thickness:1px;text-underline-offset:3px}
+.tt-funnel-promo{display:flex;align-items:center;justify-content:space-between;gap:28px;margin:18px 0 34px;padding:clamp(22px,3.4vw,36px);border:1px solid #ead8e4;border-radius:24px;background:linear-gradient(115deg,#321d35 0%,#533254 100%);color:#fff;box-shadow:0 18px 45px #321d3518}
+.tt-funnel-promo .tt-eyebrow{color:#ff9fcb;margin-bottom:9px}
+.tt-funnel-promo h2{max-width:680px;margin:0 0 8px;font-size:clamp(23px,3vw,32px);line-height:1.12;letter-spacing:-.035em}
+.tt-funnel-promo p:not(.tt-eyebrow){max-width:68ch;margin:0;color:#eee2ed}
+.tt-funnel-promo .tt-button{display:inline-flex;flex:none;align-items:center;gap:10px;padding:14px 20px;text-decoration:none;text-align:center}
+@media(max-width:760px){.tt-funnel-promo{align-items:stretch;flex-direction:column;gap:18px;margin:12px 0 24px;padding:22px 18px;border-radius:20px}.tt-funnel-promo .tt-button{justify-content:center;min-height:52px}}
 @media(max-width:760px){.tt-dps-dashboard{margin-bottom:18px}.tt-data-guide{grid-template-columns:1fr;gap:18px;margin-bottom:24px;padding:22px 18px;border-radius:20px}.tt-data-guide-copy h2{font-size:26px}.tt-data-guide-copy>p:last-child{font-size:15px}.tt-data-guide-stats{gap:8px}.tt-data-guide-stats article{min-height:84px;padding:13px}.tt-data-guide-stats article:last-child{min-height:68px}.tt-data-guide-stats strong{font-size:23px}.tt-data-guide-note{font-size:13px}.tt-seo-city-links{grid-template-columns:1fr;gap:6px;margin-top:10px}}
+.tt-city-related{margin-top:30px;padding:22px 24px;border:1px solid var(--tt-line);border-radius:18px;background:linear-gradient(135deg,#fff9fb,#faf5f8)}.tt-city-related h3{margin:0 0 12px}.tt-city-related p{margin:10px 0;line-height:1.7}.tt-city-related p:last-child{margin-bottom:0}.tt-city-related a{font-weight:650;text-decoration-thickness:1px;text-underline-offset:3px}.tt-city-related a:focus-visible{outline:3px solid #dc4b8c;outline-offset:3px;border-radius:3px}
+@media(max-width:760px){.tt-city-related{margin-top:24px;padding:18px;border-radius:16px}.tt-city-related p{font-size:14px}}

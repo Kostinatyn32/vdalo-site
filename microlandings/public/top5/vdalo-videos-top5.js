@@ -15,7 +15,7 @@
   // papers: sheets fall from the top and pile up at the bottom
   T.papers = (e, a) => {
     const el = h('<div style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>');
-    const n = e.n || 22, lab = ['ЧЕК', 'ЗБІР', 'АКТ', 'ЗВІТ', 'КАСА', 'ЧЕК'];
+    const n = e.n || 22, lab = ['ЗБІР', 'ПІЛЬГИ', 'ДІБА', 'ЗВІТ', 'СТАВКА', 'ЗБІР'];
     const ps = Array.from({ length: n }, (_, i) => {
       const p = h(`<div style="position:absolute;left:0;top:0;width:74px;height:94px;border-radius:4px;background:#FBF8F1;box-shadow:0 6px 14px rgba(0,0,0,.35);padding:8px 7px;display:grid;gap:5px;align-content:start">
           <b style="font:800 9px var(--vd-display);color:#C2457A">${lab[i % lab.length]}</b>${'<i style="display:block;height:3px;border-radius:2px;background:#D9D2C6"></i>'.repeat(5)}</div>`);
@@ -98,18 +98,18 @@
     segs: [
       { a: 0, b: 6.8, els: [
         { type: 'papers', at: .6, out: 7.0, anim: 'none', n: 24, gap: .17, away: 6.4, from: 290 },
-        { type: 'big', html: 'Чеки. Акти. Звіти.', top: 58, size: 34, at: .1, anim: 'slam' },
+        { type: 'big', html: 'Збір. Пільги. Звіт.', top: 58, size: 34, at: .1, anim: 'slam' },
         { type: 'big', html: 'Туристичний збір.', top: 100, size: 34, at: .7, anim: 'slam' },
         { type: 'big', html: '<em class="r">Досі вручну?</em>', top: 170, size: 46, at: 2.2, anim: 'slam' },
         { type: 'chip', html: 'калькулятор і Excel щомісяця', top: 244, at: 3.4, cls: 'bad', pos: 'left:24px' }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'VDALO рахує <em>сам</em>', size: 40 },
-        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання 203 · 3 ночі · 2 гості', s: 'оплачено карткою', cls: 'wrap', top: 160, at: 7.4 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Туристичний збір', s: 'пораховано автоматично', top: 224, at: 8.1, check: 8.6 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Фіскальний чек ПРРО', s: 'створено після оплати', top: 282, at: 8.7, check: 9.2 },
-        { type: 'card', icc: 'p', ic: I.check, t: 'Звіт за місяць', s: 'зібрано з усіх бронювань', top: 340, at: 9.3, check: 9.8 },
-        { type: 'big', html: 'Без паперів <em>і калькулятора.</em>', top: 430, size: 30, at: 10.1 }
+        { type: 'cap', html: 'Туристичний збір: <em>розрахунок у системі</em>', size: 34 },
+        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання 203 · 3 ночі · 2 гості', s: 'приклад вхідних даних', cls: 'wrap', top: 160, at: 7.4 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Туристичний збір', s: 'за налаштованою ставкою громади', top: 224, at: 8.1, check: 8.6 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Пільги й підстави', s: 'перевіряються за даними гостя', top: 282, at: 8.7, check: 9.2 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Звітність', s: 'період та дані для звірки', top: 340, at: 9.3, check: 9.8 },
+        { type: 'big', html: 'Менше ручного рахунку. <em>Більше ясності.</em>', top: 430, size: 28, at: 10.1 }
       ] }
     ]
   });
@@ -118,15 +118,13 @@
     title: 'Документи й збір: ви проти VDALO', group: 'top5', pain: 'Документи й туристичний збір досі рахуєте вручну', theme: 'dark',
     segs: [
       { a: 0, b: 11.7, els: [
-        { type: 'cap', html: 'Звіт за місяць: <em>ви проти VDALO</em>', size: 32 },
-        { type: 'race', top: 156, m: [1.2, 10.4], v: [1.2, 1.9], mins: 360, at: .8, anim: 'up' },
-        { type: 'chip', html: 'звірити оплати', top: 336, at: 2.4, cls: 'bad', pos: 'left:24px' },
-        { type: 'chip', html: 'порахувати збір', top: 336, at: 3.0, cls: 'bad', pos: 'left:160px' },
-        { type: 'chip', html: 'пробити чеки', top: 384, at: 3.6, cls: 'bad', pos: 'left:24px' },
-        { type: 'chip', html: 'скласти звіт', top: 384, at: 4.2, cls: 'bad', pos: 'left:146px' },
-        { type: 'chip', html: 'перевірити ще раз', top: 432, at: 4.8, cls: 'bad', pos: 'left:24px' },
-        { type: 'big', html: 'Поки ви рахуєте: <em>VDALO вже порахував.</em>', top: 490, size: 26, at: 6.4 },
-        foot('Час умовний.', 1.5)
+        { type: 'cap', html: 'Туристичний збір: <em>підготуйте дані до розрахунку</em>', size: 29 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Ставка громади', s: 'звірте з чинним рішенням', top: 148, at: .8, check: 1.3 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Підстава для пільги', s: 'перевірте категорію та документи', top: 210, at: 1.7, check: 2.2 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Дані проживання', s: 'гості, дні та тип туризму', top: 272, at: 2.6, check: 3.1 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Звітний період', s: 'звірте дані перед поданням', top: 334, at: 3.5, check: 4.0 },
+        { type: 'big', html: 'Перевірте вихідні дані <em>перед розрахунком.</em>', top: 450, size: 26, at: 5.0 },
+        foot('Приклад послідовності. Ставка залежить від чинного рішення громади.', 1.5)
       ] }
     ]
   });
@@ -153,11 +151,11 @@
         { type: 'big', html: 'Одна цифра: <em class="r">і дата зайнята двічі.</em>', top: 520, size: 24, at: 4.8 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'У VDALO бронь <em>з\'являється сама</em>', size: 31 },
+        { type: 'cap', html: 'Підключений канал передає бронь <em>до VDALO</em>', size: 29 },
         { type: 'html', at: 7.3, anim: 'up', html: board(160, BROWS) },
         { type: 'html', at: 8.2, anim: 'up', d: .5, html: bar(160, 3, 0, 2, '#2F6FDB', 'Booking · Олена') },
-        { type: 'chip', html: 'Booking → VDALO · 0 кліків', top: 384, at: 9.0, cls: 'pk', pos: 'left:24px' },
-        { type: 'chip', html: 'дати не переплутаєш', top: 432, at: 9.5, cls: 'pk', pos: 'left:24px' }
+        { type: 'chip', html: 'Після підключення інтеграції', top: 384, at: 9.0, cls: 'pk', pos: 'left:24px' },
+        { type: 'chip', html: 'менше ручного перенесення дат', top: 432, at: 9.5, cls: 'pk', pos: 'left:24px' }
       ] }
     ]
   });
@@ -166,18 +164,18 @@
     title: 'Booking вручну: лічильник кліків', group: 'top5', pain: 'Бронювання з Booking переносите в календар вручну', theme: 'red',
     segs: [
       { a: 0, b: 6.8, els: [
-        { type: 'big', html: 'Одна бронь з Booking :', top: 60, size: 26, at: .1, anim: 'slam' },
-        { type: 'num', from: 0, to: 14, n1: .6, n2: 2.0, top: 116, at: .5, cls: 'c xl', label: 'кліків: відкрити лист, скопіювати, вставити, перевірити', fmt: n => `${Math.round(n)}` },
-        { type: 'big', html: '× 60 бронювань на місяць', top: 270, size: 26, at: 2.6, cls: 'c' },
-        { type: 'num', from: 0, to: 840, n1: 3.2, n2: 4.6, top: 320, at: 3.1, cls: 'c r xl', label: 'кліків щомісяця', fmt: n => `${Math.round(n)}` },
-        { type: 'big', html: '<em class="r">І кожен: шанс помилитися.</em>', top: 490, size: 26, at: 5.0, cls: 'c' },
-        foot('Цифри умовні.', 1)
+        { type: 'big', html: 'Бронювання з Booking', top: 60, size: 28, at: .1, anim: 'slam' },
+        { type: 'big', html: '<em class="r">переносите вручну?</em>', top: 104, size: 30, at: .6, anim: 'slam' },
+        { type: 'card', icc: 'b', ic: 'B', t: 'Лист із бронюванням', s: 'дати та деталі треба перевірити', top: 208, at: 1.4, check: 1.9 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Календар об’єкта', s: 'інформацію переносите вручну', top: 284, at: 2.2, check: 2.7 },
+        { type: 'big', html: '<em class="r">Звірка займає час.</em>', top: 420, size: 28, at: 4.0, cls: 'c' },
+        foot('Приклад процесу. Фактична кількість дій залежить від налаштувань об’єкта.', 1)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з VDALO: <em>0 кліків</em>', size: 32 },
-        { type: 'num', from: 840, to: 0, n1: 7.3, n2: 8.2, top: 140, at: 7.2, cls: 'c g xl', label: 'кліків на перенесення бронювань', fmt: n => `${Math.round(n)}` },
-        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання з Booking', s: 'одразу в шахматці VDALO', top: 300, at: 8.6, check: 9.0 },
-        { type: 'card', icc: 'p', ic: I.check, t: 'Дати закрито в інших каналах', s: 'автоматично', top: 358, at: 9.2, check: 9.6 }
+        { type: 'cap', html: 'Після налаштування інтеграції', size: 30 },
+        { type: 'big', html: 'Бронювання з підключеного каналу <em>може передаватися до календаря.</em>', top: 120, size: 27, at: 7.2, cls: 'c' },
+        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання з Booking', s: 'у календарі після інтеграції', top: 300, at: 8.6, check: 9.0 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Доступність у підключених каналах', s: 'за умовами інтеграції', top: 358, at: 9.2, check: 9.6 }
       ] }
     ]
   });
@@ -196,15 +194,16 @@
         { type: 'bub', html: 'Алло?..', top: 200, at: 2.6, pos: 'left:150px' },
         { type: 'bub', html: 'Я тут уже 40 хвилин', top: 250, at: 3.8, pos: 'left:70px' },
         { type: 'face', mood: 'sad', size: 74, at: 4.6, anim: 'pop', pos: 'left:220px;top:380px' },
+        foot('Час очікування показаний для ілюстрації.', 1),
         { type: 'big', html: 'Гість чекає. <em class="r">Адміністратора немає.</em>', top: 540, size: 24, at: 4.2 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з VDALO гість <em>заходить сам</em>', size: 32 },
-        { type: 'bub', side: 'r', html: '<small>VDALO → гостю · 12:00</small>Ваш номер 203. Код дверей: 4827. Заїзд з 14:00.', top: 150, at: 7.3 },
+        { type: 'cap', html: 'Гість читає інструкції, <em>а вхід залежить від замка</em>', size: 27 },
+        { type: 'bub', side: 'r', html: '<small>Інструкція гостю · 12:00</small>Ваш номер 203. Заїзд з 14:00. Як дістатися та де знайти ключ, читайте тут.', top: 150, at: 7.3 },
         { type: 'html', at: 8.2, anim: 'up', html: door(150, 270, true) },
         { type: 'person', color: '#7FA8F0', bag: true, w: 40, at: 8.4, anim: 'left', pos: 'left:70px;top:350px' },
-        { type: 'chip', html: 'заселився о 14:02 · без очікування', top: 492, at: 9.4, cls: 'ok', pos: 'left:24px' },
-        foot('PIN-заселення: з розумним замком.', 7.4)
+        { type: 'chip', html: 'Інструкції доступні до приїзду', top: 492, at: 9.4, cls: 'ok', pos: 'left:24px' },
+        foot('Самостійний вхід можливий лише з налаштованим сумісним замком.', 7.4)
       ] }
     ]
   });
@@ -223,11 +222,11 @@
         { type: 'html', at: 4.8, anim: 'fade', html: '<div style="position:absolute;left:60px;top:470px;font:italic 500 11px var(--vd-body);color:rgba(255,245,247,.45)">повідомлення не прочитано</div>' }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'VDALO пише гостю <em>заздалегідь</em>', size: 32, top: 44 },
+        { type: 'cap', html: 'Інструкції для гостя <em>на одній сторінці</em>', size: 30, top: 44 },
         { type: 'html', at: 7.0, anim: 'fade', html: chatPhone('Гість · номер 203', { sub: 'онлайн' }) },
-        msg('r', '<b>VDALO</b><br>Вітаємо! Ваш номер 203, код дверей 4827. Заїзд з 14:00.', '12:00', 186, 7.5),
-        msg('l', 'Дякуємо, вже в номері!', '14:03', 290, 8.6),
-        { type: 'chip', html: 'адміністратор не потрібен', top: 470, at: 9.6, cls: 'ok', pos: 'left:58px' },
+        msg('r', '<b>Сторінка гостя</b><br>Номер 203. Заїзд з 14:00. Як дістатися та де знайти ключ, читайте тут.', '12:00', 186, 7.5),
+        msg('l', 'Дякую, знайшов інструкцію.', '14:03', 290, 8.6),
+        { type: 'chip', html: 'менше ручних кроків до заїзду', top: 470, at: 9.6, cls: 'ok', pos: 'left:58px' },
         foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
@@ -252,11 +251,11 @@
         { type: 'big', html: 'Бо Booking і Airbnb <em class="r">не знають одне про одного.</em>', top: 490, size: 24, at: 4.6 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'У VDALO канали <em>синхронізовані</em>', size: 32 },
+        { type: 'cap', html: 'Після підключення каналів <em>бронювання видно у VDALO</em>', size: 28 },
         { type: 'html', at: 7.3, anim: 'up', html: board(160, BROWS) },
         { type: 'html', at: 8.0, anim: 'up', html: bar(160, 3, 0, 2, '#2F6FDB', 'Booking · Іван') },
-        { type: 'chip', html: '302 закрито в Airbnb · автоматично', top: 384, at: 8.9, cls: 'pk', pos: 'left:24px' },
-        { type: 'chip', html: '302 закрито на сайті · автоматично', top: 432, at: 9.4, cls: 'pk', pos: 'left:24px' }
+        { type: 'chip', html: 'Airbnb · синхронізація після підключення', top: 384, at: 8.9, cls: 'pk', pos: 'left:24px' },
+        { type: 'chip', html: 'Сайт · перевірте сумісність', top: 432, at: 9.4, cls: 'pk', pos: 'left:24px' }
       ] }
     ]
   });
@@ -276,8 +275,8 @@
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'А з VDALO <em>такого дзвінка не буде</em>', size: 30 },
         { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання з Booking · 302', s: 'потрапило у VDALO', top: 170, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'p', ic: I.check, t: '302 закрито в Airbnb', s: 'автоматично', top: 228, at: 8.1, check: 8.6 },
-        { type: 'card', icc: 'p', ic: I.check, t: '302 закрито на сайті', s: 'автоматично', top: 286, at: 8.8, check: 9.3 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Доступність в Airbnb', s: 'після налаштування інтеграції', top: 228, at: 8.1, check: 8.6 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Доступність на сайті', s: 'перевірте підключений сценарій', top: 286, at: 8.8, check: 9.3 },
         { type: 'big', html: 'Гість приїжджає: <em>номер його.</em>', top: 380, size: 30, at: 9.8 }
       ] }
     ]
@@ -297,12 +296,12 @@
         { type: 'big', html: 'Адміністратор: <em class="r">не довідкове бюро.</em>', top: 470, size: 26, at: 5.0 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'ШІ-помічник <em>відповідає сам</em>', size: 36 },
+        { type: 'cap', html: 'Відповіді для гостя <em>на одній сторінці</em>', size: 31 },
         { type: 'bub', html: 'Пароль від Wi‑Fi?', top: 170, at: 7.4 },
-        { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 02:14</small>Мережа HOTEL_GUEST, пароль: у вашому листі підтвердження.', top: 216, at: 8.0 },
+        { type: 'bub', side: 'r', html: '<small>Сторінка гостя</small>Додайте пароль до інструкцій і надішліть гостю посилання.', top: 216, at: 8.0 },
         { type: 'bub', html: 'Де паркінг?', top: 310, at: 8.8 },
-        { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 02:31</small>У дворі, в\'їзд з вулиці. Безкоштовно.', top: 356, at: 9.3 },
-        { type: 'chip', html: 'адміністратор спить', top: 446, at: 10.0, cls: 'ok', pos: 'left:24px' }
+        { type: 'bub', side: 'r', html: '<small>Сторінка гостя</small>Розмістіть адресу та правила заїзду на сторінці об’єкта.', top: 356, at: 9.3 },
+        { type: 'chip', html: 'посилання можна надіслати у Viber', top: 446, at: 10.0, cls: 'ok', pos: 'left:24px' }
       ] }
     ]
   });
@@ -314,13 +313,13 @@
         { type: 'cap', html: 'Сон адміністратора <em class="r">цієї ночі</em>', size: 32 },
         { type: 'chart', top: 156, at: .6, end: 5.0, color: '#E8566D', pts: [[0, 40], [20, 120], [40, 140], [52, 20], [62, 130], [90, 140], [102, 18], [112, 135], [140, 142], [152, 22], [162, 138], [185, 140], [197, 16], [207, 132], [232, 140], [244, 20], [254, 128], [275, 136], [287, 24], [300, 60]],
           labels: [[52, 20, 'Wi‑Fi?'], [102, 18, 'паркінг?'], [152, 22, 'Wi‑Fi?'], [197, 16, 'сніданок?'], [244, 20, 'Wi‑Fi?'], [287, 24, 'таксі?']] },
-        { type: 'num', from: 0, to: 6, n1: .8, n2: 5.0, top: 410, at: .8, cls: 'r', label: 'пробуджень за ніч', fmt: n => Math.round(n) },
+        { type: 'num', from: 0, to: 6, n1: .8, n2: 5.0, top: 410, at: .8, cls: 'r', label: 'умовний приклад повторних дзвінків', fmt: n => Math.round(n) },
         foot('Умовний приклад.', 1)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з ШІ-помічником <em>VDALO</em>', size: 32 },
-        { type: 'chart', top: 156, at: 7.2, end: 9.6, color: '#5CC898', pts: [[0, 40], [30, 120], [60, 138], [100, 142], [150, 140], [200, 142], [250, 138], [280, 120], [300, 50]] },
-        { type: 'num', from: 0, to: 0, top: 410, at: 7.4, cls: 'g', label: 'пробуджень: на питання гостей відповів ШІ', fmt: n => Math.round(n) }
+        { type: 'cap', html: 'Підготуйте інформацію <em>до приїзду гостя</em>', size: 29 },
+        { type: 'card', icc: 'p', ic: 'V', t: 'Сторінка гостя', s: 'адреса, паркінг, інструкція, контакти', top: 190, at: 7.4, check: 7.9 },
+        { type: 'big', html: 'Надішліть посилання завчасно. <em>Гість зможе повернутися до інструкцій.</em>', top: 330, size: 26, at: 8.5 }
       ] }
     ]
   });

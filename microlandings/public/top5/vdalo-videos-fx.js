@@ -164,11 +164,11 @@
         { type: 'big', html: 'А ви спите й не чуєте телефон.', top: 520, size: 22, at: 4.4 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з VDALO код приходить <em>заздалегідь</em>', size: 28 },
-        { type: 'bub', side: 'r', html: '<small>VDALO → гостю, 18:00</small>Ваш номер 203. Код дверей: 4827.', top: 150, at: 7.4 },
+        { type: 'cap', html: 'Інструкція для заїзду <em>під рукою</em>', size: 29 },
+        { type: 'bub', side: 'r', html: '<small>Сторінка гостя</small>Ваш номер 203. Заїзд з 14:00. Інструкція, як зайти, тут.', top: 150, at: 7.4 },
         { type: 'html', at: 8.2, anim: 'up', html: door(160, 270, true, '203') },
         { type: 'face', mood: 'happy', size: 92, at: 8.6, anim: 'pop', pos: 'left:46px;top:316px' },
-        { type: 'chip', html: 'заселились о 02:12 · ви спали', top: 512, at: 9.6, cls: 'ok', pos: 'left:24px' },
+        { type: 'chip', html: 'посилання з інструкцією надіслано', top: 512, at: 9.6, cls: 'ok', pos: 'left:24px' },
         foot('PIN-заселення: з розумним замком.', 7.4)
       ] }
     ]
@@ -193,37 +193,35 @@
       { a: 7.0, b: 11.7, els: [
         { type: 'cap', html: 'А з VDALO 302 <em>продається один раз</em>', size: 29 },
         { type: 'card', icc: 'b', ic: 'B', t: 'Booking · 302 · пт–нд', s: 'нове бронювання', top: 170, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'p', ic: I.check, t: '302 закрито в Airbnb', s: 'автоматично', top: 228, at: 8.3, check: 8.8 },
-        { type: 'card', icc: 'p', ic: I.check, t: '302 закрито на сайті', s: 'автоматично', top: 286, at: 9.0, check: 9.5 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Доступність в Airbnb', s: 'оновлюється після підключення', top: 228, at: 8.3, check: 8.8 },
+        { type: 'card', icc: 'p', ic: I.check, t: 'Доступність на сайті', s: 'залежить від інтеграції', top: 286, at: 9.0, check: 9.5 },
         { type: 'big', html: 'Один номер: <em>один гість.</em>', top: 380, size: 32, at: 9.9 }
       ] }
     ]
   });
 
   reg('f-siren', {
-    title: 'Факап: недостача в касі', group: 'fail', pain: 'Недостача в касі: ніхто не знає, де гроші', theme: 'red',
+    title: 'Передплата: статус у бронюванні', group: 'fail', pain: 'Не завжди зрозуміло, чи надійшла передплата', theme: 'red',
     segs: [
       { a: 0, b: 6.8, els: [
-        { type: 'siren', at: 0, out: 6.8, anim: 'fade' },
-        { type: 'big', html: 'НЕДОСТАЧА.', top: 70, size: 52, at: .1, anim: 'slam', cls: 'c' },
-        { type: 'num', from: 0, to: 4800, n1: .7, n2: 2.2, top: 160, at: .6, cls: 'c r xl', label: 'у касі після вихідних', fmt: n => `−${V.kit.grn(n)}` },
-        { type: 'big', html: 'Хто винен? Адмін? Гість? Ви?', top: 330, size: 26, at: 2.8, cls: 'c' },
-        { type: 'chip', html: 'готівка', top: 420, at: 3.6, cls: 'bad', pos: 'left:40px' },
-        { type: 'chip', html: 'без чеків', top: 420, at: 3.9, cls: 'bad', pos: 'left:130px' },
-        { type: 'chip', html: 'не записали', top: 420, at: 4.2, cls: 'bad', pos: 'left:230px' },
-        foot('Цифри умовні.', 1)
+        { type: 'big', html: 'Передплату внесли?', top: 70, size: 38, at: .1, anim: 'slam', cls: 'c' },
+        { type: 'big', html: '<em class="r">Статус треба уточнювати.</em>', top: 132, size: 30, at: .7, cls: 'c' },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Бронювання · номер 203', s: 'Сума бронювання: 4 800 грн', top: 236, at: 1.5, check: 2.0 },
+        { type: 'chip', html: 'Передплата: уточнити', top: 336, at: 2.6, cls: 'bad', pos: 'left:40px' },
+        { type: 'chip', html: 'Залишок: уточнити', top: 384, at: 3.0, cls: 'bad', pos: 'left:40px' },
+        foot('Сценарій демонстраційний. Фіксуйте фактичні суми та статуси бронювання.', 1)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'Оплата карткою: <em>чек сам</em>', size: 34 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Кожна оплата: в системі', s: 'хто, коли, за який номер', top: 166, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Фіскальний чек ПРРО', s: 'автоматично', top: 224, at: 8.1, check: 8.6 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Звіт по зміні', s: 'без перерахунку вручну', top: 282, at: 8.8, check: 9.3 },
-        { type: 'stamp', html: 'Каса звірена ✓', cls: 'ok', top: 380, at: 9.8, pos: 'left:76px', rot: -5 }
+        { type: 'cap', html: 'Статус передплати <em>в картці бронювання</em>', size: 30 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Внесена сума', s: 'зафіксована в бронюванні', top: 166, at: 7.4, check: 7.9 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Залишок до сплати', s: 'видно команді об’єкта', top: 224, at: 8.1, check: 8.6 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Спосіб оплати', s: 'узгоджуєте з гостем окремо', top: 282, at: 8.8, check: 9.3 },
+        { type: 'stamp', html: 'Суми зафіксовано', cls: 'ok', top: 380, at: 9.8, pos: 'left:76px', rot: -5 }
       ] }
     ]
   });
 
-  const TILES = [['Дзвінок', 'пропущено'], ['Гість', 'пішов'], ['Бронь', 'деінде'], ['Ніч', 'порожня'], ['−2 400', 'грн']];
+  const TILES = [['Дзвінок', 'без відповіді'], ['Гість', 'чекає'], ['Бронь', 'під питанням'], ['Заїзд', 'потребує уваги'], ['Команда', 'уточнює']];
   reg('f-domino', {
     title: 'Факап: ефект доміно', group: 'fail', pain: 'Один пропущений дзвінок тягне за собою втрату бронювання', theme: 'dark',
     segs: [
@@ -234,11 +232,11 @@
         { type: 'big', html: '<em class="r">І це тільки одна ніч.</em>', top: 460, size: 30, at: 4.8 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'ШІ-помічник <em>відповідає, коли ви не можете</em>', size: 27 },
+        { type: 'cap', html: 'Підготуйте <em>відповіді заздалегідь</em>', size: 30 },
         { type: 'bub', html: 'Є вільний номер на завтра?', top: 170, at: 7.4 },
-        { type: 'bub', side: 'r', html: '<small>ШІ-помічник VDALO · 23:52</small>Так, є двомісний. Ось посилання для бронювання.', top: 216, at: 8.1 },
-        { type: 'card', icc: 'p', ic: 'V', t: 'Нове бронювання · ваш сайт', s: 'поки ви спали', top: 322, at: 9.0, check: 9.5 },
-        { type: 'big', html: 'Жоден дзвінок <em>не тягне за собою інші.</em>', top: 404, size: 26, at: 10.0 }
+        { type: 'bub', side: 'r', html: '<small>Сторінка гостя</small>Додайте інформацію про вільні номери та надішліть посилання.', top: 216, at: 8.1 },
+        { type: 'card', icc: 'p', ic: 'V', t: 'Гість переглянув умови', s: 'запит можна продовжити в повідомленні', top: 322, at: 9.0, check: 9.5 },
+        { type: 'big', html: 'Частину відповідей <em>можна підготувати наперед.</em>', top: 404, size: 26, at: 10.0 }
       ] }
     ]
   });
@@ -256,9 +254,9 @@
         { type: 'num', from: 0, to: 147, n1: 1.4, n2: 5.4, top: 480, at: 1.4, cls: 'c r', label: 'повідомлень за вечір · умовно', fmt: n => Math.round(n), pos: 'font-size:inherit' }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'VDALO розбирає все <em>за вас</em>', size: 34 },
-        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання: 12', s: 'синхронізовано в усіх каналах', top: 170, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей: 31', s: 'відповів ШІ-помічник', top: 228, at: 8.1, check: 8.6 },
+        { type: 'cap', html: 'Робочі дані та задачі <em>в одному місці</em>', size: 31 },
+        { type: 'card', icc: 'b', ic: 'B', t: 'Бронювання: 12', s: 'статуси в підключених каналах', top: 170, at: 7.4, check: 7.9 },
+        { type: 'card', icc: 'p', ic: I.chat, t: 'Інформація для гостей', s: 'зібрана на сторінці об’єкта', top: 228, at: 8.1, check: 8.6 },
         { type: 'card', icc: 'n', ic: I.broom, t: 'Задачі команді: 6', s: 'у покоївки й техніка', top: 286, at: 8.8, check: 9.3 },
         { type: 'big', html: 'Вам: <em>тільки важливе.</em>', top: 380, size: 34, at: 9.8 },
         foot('Цифри умовні.', 7.4)
@@ -300,16 +298,16 @@
             <div style="position:absolute;right:24px;top:20px;width:64px;height:64px;border-radius:50%;border:4px solid rgba(255,255,255,.35)"><i style="position:absolute;left:28px;top:8px;width:4px;height:22px;background:#fff;border-radius:2px;transform-origin:50% 100%"></i></div>
             <span style="position:absolute;left:24px;top:24px;font:700 12px var(--vd-body);color:rgba(255,245,247,.5)">203 · заброньовано</span></div>` },
         { type: 'num', from: 18 * 60, to: 26 * 60, n1: 1.4, n2: 4.6, top: 372, at: 1.4, cls: 'c', label: 'чекаєте…', fmt: m => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(Math.round(m % 60) % 60).padStart(2, '0')}` },
-        { type: 'stamp', html: 'No-show · −2 400 грн', top: 500, at: 4.9, pos: 'left:36px', rot: -5 },
-        foot('Цифри умовні.', 5)
+        { type: 'stamp', html: 'Статус броні · перевірити', top: 500, at: 4.9, pos: 'left:36px', rot: -5 },
+        foot('Ілюстративний сценарій. Втрата бронювання та суми залежать від об’єкта.', 5)
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'Онлайн-оплата <em>одразу при бронюванні</em>', size: 29 },
+        { type: 'cap', html: 'Погоджена передплата <em>до заїзду</em>', size: 29 },
         { type: 'html', at: 7.4, anim: 'pop', html: `<div style="position:absolute;left:36px;right:36px;top:170px;padding:14px;border-radius:18px;background:#fff;color:#39233E;display:grid;gap:8px;box-shadow:0 18px 40px rgba(0,0,0,.35)">
-            <b style="font:800 15px var(--vd-display)">Номер 203 · пт–сб</b><span style="font:500 12px var(--vd-body);color:#7a6a7e">Разом: 2 400 грн</span>
-            <span style="background:#FF92BD;border-radius:999px;padding:10px;text-align:center;font:700 13px var(--vd-body)">Оплатити й забронювати</span></div>` },
-        { type: 'card', icc: 'g', ic: I.check, t: 'Оплату отримано', s: 'ще до приїзду гостя', top: 320, at: 8.8, check: 9.3 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Умови скасування: ваші', s: 'налаштовуєте в системі', top: 378, at: 9.5, check: 10.0 }
+            <b style="font:800 15px var(--vd-display)">Номер 203 · пт–сб</b><span style="font:500 12px var(--vd-body);color:#7a6a7e">Передплата: 1 000 грн</span>
+            <span style="background:#FF92BD;border-radius:999px;padding:10px;text-align:center;font:700 13px var(--vd-body)">Реквізити для передплати</span></div>` },
+        { type: 'card', icc: 'g', ic: I.check, t: 'Передплату зафіксовано', s: 'статус видно в бронюванні', top: 320, at: 8.8, check: 9.3 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Умови скасування', s: 'погодьте їх із гостем', top: 378, at: 9.5, check: 10.0 }
       ] }
     ]
   });
@@ -325,11 +323,11 @@
         { type: 'big', html: 'А готель: <em class="r">досі на вас.</em>', top: 520, size: 26, at: 5.0 }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'Рутина: на автоматі. <em>Ви: заряджені.</em>', size: 28 },
+        { type: 'cap', html: 'Менше повторів. <em>Більше порядку.</em>', size: 30 },
         { type: 'battery', keys: [[7.2, 3], [9.2, 100]], at: 7.2, anim: 'fade', pos: 'left:80px;top:150px;color:rgba(255,245,247,.8)' },
-        { type: 'card', icc: 'p', ic: I.key, t: 'Заселення: за PIN-кодом', top: 330, at: 7.8, check: 8.2 },
-        { type: 'card', icc: 'p', ic: I.chat, t: 'Питання гостей: ШІ-помічник', top: 386, at: 8.4, check: 8.8 },
-        { type: 'card', icc: 'p', ic: I.receipt, t: 'Чеки й збір: автоматично', top: 442, at: 9.0, check: 9.4 },
+        { type: 'card', icc: 'p', ic: I.key, t: 'Інструкції до заїзду', top: 330, at: 7.8, check: 8.2 },
+        { type: 'card', icc: 'p', ic: I.chat, t: 'Інструкції для гостей', top: 386, at: 8.4, check: 8.8 },
+        { type: 'card', icc: 'p', ic: I.receipt, t: 'Статуси передплат у бронюваннях', top: 442, at: 9.0, check: 9.4 },
         { type: 'face', mood: 'happy', size: 60, at: 9.8, anim: 'pop', pos: 'left:150px;top:500px' }
       ] }
     ]
@@ -348,9 +346,9 @@
         { type: 'num', from: 5, to: 40, n1: 2.0, n2: 5.8, top: 468, at: 2.0, cls: 'r', label: 'хвилин очікування · гості злі', fmt: n => `${Math.round(n)} хв` }
       ] },
       { a: 7.0, b: 11.7, els: [
-        { type: 'cap', html: 'А з VDALO гості <em>заходять самі</em>', size: 32 },
-        { type: 'card', icc: 'p', ic: I.key, t: 'PIN-коди надіслано 8 гостям', s: 'заздалегідь, у месенджер', top: 170, at: 7.4, check: 7.9 },
-        { type: 'card', icc: 'g', ic: I.check, t: 'Черги немає', s: 'кожен заходить у свій час', top: 228, at: 8.2, check: 8.7 },
+        { type: 'cap', html: 'Гості отримують <em>інструкції до приїзду</em>', size: 29 },
+        { type: 'card', icc: 'p', ic: I.key, t: 'Інформація про заїзд', s: 'посилання на сторінку гостя', top: 170, at: 7.4, check: 7.9 },
+        { type: 'card', icc: 'g', ic: I.check, t: 'Менше повторних уточнень', s: 'інструкції доступні до заїзду', top: 228, at: 8.2, check: 8.7 },
         { type: 'card', icc: 'p', ic: I.broom, t: 'Адмін: на гостях, а не на ключах', top: 286, at: 9.0, check: 9.5 },
         foot('PIN-заселення: з розумним замком.', 7.4)
       ] }

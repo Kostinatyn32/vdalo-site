@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>VDALO: порахуйте свій готель</title>
-<meta name="description" content="Калькулятор VDALO: скільки часу й грошей готель втрачає на рутині.">
+<meta name="description" content="Оцініть час на бронювання, підготовку до заїзду або запити гостей за власними даними.">
 <meta name="theme-color" content="#39233E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -139,9 +139,9 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
         <span class="k-res-num" id="k-res-num"></span>
         <ul class="k-res-lines" id="k-res-lines"></ul>
         <p class="k-hint" id="k-hint"></p>
-        <p class="k-est">Оцінка за вашими цифрами.</p>
+        <p class="k-est">Початкові значення умовні. Замініть їх на свої дані, щоб отримати орієнтир.</p>
         <button type="button" class="k-btn" data-open id="k-cta"></button>
-        <p class="k-note">14 днів безкоштовно · Без картки · Доступ одразу</p>
+        <p class="k-note">Запит на 14-денний тест · Старт узгодимо після звернення</p>
       </div>
     </div>
   </section>
@@ -150,11 +150,11 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
     <div>
       <h2 id="k-how-title">Як VDALO це вирішує</h2>
       <ol class="k-steps" id="k-steps"></ol>
-      <h2>Що буде після реєстрації</h2>
+      <h2>Що буде після запиту</h2>
       <ul class="k-after">
-        <li>Доступ до VDALO: одразу, на 14 днів безкоштовно</li>
+        <li>Команда VDALO зв’яжеться з вами щодо тестового періоду</li>
         <li id="k-after-start">Покрокова інструкція, з чого почати</li>
-        <li>Без картки: після тесту обираєте тариф: або просто не продовжуєте</li>
+        <li>Налаштування та дату старту узгодите з командою</li>
       </ul>
       <h2>Питання</h2>
       <div class="k-faq" id="k-faq"></div>
@@ -173,23 +173,24 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
     <div class="go-grip" aria-hidden="true"></div>
     <!-- TODO(Codex): create the account through the site's existing registration (trial) flow and start the 14-day trial; keep the hidden fields -->
     <form id="go-form" novalidate>
-      <h2 id="go-sheet-title">Відкрийте VDALO на 14 днів</h2>
-      <p id="go-sheet-sub">Безкоштовно, без картки. Доступ: одразу після реєстрації.</p>
-      <label class="go-field"><span>E-mail: це буде ваш логін</span>
-        <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua" required>
+      <h2 id="go-sheet-title">Запросити 14-денний тест</h2>
+      <p id="go-sheet-sub">Залиште телефон. Команда VDALO узгодить налаштування та дату старту.</p>
+      <label class="go-field"><span>E-mail (необов’язково)</span>
+        <input class="go-input" id="go-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@hotel.ua">
       </label>
       <label class="go-field"><span>Телефон</span>
         <input class="go-input" id="go-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380 __ ___ __ __" required>
       </label>
+      <label class="go-field"><span>Як зручніше зв’язатися?</span><select class="go-input" id="go-contact-method" name="contact_method"><option value="phone">Телефонний дзвінок</option><option value="viber">Viber</option><option value="telegram">Telegram</option></select></label>
       <label class="go-field"><span>Назва готелю</span>
         <input class="go-input" id="go-hotel" name="hotel" type="text" autocomplete="organization" placeholder="Готель «Карпати»">
       </label>
       <div class="go-field"><span>Скільки номерів</span>
         <div class="go-chips" data-name="rooms">
-          <button type="button" class="go-chip" aria-pressed="false" data-v="1-10">до 10</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="11-30">11–30</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="31+">31+</button>
-          <button type="button" class="go-chip" aria-pressed="false" data-v="apart">апартаменти</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="1-5">1–5</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="6-12">6–12</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="13-40">13–40</button>
+          <button type="button" class="go-chip" aria-pressed="false" data-v="41+">41+</button>
         </div>
       </div>
       <input type="hidden" name="rooms" id="go-rooms">
@@ -197,109 +198,113 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
       <input type="hidden" name="code" id="go-code">
       <input type="hidden" name="funnel" id="go-funnel">
       <input type="hidden" name="calc" id="go-calc">
+      <input type="hidden" name="utm_source" id="utm_source">
+      <input type="hidden" name="utm_medium" id="utm_medium">
+      <input type="hidden" name="utm_campaign" id="utm_campaign">
+      <input type="hidden" name="utm_content" id="utm_content">
+      <input type="hidden" name="utm_term" id="utm_term">
+      <label class="go-field go-consent"><input type="checkbox" id="go-consent" required><span>Погоджуюся на обробку контактів для відповіді на запит.</span></label>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px">
       <div class="go-err" id="go-err" role="alert"></div>
-      <button type="submit" class="go-submit">Отримати доступ на 14 днів</button>
-      <p class="go-small">Без картки. Після 14 днів: тариф від 390 грн/міс, або просто не продовжуєте. Натискаючи кнопку, ви погоджуєтесь з умовами та обробкою даних.</p>
+      <button type="submit" class="go-submit">Надіслати запит</button>
+      <p class="go-small">Надсилаючи форму, ви погоджуєтесь на обробку даних для відповіді на запит. <a href="/privacy">Політика конфіденційності</a>.</p>
     </form>
     <div class="go-thanks" aria-live="polite">
       <b aria-hidden="true">✓</b>
-      <h2>Доступ відкрито!</h2>
-      <p>Дані для входу: на вашому e-mail. 14 днів VDALO: безкоштовно.</p>
-      <!-- TODO(Codex): if registration returns a session or login URL, redirect there instead of showing this screen -->
-      <a class="go-link" id="go-login" href="https://www.vdalo.tech/">Увійти в VDALO →</a>
+      <h2>Запит надіслано</h2>
+      <p>Команда VDALO зв’яжеться з вами щодо налаштування і старту тестового періоду.</p>
     </div>
   </div>
 </div>
 
-<script src="/go/vdalo-videos.js?v=5"></script>
-<script src="/go/vdalo-videos-more.js?v=5"></script>
-<script src="/go/vdalo-videos-fx.js?v=5"></script>
-<script src="/go/vdalo-videos-funnels.js?v=5"></script>
+<script src="/go/vdalo-videos.js?v=7"></script>
+<script src="/go/vdalo-videos-more.js?v=7"></script>
+<script src="/go/vdalo-videos-fx.js?v=7"></script>
+<script src="/go/vdalo-videos-top5.js?v=7"></script>
+<script src="/go/vdalo-videos-funnels.js?v=7"></script>
 <script>
 (() => {
   'use strict';
   const grn = n => Math.round(n).toLocaleString('uk-UA').replace(/ /g, ' ');
-  const RATE = { id: 'rate', label: 'Вартість години адміністратора', unit: 'грн', min: 50, max: 400, step: 10, v: 110, hint: '≈ 18 500 грн/міс ÷ 168 год' };
+  const RATE = { id: 'rate', label: 'Вартість години адміністратора', unit: 'грн', min: 50, max: 400, step: 10, v: 110, hint: 'Приклад для розрахунку. Замініть на свою оцінку' };
 
   // ---------- 5 calculators: one per funnel ----------
   // Every formula is shown to the visitor as an estimate on their own numbers. Defaults are examples, not promises.
   const K = {
-    1: { funnel: 'staff', video: 's-qr', eyebrow: 'Криза персоналу',
+    1: { funnel: 'staff', video: 's-qr', eyebrow: 'ПІДГОТОВКА ДО ЗАЇЗДУ',
       h1: 'Скільки годин ваша рецепція <em>заповнює анкети?</em>',
-      sub: 'Заселення, документи, оплата, пояснення «куди йти». Порахуйте на своїх цифрах: 20 секунд.',
+      sub: 'Оцініть час на підготовку даних та інструкцій до приїзду гостей. Введіть власні цифри.',
       fields: [
-        { id: 'arr', label: 'Заїздів на тиждень', unit: 'заїздів', min: 5, max: 300, step: 5, v: 40 },
+        { id: 'arr', label: 'Заїздів на тиждень', unit: 'заїздів', min: 1, max: 300, step: 1, v: 6 },
         { id: 'min', label: 'Хвилин на одне заселення', unit: 'хв', min: 3, max: 30, step: 1, v: 12 }, RATE],
       calc: x => { const h = x.arr * 4.33 * x.min / 60, m = h * x.rate;
         return { label: 'на місяць адміністратор витрачає на заселення', num: `${grn(h)} год`, lines: [`≈ <b>${grn(m)} грн</b> на місяць`, `≈ <b>${grn(m * 12)} грн</b> на рік`] }; },
-      hint: 'З QR-заселенням гість вносить дані, документи й підпис сам. Адміністратор лише видає ключ: і встигає більше.',
-      cta: 'Спробувати QR-заселення: 14 днів', start: 'Почніть із QR-заселення: інструкція всередині',
-      steps: [['QR на рецепції або посилання до приїзду', 'гість відкриває гостьову сторінку на своєму телефоні'], ['Гість заповнює все сам', 'дані, фото документа, підпис, оплата'], ['Адміністратор бачить «готово»', 'видає ключ: без анкет і черги']],
-      faq: [['Гості старшого віку впораються?', 'Якщо ні: адміністратор заповнить як зараз. QR: додатковий шлях, а не обов\'язковий.'],
+      hint: 'QR-сторінка допомагає гостю підготувати дані та ознайомитися з інструкціями до заїзду. Команда бачить інформацію перед прибуттям гостя.',
+      cta: 'Запросити тест: підготовка до заїзду', start: 'Подивіться, як гість отримує інструкції до приїзду',
+      steps: [['QR на рецепції або посилання до приїзду', 'гість відкриває гостьову сторінку на своєму телефоні'], ['Гість заздалегідь переглядає інструкції', 'і готує дані для заїзду'], ['Команда бачить інформацію перед прибуттям', 'і може підготуватися до зустрічі']],
+      faq: [['Гості старшого віку впораються?', 'Якщо гостю потрібна допомога, команда може провести заселення звичним способом. QR-сторінка є додатковим шляхом.'],
         ['Нам доведеться скорочувати людей?', 'Ні. Мета: щоб команда, яка є, встигала більше, а гості не чекали.'],
-        ['Це складно підключити?', 'Базове налаштування: за покроковою інструкцією в тестовому доступі. Якщо застрягнете: напишіть нам, допоможемо.']] },
+        ['Це складно підключити?', 'Потрібні кроки залежать від обраного сценарію та налаштувань об’єкта. До початку тесту узгодимо, що саме можна перевірити.']] },
     2: { funnel: 'nights', video: 'n-timeline', eyebrow: 'Однакові й нічні питання',
       h1: 'Скільки коштують <em>однакові відповіді гостям?</em>',
       sub: 'Wi‑Fi, паркінг, як зайти, куди ключ. Порахуйте, скільки часу на це йде щомісяця.',
       fields: [
-        { id: 'g', label: 'Гостей на місяць', unit: 'гостей', min: 10, max: 1500, step: 10, v: 120 },
+        { id: 'g', label: 'Гостей на місяць', unit: 'гостей', min: 1, max: 1500, step: 1, v: 30 },
         { id: 'q', label: 'Питань від одного гостя', unit: 'питань', min: 1, max: 10, step: 1, v: 4 },
         { id: 'min', label: 'Хвилин на одну відповідь', unit: 'хв', min: 1, max: 10, step: 1, v: 3 }, RATE],
       calc: x => { const n = x.g * x.q, h = n * x.min / 60, m = h * x.rate;
         return { label: 'однакових відповідей щомісяця', num: grn(n), lines: [`≈ <b>${grn(h)} год</b> роботи`, `≈ <b>${grn(m)} грн</b> на місяць`] }; },
-      hint: 'Більшість цих відповідей гість може отримати заздалегідь: автоматично, у потрібний момент. А на прості питання відповість ШІ-помічник.',
-      cta: 'Налаштувати повідомлення: 14 днів', start: 'Почніть із повідомлень гостям: інструкція всередині',
-      steps: [['Бронь', 'гість отримує підтвердження з чіткими цінами'], ['За день і за кілька годин до заїзду', 'як доїхати, де паркінг, як зайти в номер'], ['Під час і при виїзді', 'сніданок, сауна: з оплатою; куди покласти ключ'], ['Решта питань', 'відповідає ШІ-помічник за вашими текстами']],
-      faq: [['А якщо гість спитає щось нестандартне?', 'Питання прийде вам, як зараз. ШІ-помічник відповідає лише на те, що ви прописали.'],
+      hint: 'Частину відповідей можна зібрати на гостьовій сторінці й надіслати гостю заздалегідь. Посилання можна передати у Viber.',
+      cta: 'Запросити тест: інструкції для гостей', start: 'Після заявки узгодимо налаштування та дату старту',
+      steps: [['Перед приїздом', 'надішліть гостю посилання на корисну інформацію'], ['На гостьовій сторінці', 'як доїхати, де паркінг і як зайти'], ['Під час проживання', 'гість може повернутися до інструкцій'], ['Якщо потрібна допомога', 'гість зв’язується з вашою командою']],
+      faq: [['А якщо гість спитає щось нестандартне?', 'Гість звертається до вашої команди звичним для вас способом.'],
         ['Тексти можна змінити?', 'Так. Усі повідомлення пишете ви: під свій готель і свій тон.'],
-        ['Це можна перевірити до оплати?', 'Так. 14 днів безкоштовно: налаштуйте повідомлення й подивіться, скільки питань зникне.']] },
+        ['Як подивитися, чи підійде це нам?', 'Подайте запит на 14-денний тест. Команда VDALO узгодить налаштування та дату старту.']] },
     3: { funnel: 'overbook', video: 'o-7eur', eyebrow: 'Овербукінг і Booking вручну', price: null,
-      h1: 'Скільки коштують <em>ручний перенос і овербукінг?</em>',
-      sub: 'Бронювання з Booking.com та Airbnb звіряєте вручну або окремо погоджуєте вартість синхронізації.',
+      h1: 'Скільки часу йде на <em>звірку бронювань?</em>',
+      sub: 'Оцініть ручне перенесення між каналами та можливі витрати через овербукінг на власних даних.',
       fields: [
-        { id: 'ota', label: 'Броней з Booking і Airbnb на місяць', unit: 'броней', min: 5, max: 500, step: 5, v: 60 },
-        { id: 'min', label: 'Хвилин на ручний перенос однієї броні', unit: 'хв', min: 1, max: 15, step: 1, v: 5 },
-        { id: 'ob', label: 'Овербукінгів на рік', unit: 'разів', min: 0, max: 20, step: 1, v: 2 },
-        { id: 'obc', label: 'Вартість одного овербукінгу', unit: 'грн', min: 0, max: 30000, step: 500, v: 6000, hint: 'переселення, компенсація, знижка' }, RATE],
+        { id: 'ota', label: 'Бронювань для ручної звірки на місяць', unit: 'бронювань', min: 1, max: 500, step: 1, v: 12 },
+        { id: 'min', label: 'Хвилин на звірку одного бронювання', unit: 'хв', min: 1, max: 15, step: 1, v: 5 },
+        { id: 'ob', label: 'Випадків овербукінгу на рік', unit: 'випадків', min: 0, max: 20, step: 1, v: 0 },
+        { id: 'obc', label: 'Витрати на один такий випадок', unit: 'грн', min: 0, max: 30000, step: 500, v: 0, hint: 'переселення, компенсація або знижка, якщо були' }, RATE],
       calc: x => { const h = x.ota * x.min / 60, manual = h * x.rate * 12, ob = x.ob * x.obc;
-        return { label: 'втрачаєте на рік', num: `−${grn(manual + ob)} грн`, neg: true, lines: [`ручний перенос: <b>${grn(h)} год/міс</b>`, `овербукінги: <b>${grn(ob)} грн/рік</b>`] }; },
-      hint: 'І те, що не порахуєш: відгук 1★ і штрафи Booking. У VDALO броні з каналів падають у календар самі, а проданий номер закривається всюди.',
-      cta: 'Підключити Booking і Airbnb: 14 днів', start: 'Почніть із підключення Booking і Airbnb: інструкція всередині',
-      steps: [['Підключаєте Booking.com і Airbnb', 'один раз, за погодженим сценарієм'], ['Бронювання з’являються в календарі', 'без ручного перенесення між підключеними каналами'], ['Після продажу номер закривається', 'на каналах, які підключені до системи']],
-      faq: [['Синхронізація входить у 390 грн?', 'Ні. Booking і Airbnb: у старшому тарифі або доплатою до Start. Ціни: на vdalo.tech.'],
-        ['А брони, що вже є?', 'Допоможемо перенести їх на старті, щоб календар був повним з першого дня.'],
-        ['А бронювання телефоном?', 'Додаєте його в той самий календар, а доступність оновлюється на підключених каналах.']] },
-    4: { funnel: 'commission', video: 'b-share', eyebrow: 'Залежність від Booking',
-      h1: 'Скільки ви віддаєте Booking <em>за рік?</em>',
-      sub: 'Booking потрібен. Але кожна бронь, яку гість міг зробити напряму, коштує вам 15–25%.',
+        return { label: 'орієнтовна сума часу та введених витрат за рік', num: `${grn(manual + ob)} грн`, lines: [`ручна звірка: <b>${grn(h)} год/міс</b>`, `введені витрати через овербукінг: <b>${grn(ob)} грн/рік</b>`] }; },
+      hint: 'Синхронізація підключених каналів може зменшити ручну звірку та ризик овербукінгу. Перевіряйте, що інтеграції активні й дані оновлюються.',
+      cta: 'Запросити тест: канали бронювання', start: 'Після заявки перевіримо потрібні канали й умови підключення',
+      steps: [['Погоджуєте потрібні канали', 'сумісність і сценарій перевіряються до підключення'], ['Бронювання передаються до календаря', 'відповідно до налаштувань інтеграції'], ['Доступність оновлюється на каналах', 'перевіряйте статус синхронізації після підключення']],
+      faq: [['Як дізнатися умови підключення каналів?', 'Доступність інтеграції та тариф залежать від конфігурації об’єкта. Уточніть актуальні умови у VDALO перед підключенням.'],
+        ['А бронювання, що вже є?', 'Порядок перенесення наявних бронювань команда узгодить під час підключення.'],
+        ['А бронювання телефоном?', 'Додайте його в календар об’єкта. Доступність на підключених каналах оновлюється відповідно до налаштувань інтеграції.']] },
+    4: { funnel: 'commission', video: 'b-share', eyebrow: 'БРОНЮВАННЯ НАПРЯМУ',
+      h1: 'Скільки часу йде на відповіді про вільні дати?',
+      sub: 'Запити приходять телефоном, у Viber та Instagram? Оцініть час на ручні відповіді й координацію бронювань.',
       fields: [
-        { id: 'n', label: 'Броней через Booking на місяць', unit: 'броней', min: 1, max: 300, step: 1, v: 10 },
-        { id: 'chk', label: 'Середній чек броні', unit: 'грн', min: 500, max: 50000, step: 500, v: 9000 },
-        { id: 'pct', label: 'Комісія Booking', unit: '%', min: 10, max: 25, step: 1, v: 15 },
-        { id: 'sh', label: 'Скільки гостей могли б бронювати напряму', unit: '%', min: 0, max: 50, step: 5, v: 20, hint: 'ті, хто знайшов вас в Instagram, Google чи повертається вдруге' }],
-      calc: x => { const y = x.n * x.chk * x.pct / 100 * 12, keep = y * x.sh / 100;
-        return { label: 'комісія Booking за рік', num: `−${grn(y)} грн`, neg: true, lines: [`якщо ${x.sh}% бронюватимуть напряму: у вас лишиться <b>${grn(keep)} грн/рік</b>`] }; },
-      hint: 'Booking лишається: прямий канал додається. А в P&L видно чистий дохід кожного каналу після комісій.',
-      cta: 'Запустити прямі бронювання: 14 днів', start: 'Почніть із кнопки «Забронювати»: інструкція всередині',
-      steps: [['Кнопка «Забронювати»', 'на сайті, в Instagram, у Google-картці'], ['Гість обирає дати й платить одразу', 'без переписок і дзвінків'], ['Бронь у календарі VDALO', 'канали оновлено, дохід: у P&L по каналах']],
+        { id: 'n', label: 'Запитів про бронювання на місяць', unit: 'запитів', min: 1, max: 500, step: 1, v: 12 },
+        { id: 'min', label: 'Хвилин на одну відповідь', unit: 'хв', min: 1, max: 30, step: 1, v: 5 }, RATE],
+      calc: x => { const h = x.n * x.min / 60, m = h * x.rate;
+        return { label: 'час на відповіді про бронювання за місяць', num: `${grn(h)} год`, lines: [`орієнтовна вартість цього часу: <b>${grn(m)} грн/міс</b>`, `оцінка залежить від введених вами даних`] }; },
+      hint: 'Посилання з доступністю й цінами можна надіслати гостю у Viber чи Instagram. Це допомагає перейти від повторної переписки до конкретного запиту.',
+      cta: 'Запросити тест: прямі запити', start: 'Подивіться, як гість переглядає доступні дати й надсилає запит',
+      steps: [['Посилання на доступність', 'на сайті, в Instagram або в повідомленні гостю'], ['Гість переглядає дати й ціни', 'і надсилає запит на потрібний варіант'], ['Запит відображається в календарі', 'команда перевіряє деталі та підтверджує бронювання']],
       faq: [['Потрібен свій сайт?', 'Ні. Посилання на бронювання можна поставити в Instagram, Google-картку чи месенджер.'],
-        ['А як гість платить?', 'Онлайн-оплату підключаєте в налаштуваннях. Якщо потрібно: допоможемо.'],
-        ['Booking доведеться вимкнути?', 'Ні. Booking лишається каналом, VDALO тримає його в синхроні з прямими бронюваннями.']] },
+        ['Як гість вносить передплату?', 'Умови та спосіб передплати ви узгоджуєте з гостем окремо. Онлайн-оплату сторінка не обіцяє.'],
+        ['Booking доведеться вимкнути?', 'Не обов’язково. Можливість поєднати Booking із прямими запитами залежить від доступної інтеграції та налаштувань об’єкта.']] },
     5: { funnel: 'blackout', video: 'e-fuel', eyebrow: 'Блекаути',
       h1: 'Скільки пального <em>в кожній проданій ночі?</em>',
       sub: 'Генератор рятує, але з\'їдає маржу. Порахуйте, скільки пального в ціні кожної ночі.',
       fields: [
         { id: 'fuel', label: 'Пальне за місяць', unit: 'грн', min: 0, max: 200000, step: 1000, v: 28000 },
-        { id: 'rooms', label: 'Номерів', unit: 'номерів', min: 1, max: 200, step: 1, v: 20 },
-        { id: 'occ', label: 'Завантаженість', unit: '%', min: 10, max: 100, step: 5, v: 75 }],
-      calc: x => { const nights = x.rooms * x.occ / 100 * 30, per = nights ? x.fuel / nights : 0;
-        return { label: 'пального на кожну продану ніч', num: `${grn(per)} грн`, neg: true, lines: [`продано ночей за місяць: <b>${grn(nights)}</b>`, `пальне за рік: <b>${grn(x.fuel * 12)} грн</b>`] }; },
-      hint: 'Закладіть це в ціну: або бачте окремою статтею в P&L VDALO. А готель тим часом працює з телефона.',
-      cta: 'Спробувати VDALO 14 днів безкоштовно', start: 'Почніть із мобільного застосунку: інструкція всередині',
-      steps: [['Усе в хмарі', 'бронювання, оплати й канали: з телефона на мобільному інтернеті'], ['ШІ-помічник відповідає гостям', 'про генератор, Wi‑Fi, укриття: поки ви зайняті'], ['Пальне: окремою статтею P&L', 'видно, скільки коштує ніч і чи закладено це в ціну']],
+        { id: 'rooms', label: 'Номерів', unit: 'номерів', min: 1, max: 200, step: 1, v: 6 },
+        { id: 'occ', label: 'Завантаженість', unit: '%', min: 0, max: 100, step: 5, v: 75 }],
+      calc: x => { const nights = x.rooms * x.occ / 100 * 30, per = nights ? `${grn(x.fuel / nights)} грн` : 'Немає проданих ночей';
+        return { label: 'пального на кожну продану ніч', num: per, neg: true, lines: [`продано ночей за місяць: <b>${grn(nights)}</b>`, `пальне за рік: <b>${grn(x.fuel * 12)} грн</b>`] }; },
+      hint: 'Оцініть витрати на пальне й закладіть їх у планування. Робочі дані доступні з телефона за наявності інтернету.',
+      cta: 'Запросити тест: робота з телефона', start: 'Після заявки узгодимо налаштування та дату старту',
+      steps: [['Доступ із телефона', 'переглядайте бронювання за наявності інтернету'], ['Інструкції для гостей', 'передайте посилання на Wi‑Fi, паркінг та правила заїзду'], ['Витрати на генератор', 'врахуйте пальне у власному розрахунку вартості проживання']],
       faq: [['А якщо немає і мобільного зв\'язку?', 'Потрібен мобільний інтернет на телефоні. Без зв\'язку не працює жодна онлайн-система: тому важливо, що VDALO не прив\'язана до комп\'ютера рецепції.'],
-        ['Генератор: це окремий модуль?', 'Ні. Пальне вносите як витрату, а P&L сам показує, скільки воно коштує в кожній ночі.'],
-        ['Скільки коштує VDALO?', '14 днів: безкоштовно. Далі: від 390 грн/міс.']] }
+        ['Чи доступна система без інтернету?', 'Для роботи з онлайн-системою потрібне інтернет-з’єднання. Перевірте резервний мобільний зв’язок для вашого об’єкта.'],
+        ['Як почати тест?', 'Подайте запит. Команда VDALO узгодить налаштування, дату старту та актуальні умови тарифу.']] }
   };
 
   const params = new URLSearchParams(location.search);
@@ -311,13 +316,13 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
     cfg = K[n] || K[1]; vals = {};
     document.title = `VDALO: ${cfg.eyebrow.toLowerCase()}: порахуйте`;
     $('k-eyebrow').textContent = cfg.eyebrow; $('k-h1').innerHTML = cfg.h1; $('k-sub').textContent = cfg.sub;
-    const artByFunnel = { staff: ['staff-checkin.webp', 'Гість заселяється самостійно'], nights: ['night-answers.webp', 'Відповіді гостю вчасно'], overbook: ['channel-sync.webp', 'Бронювання в одному календарі'], commission: ['direct-bookings.webp', 'Більше прямих бронювань'], blackout: ['power-mobile.webp', 'Керуйте з телефона'] };
+    const artByFunnel = { staff: ['staff-checkin.webp', 'Гість готується до заїзду'], nights: ['night-answers.webp', 'Інструкції для гостя'], overbook: ['channel-sync.webp', 'Бронювання в одному календарі'], commission: ['direct-bookings.webp', 'Прямий запит на бронювання'], blackout: ['power-mobile.webp', 'Доступ із телефона за наявності інтернету'] };
     const [art, artCaption] = artByFunnel[cfg.funnel] || artByFunnel.staff;
     $('k-art-image').src = `/sms-trial-assets/top5/art/${art}`; $('k-art-caption').innerHTML = `<span>VDALO для готелю</span>${artCaption}`;
     $('k-price').hidden = cfg.price === null;
     $('k-cta').textContent = $('k-cta2').textContent = cfg.cta;
     $('k-after-start').textContent = cfg.start;
-    $('go-sheet-title').textContent = { staff: '14 днів VDALO: почніть із QR-заселення', nights: '14 днів VDALO: налаштуйте повідомлення гостям', overbook: '14 днів VDALO: підключіть Booking і Airbnb', commission: '14 днів VDALO: запустіть прямі бронювання', blackout: '14 днів VDALO: готель у вашому телефоні' }[cfg.funnel];
+    $('go-sheet-title').textContent = { staff: 'Запросити тест: підготовка до заїзду', nights: 'Запросити тест: інструкції для гостей', overbook: 'Запросити тест: синхронізація бронювань', commission: 'Запросити тест: прямі запити', blackout: 'Запросити тест: доступ із телефона' }[cfg.funnel];
     $('k-steps').innerHTML = cfg.steps.map(([b, s]) => `<li><div><b>${b}</b><span>${s}</span></div></li>`).join('');
     $('k-faq').innerHTML = cfg.faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('');
     $('k-form').innerHTML = cfg.fields.map(f => `<div class="k-field">
@@ -360,7 +365,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
   // sheet
   const sheet = $('go-sheet');
   const emit = (name, detail) => document.dispatchEvent(new CustomEvent(`k:${name}`, { detail }));
-  const open = () => { sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false'); setTimeout(() => $('go-email').focus(), 250); emit('cta', { code: $('go-code').value, calc: $('go-calc').value }); };
+  const open = () => { sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false'); setTimeout(() => $('go-phone').focus(), 250); emit('cta', { code: $('go-code').value, calc: $('go-calc').value }); };
   const close = () => { sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); };
   document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', open));
   sheet.addEventListener('click', e => { if (e.target === sheet) close(); });
@@ -370,18 +375,42 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
     group.querySelectorAll('.go-chip').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     $(`go-${group.dataset.name}`).value = b.dataset.v;
   }));
-  $('go-form').addEventListener('submit', e => {
+  $('go-form').addEventListener('submit', async e => {
     e.preventDefault();
     const phone = $('go-phone').value.replace(/[^\d+]/g, '');
     const email = $('go-email').value.trim();
     const err = $('go-err');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Перевірте e-mail'; return; }
-    if (phone.replace(/\D/g, '').length < 10) { err.textContent = 'Перевірте номер телефону'; return; }
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Перевірте формат e-mail або залиште поле порожнім'; return; }
+    if (phone.replace(/\D/g, '').length < 9) { err.textContent = 'Перевірте номер телефону'; return; }
+    if (!$('go-consent').checked) { err.textContent = 'Підтвердьте згоду на обробку даних.'; return; }
     err.textContent = '';
-    const data = Object.fromEntries(new FormData(e.target)); data.phone = phone;
-    // TODO(Codex): register via the site's trial signup (same flow as /go), start the 14-day trial, then redirect or show thanks.
-    emit('lead', data);
-    sheet.classList.add('done');
+    const data = Object.fromEntries(new FormData(e.target));
+    data.phone = phone;
+    data.consent = true;
+    for (const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']) data[key] = params.get(key) || '';
+    if (params.get('utm_campaign') === 'hotel_quiz') {
+      try {
+        const quiz = JSON.parse(sessionStorage.getItem('vdalo-quiz-context') || 'null');
+        const quizRoute = location.pathname.replace(/\/$/, '') || '/';
+        if (quiz && quiz.recommendation_route === quizRoute) { data.quiz_answers = quiz; data.quiz_landing_route = quizRoute; }
+      } catch {}
+    }
+    const button = e.submitter || $('go-form').querySelector('[type="submit"]');
+    button.disabled = true;
+    button.textContent = 'Надсилаємо…';
+    try {
+      const response = await fetch('/api/funnels/top5', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.message || 'Не вдалося надіслати запит.');
+      emit('lead', { funnel: data.funnel, code: data.code });
+      try { sessionStorage.removeItem('vdalo-quiz-context'); } catch {}
+      sheet.classList.add('done');
+    } catch (error) {
+      err.textContent = error.message || 'Не вдалося надіслати запит. Спробуйте ще раз.';
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Запросити тест на 14 днів';
+    }
   });
 })();
 </script>

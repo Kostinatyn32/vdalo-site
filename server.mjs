@@ -31,6 +31,7 @@ import {handleWayForPay} from './payments/wayforpay.mjs';
 import {applySitewideSchema} from './versions/v1/schema.mjs';
 import {getPublicSitemapRoutes} from './versions/v1/sitemap.mjs';
 import {renderTouristTaxHub,renderTouristTaxCity,handleTouristTaxCalculation} from './versions/v1/tourist-tax.mjs';
+import {renderTouristTaxFunnel} from './microlandings/tourist-tax-funnel.mjs';
 import {touristTaxCityRoutes} from './versions/v1/tourist-tax-data.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
@@ -90,6 +91,8 @@ const server=http.createServer(async(req,res)=>{
   if(req.method==='POST' && /^\/api\/leads\/(trial|audit)$/.test(pathname))return leadServer.emit('request',req,res);
   if(!['GET','HEAD'].includes(req.method))return send(res,405,'Метод недоступний.','text/plain; charset=utf-8');
   if(pathname==='/tourist-tax'){res.writeHead(308,{Location:'/tourist-tax/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/tourist-tax/start/') {res.writeHead(308,{Location:'/tourist-tax/start'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/tourist-tax/start')return send(res,200,renderTouristTaxFunnel());
   if(pathname==='/tourist-tax/')return send(res,200,renderTouristTaxHub(),'text/html; charset=utf-8',req.method);
   if(/^\/tourist-tax\/[^/]+$/.test(pathname)){res.writeHead(308,{Location:pathname+'/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   const touristTaxCity=pathname.match(/^\/tourist-tax\/([a-z0-9-]+)\/$/);
@@ -160,7 +163,7 @@ const server=http.createServer(async(req,res)=>{
    const filename=path.join(root,'microlandings','public',path.basename(pathname));
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }
-  if(/^\/quiz-assets\/(?:quiz\.(?:css|js)|hotel-reception\.webp)$/.test(pathname)){
+  if(/^\/quiz-assets\/(?:quiz\.(?:css|js)|hotel-reception\.webp|quiz-manual-checkin\.jpg)$/.test(pathname)){
    const filename=path.join(root,'microlandings','public',path.basename(pathname));
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }

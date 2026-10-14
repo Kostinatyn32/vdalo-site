@@ -81,22 +81,22 @@
       stage.append(h('<div class="vdv-kicker" data-a>VDALO · система для готелів</div>'));
       const caps = captions(stage, [
         [0.1, 3.2, 'Ваш тиждень <em>у готелі</em>'],
-        [3.4, 14.8, 'VDALO <em>викреслює</em> рутину'],
-        [15.1, 18.0, 'Рутина: на автоматі. <em>Ви: на головному.</em>', 27]
+        [3.4, 14.8, 'Процеси готелю <em>в одному місці</em>'],
+        [15.1, 18.0, 'Більше процесів <em>під контролем.</em>', 27]
       ]);
       const meter = h(`<div class="vdv-meter" data-a>
-          <div><b><span class="n">14</span><small>год</small></b></div>
-          <span style="text-align:right">рутини<br>на тиждень</span>
+          <div><b><span class="n">6</span><small>кроків</small></b></div>
+          <span style="text-align:right">робочих<br>сценаріїв</span>
           <div class="bar"><i></i></div></div>`);
       stage.append(meter);
       const num = meter.querySelector('.n'), bar = meter.querySelector('.bar i');
       const ROWS = [
-        ['b', 'B', 'Перенести бронювання з Booking', 'синхронізовано автоматично'],
-        ['a', 'A', 'Закрити дати в Airbnb', 'закрито автоматично'],
-        ['v', ICON.chat, 'Відповісти про паркінг і Wi‑Fi', 'відповів ШІ-помічник'],
-        ['n', ICON.receipt, 'Пробити чек і туристичний збір', 'чек ПРРО створено'],
-        ['n', ICON.broom, 'Сказати покоївці про 202', 'задачу надіслано'],
-        ['x', ICON.key, 'Заселити гостя о 01:00', 'PIN-код надіслано']
+        ['b', 'B', 'Бронювання з Booking', 'у календарі після підключення'],
+        ['a', 'A', 'Доступність в Airbnb', 'за умовами інтеграції'],
+        ['v', ICON.chat, 'Надіслати гостю інструкції', 'посилання на сторінку гостя'],
+        ['n', ICON.receipt, 'Перевірити розрахунок збору', 'за ставкою громади'],
+        ['n', ICON.broom, 'Задача для покоївки · 202', 'деталі для команди'],
+        ['x', ICON.key, 'Заселити гостя о 01:00', 'інструкція доступна гостю']
       ];
       const list = h('<div class="vdv-list"></div>'); stage.append(list);
       const rows = ROWS.map(([c, ic, t, s]) => {
@@ -110,7 +110,7 @@
           <span class="vdv-ic g">${ICON.up}</span>
           <span class="tx"><span class="t">Розвивати готель</span><span class="s" style="color:#A8EBC9">а рутина: на VDALO</span></span></div>`);
       stage.append(win);
-      const foot = h('<div class="vdv-foot" data-a>Приклад для готелю на 15 номерів. Цифри умовні.</div>');
+      const foot = h('<div class="vdv-foot" data-a>Демонстрація процесу. Не вимірювання економії часу.</div>');
       stage.append(foot);
       const fin = finalFrame(stage, 18.3);
       const S = i => 3.7 + i * 1.8;
@@ -132,9 +132,9 @@
           put(ck, eo(pr(t, a + .2, a + .5)), 0, 0, .4 + .6 * eo(pr(t, a + .2, a + .55)));
           r.style.borderColor = k > .5 && t < a + 1.2 ? 'rgba(255,146,189,.6)' : '';
         });
-        const hours = 14 - 2 * done;
-        num.textContent = Math.round(hours);
-        bar.style.width = `${(hours / 14 * 100).toFixed(1)}%`;
+        const itemsLeft = Math.max(0, 6 - Math.round(done));
+        num.textContent = itemsLeft;
+        bar.style.width = `${(done / 6 * 100).toFixed(1)}%`;
         const wv = eo(pr(t, 15.6, 16.2)) * (1 - away);
         put(win, wv, 16 * (1 - eo(pr(t, 15.6, 16.2))), 0, .96 + .04 * wv);
         put(foot, eo(pr(t, 3.5, 4)) * (1 - away));
@@ -155,8 +155,8 @@
       const caps = captions(stage, [
         [0.1, 3.3, '<em>Знайомо?</em>', 40],
         [3.6, 7.0, 'Усе: <em>в одному місці</em>'],
-        [7.2, 11.0, 'Booking і Airbnb <em>без овербукінгу</em>', 28],
-        [11.2, 15.0, 'Заселення, прибирання, чеки: <em>самі</em>', 26],
+        [7.2, 11.0, 'Бронювання з підключених каналів <em>в календарі</em>', 27],
+        [11.2, 15.0, 'Бронювання й задачі: <em>в одному місці</em>', 26],
         [15.3, 18.0, 'Керуйте готелем <em>з телефона</em>']
       ]);
       const phone = h(`<div class="vdv-phone" data-a><div class="isl"></div><div class="scr">
@@ -195,20 +195,20 @@
       nb.style.left = '0'; nb.style.width = 'calc(50% - 2px)'; brows[5].d.append(nb);
       scr.append(board);
       const sync = h(`<div class="vdv-toast" data-a style="top:262px"><span class="vdv-ic p" style="width:24px;height:24px;font-size:11px">V</span>
-        <span>Нове бронювання з Booking → 302 закрито в Airbnb і на сайті</span></div>`);
+        <span>Нове бронювання з Booking. Перевірте доступність підключених каналів.</span></div>`);
       scr.append(sync);
       const TOASTS = [
-        ['p', ICON.key, 'Гість отримав PIN-код і заселився сам'],
+        ['p', ICON.key, 'Гість відкрив інструкцію до заїзду'],
         ['n', ICON.broom, 'Покоївка: задача «Прибрати 202»'],
-        ['g', ICON.receipt, 'Оплата карткою · чек ПРРО створено']
+        ['g', ICON.receipt, 'Статус передплати видно в бронюванні']
       ];
       const toasts = TOASTS.map(([c, ic, t], i) => {
         const e = h(`<div class="vdv-toast" data-a style="top:${246 + i * 52}px"><span class="vdv-ic ${c}" style="width:24px;height:24px">${ic}</span><span>${t}</span></div>`);
         e.querySelector('svg').style.cssText = 'width:13px;height:13px';
         scr.append(e); return e;
       });
-      const calm = h(`<div class="vdv-calm" data-a><b>0</b><span>пропущених дзвінків<br>за ніч</span>
-        <span style="margin-top:10px;color:#A8EBC9;font-size:12px">Усе працює. Ви: вільні.</span></div>`);
+      const calm = h(`<div class="vdv-calm" data-a><b>FAQ</b><span>відповіді на типові<br>запитання</span>
+        <span style="margin-top:10px;color:#A8EBC9;font-size:12px">Інформацію можна надіслати завчасно.</span></div>`);
       phone.append(calm);
       const foot = h('<div class="vdv-foot" data-a>PIN-заселення: з розумним замком</div>');
       stage.append(foot);
@@ -264,8 +264,8 @@
       stage.append(h('<div class="vdv-kicker" data-a>VDALO · система для готелів</div>'));
       const caps = captions(stage, [
         [0.1, 3.4, 'Одна ніч. <em>Два готелі.</em>'],
-        [3.6, 7.4, 'Без <em>овербукінгу</em>'],
-        [7.6, 11.4, 'Заселення <em>без рецепції</em>'],
+        [3.6, 7.4, 'Менший ризик <em>овербукінгу</em>'],
+        [7.6, 11.4, 'Менше ручних кроків <em>до заїзду</em>'],
         [11.6, 14.8, 'Прибирання <em>вчасно</em>'],
         [15.0, 18.0, 'Готель працює, <em>поки ви спите</em>', 29]
       ]);
@@ -279,20 +279,20 @@
       const ring = h('<span class="vdv-ring" data-a style="left:96px;top:56px">Дзинь!</span>'); L.append(ring);
       const zzz = h('<span class="vdv-zzz" data-a style="left:112px;top:52px">Zzz</span>'); R.append(zzz);
       const BEATS = [
-        [0.4, 3.5, '22:41', '3 пропущені дзвінки: паркінг, Wi‑Fi', '22:41', 'ШІ-помічник відповів гостям'],
-        [3.8, 7.5, '23:45', '302 продано двічі. Гість у лобі', '23:45', '302 одразу закрито в Airbnb'],
-        [7.8, 11.5, '01:50', 'Гість під дверима. Дзвонить вам', '01:50', 'Гість отримав PIN і зайшов сам'],
-        [11.8, 14.9, '05:30', '202 не прибраний до заїзду', '05:33', 'Покоївка вже отримала задачу']
+        [0.4, 3.5, '22:41', '3 пропущені дзвінки: паркінг, Wi‑Fi', '22:41', 'Гість відкрив сторінку з інструкціями'],
+        [3.8, 7.5, '23:45', '302 продано двічі. Гість у лобі', '23:45', 'Перевірте календар і підключені канали'],
+        [7.8, 11.5, '01:50', 'Гість не знає, як зайти. Дзвонить вам', '01:50', 'Інструкція з доступом підготовлена заздалегідь'],
+        [11.8, 14.9, '05:30', '202 не прибраний до заїзду', '05:33', 'Задачу для команди видно в системі']
       ];
       const evs = BEATS.map(([a, b, tl, l, tr, r]) => {
         const el = h(`<div class="vdv-ev" data-a style="top:198px"><time>${tl}</time>${l}</div>`);
         const er = h(`<div class="vdv-ev" data-a style="top:198px"><time>${tr}</time>${r}</div>`);
         L.append(el); R.append(er); return { a, b, el, er };
       });
-      const tl = h('<div class="vdv-tally" data-a>Вас будили<b>0</b></div>'); L.append(tl);
-      const tr = h('<div class="vdv-tally" data-a>Вас будили<b>0</b></div>'); R.append(tr);
+      const tl = h('<div class="vdv-tally" data-a>Дзвінки у сцені<b>0</b></div>'); L.append(tl);
+      const tr = h('<div class="vdv-tally" data-a>Інструкція<b>гостю</b></div>'); R.append(tr);
       const tlb = tl.querySelector('b'), trb = tr.querySelector('b');
-      const foot = h('<div class="vdv-foot" data-a>Умовна ніч. PIN-заселення: з розумним замком.</div>'); stage.append(foot);
+      const foot = h('<div class="vdv-foot" data-a>Самостійний вхід можливий із налаштованим сумісним замком.</div>'); stage.append(foot);
       const fin = finalFrame(stage, 18.3);
       const KEYS = [[0, 22 * 60], [3.8, 23 * 60 + 45], [7.8, 25 * 60 + 50], [11.8, 29 * 60 + 30], [15, 31 * 60]];
       const minutes = t => {
@@ -320,7 +320,7 @@
           ringing = Math.max(ringing, vis(t, a, a + 1.4, .2));
         });
         tlb.textContent = t >= 15 ? `${woke} рази` : woke;
-        trb.textContent = t >= 15 ? '0 разів' : '0';
+        trb.textContent = t >= 15 ? 'відкрита' : 'гостю';
         const big = eo(pr(t, 15, 15.6));
         put(tl, 1, -40 * big, 0, 1 + .2 * big); put(tr, 1, -40 * big, 0, 1 + .2 * big);
         winL.setAttribute('fill', t >= 15 ? '#FFE6AE' : ringing > .1 ? '#FFD27A' : '#3A2440');
