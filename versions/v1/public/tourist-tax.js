@@ -2,6 +2,19 @@ const configElement = document.getElementById('tourist-tax-config');
 let config = {};
 try { config = JSON.parse(configElement?.textContent || '{}'); } catch {}
 
+const infographic = document.querySelector('.tt-infographic');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (infographic && !reduceMotion && 'IntersectionObserver' in window) {
+  document.documentElement.classList.add('tt-motion-ready');
+  const infographicObserver = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      infographic.classList.add('is-visible');
+      infographicObserver.disconnect();
+    }
+  }, { threshold: 0.18 });
+  infographicObserver.observe(infographic);
+} else if (infographic) infographic.classList.add('is-visible');
+
 const places = Array.isArray(config.publicPlaces) ? config.publicPlaces : [];
 const searchInputs = document.querySelectorAll('[role="combobox"][aria-controls]');
 

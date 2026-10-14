@@ -1,7 +1,7 @@
 // Tax readiness is deliberately independent from settlement identity and SEO state.
 // VERIFIED means the current primary sources and calculation inputs have been checked.
 const annualTaxBases = Object.freeze({
-  2026: {minimumWageOnJanuary1: 8647, url: 'https://zakon.rada.gov.ua/laws/show/4695-20'},
+  2026: {minimumWageOnJanuary1: 8647, url: 'https://zakon.rada.gov.ua/laws/show/4695-IX'},
 });
 
 export const touristTaxSources = Object.freeze({
