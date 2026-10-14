@@ -30,21 +30,24 @@ import {renderAuthorPage} from './versions/v1/author-page.mjs';
 import {handleWayForPay} from './payments/wayforpay.mjs';
 import {applySitewideSchema} from './versions/v1/schema.mjs';
 import {getPublicSitemapRoutes} from './versions/v1/sitemap.mjs';
+import {renderTouristTaxHub,renderTouristTaxCity,handleTouristTaxCalculation} from './versions/v1/tourist-tax.mjs';
+import {touristTaxCityRoutes} from './versions/v1/tourist-tax-data.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
 const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4'};
 const gtmHead=`<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PKDT7MMT');</script>`;
 const gtmBody=`<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PKDT7MMT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
-const publicSitemapRoutes=getPublicSitemapRoutes({seoRoutes:seoRoutes(),caseSlugs,pmsArticle,pmsChoiceArticle,editorialArticles,secondPassArticles});
+const touristTaxRoutes=['/tourist-tax/',...touristTaxCityRoutes()];
+const publicSitemapRoutes=getPublicSitemapRoutes({seoRoutes:seoRoutes(),caseSlugs,pmsArticle,pmsChoiceArticle,editorialArticles,secondPassArticles,touristTaxRoutes});
 const indexableSchemaRoutes=new Set(publicSitemapRoutes);
 function withTagManager(html){
  const withHead=html.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
  return withHead.replace(/<body(?:\s[^>]*)?>/i,opening=>opening+gtmBody);
 }
-function send(res,status,text,type='text/html; charset=utf-8'){
+function send(res,status,text,type='text/html; charset=utf-8',method='GET'){
  const body=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(text,res._schemaPath||'',indexableSchemaRoutes)):text;
- res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(body);
+ res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(method==='HEAD'?undefined:body);
 }
 function sendCompressed(req,res,status,data,type,cache='no-store'){
  const source=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(Buffer.isBuffer(data)?data.toString('utf8'):data,res._schemaPath||'',indexableSchemaRoutes)):data;
@@ -80,11 +83,21 @@ const server=http.createServer(async(req,res)=>{
   // Some checkout links still submit to /v1/api/payments/* instead of /api/payments/*.
   const paymentPath=pathname.startsWith('/v1/api/payments/')?pathname.slice(3):pathname;
   if(paymentPath.startsWith('/api/payments/'))return await handleWayForPay(req,res,paymentPath);
+  if(pathname==='/api/tourist-tax/calculate')return await handleTouristTaxCalculation(req,res);
   if(pathname==='/api/funnel/leads')return await handleFunnelLead(req,res);
   if(pathname==='/api/funnels/top5')return await handleTop5Lead(req,res);
   if(pathname==='/api/tools/pms-report')return await handlePmsReport(req,res);
   if(req.method==='POST' && /^\/api\/leads\/(trial|audit)$/.test(pathname))return leadServer.emit('request',req,res);
   if(!['GET','HEAD'].includes(req.method))return send(res,405,'Метод недоступний.','text/plain; charset=utf-8');
+  if(pathname==='/tourist-tax'){res.writeHead(308,{Location:'/tourist-tax/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/tourist-tax/')return send(res,200,renderTouristTaxHub(),'text/html; charset=utf-8',req.method);
+  if(/^\/tourist-tax\/[^/]+$/.test(pathname)){res.writeHead(308,{Location:pathname+'/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  const touristTaxCity=pathname.match(/^\/tourist-tax\/([a-z0-9-]+)\/$/);
+  if(touristTaxCity){const page=renderTouristTaxCity(touristTaxCity[1]);if(page)return send(res,200,page,'text/html; charset=utf-8',req.method);}
+  if(/^\/tourist-tax-assets\/tourist-tax(?:-interactions)?\.(?:css|js)$/.test(pathname)){
+   const filename=path.join(root,'versions','v1','public',path.basename(pathname));const data=await readFile(filename);
+   res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
+  }
   if(/^\/k[1-5]$/.test(pathname))return send(res,200,await renderCalculator(url.searchParams,pathname));
   if(/^\/k[1-5]\/$/.test(pathname)){res.writeHead(308,{Location:pathname.slice(0,-1)+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/k'||pathname==='/k/')return send(res,200,await renderCalculator(url.searchParams,'/k1'));

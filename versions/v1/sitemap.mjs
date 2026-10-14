@@ -1,4 +1,4 @@
-export function getPublicSitemapRoutes({ seoRoutes, caseSlugs, pmsArticle, pmsChoiceArticle, editorialArticles, secondPassArticles }) {
+export function getPublicSitemapRoutes({ seoRoutes, caseSlugs, pmsArticle, pmsChoiceArticle, editorialArticles, secondPassArticles, touristTaxRoutes = [] }) {
   const preferredSeoOrder = ['/solutions','/integrations','/pricing','/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation','/registration','/about','/contact'];
   const seoSet = new Set(seoRoutes);
   const orderedSeoRoutes = [...preferredSeoOrder.filter(route => seoSet.has(route)), ...seoRoutes.filter(route => !preferredSeoOrder.includes(route))];
@@ -19,5 +19,6 @@ export function getPublicSitemapRoutes({ seoRoutes, caseSlugs, pmsArticle, pmsCh
     '/tools/',
     '/tools/pms-checklist/',
     '/tools/hotel-profitability-calculator/',
+    ...touristTaxRoutes,
   ];
 }
