@@ -30,24 +30,35 @@ for (const input of searchInputs) {
     const query = input.value.trim().toLocaleLowerCase('uk-UA');
     results?.replaceChildren();
     if (!query) { close(); if (status) status.textContent = ''; return; }
-    const matches = places.filter(place => `${place.name} ${place.region} ${place.district}`.toLocaleLowerCase('uk-UA').includes(query));
+    const matches = places.filter(place => `${place.name} ${place.region} ${place.district} ${place.community}`.toLocaleLowerCase('uk-UA').includes(query));
     if (!matches.length) {
       close();
-      if (status) status.textContent = 'Не знайшли це місто в довіднику. Перевірте написання або виберіть місто зі списку.';
+      if (status) status.textContent = 'Поки калькулятор доступний для населених пунктів із підтвердженою ставкою. Перевірте написання або спробуйте інший населений пункт.';
       return;
     }
-    for (const place of matches.slice(0, 8)) {
+    for (const place of matches.slice(0, 6)) {
       const option = document.createElement('button');
       option.type = 'button'; option.className = 'tt-place-choice'; option.setAttribute('role', 'option');
-      option.textContent = `${place.name} · ${place.region}`;
+      option.textContent = `${place.name} · ${place.region}${place.community ? ` · ${place.community}` : ''}${place.verified ? ' · ставку підтверджено' : ' · дані ставки перевіряються'}`;
       option.addEventListener('click', () => {
         input.value = place.name; input.readOnly = true;
-        if (form) form.dataset.placeSlug = place.slug;
+        if (form) {
+          form.dataset.placeSlug = place.slug;
+          form.dataset.rateModel = place.rateModel || 'flat';
+          const priceField=form.querySelector('[data-accommodation-price-field]');
+          const priceInput=form.elements.accommodationPricePerPersonPerDay;
+          if(priceField)priceField.hidden=form.dataset.rateModel!=='banded';
+          if(priceInput){priceInput.required=form.dataset.rateModel==='banded';priceInput.value='';}
+        }
         close();
         if (status) {
-          status.replaceChildren(document.createTextNode('Місце обрано. '));
+          status.replaceChildren(document.createTextNode(place.verified ? 'Місце обрано. ' : 'Точний розрахунок поки недоступний. '));
+          if (!place.verified && place.route) {
+            const detail = document.createElement('a'); detail.href = place.route; detail.textContent = 'Переглянути сторінку населеного пункту'; status.append(detail);
+            status.append(document.createTextNode(' '));
+          }
           const change = document.createElement('button'); change.type = 'button'; change.className = 'tt-change-place'; change.textContent = 'Змінити';
-          change.addEventListener('click', () => { input.readOnly = false; input.value = ''; if (form) delete form.dataset.placeSlug; status.textContent = ''; input.focus(); });
+          change.addEventListener('click', () => { input.readOnly = false; input.value = ''; if (form) { delete form.dataset.placeSlug;form.dataset.rateModel='flat';const priceField=form.querySelector('[data-accommodation-price-field]');const priceInput=form.elements.accommodationPricePerPersonPerDay;if(priceField)priceField.hidden=true;if(priceInput){priceInput.required=false;priceInput.value='';} } status.textContent = ''; input.focus(); });
           status.append(change);
         }
       });
@@ -82,6 +93,7 @@ if (form) {
     const days = Number(form.elements.days.value);
     const domesticGuests = Number(form.elements.domesticGuests.value);
     const inboundGuests = Number(form.elements.inboundGuests.value);
+    const accommodationPricePerPersonPerDay=form.elements.accommodationPricePerPersonPerDay?.value;
     const exemption = form.elements.exemption.value;
     const placeSlug = form.dataset.placeSlug || config.placeSlug;
     const guestGroups = [{ category: 'domestic', guests: domesticGuests }, { category: 'inbound', guests: inboundGuests }];
@@ -89,10 +101,14 @@ if (form) {
       output.textContent = 'Перевірте дату, розрахункові доби та кількість гостей. Вкажіть щонайменше одного гостя.';
       return;
     }
+    if(form.dataset.rateModel==='banded'&&(!accommodationPricePerPersonPerDay||!Number.isFinite(Number(accommodationPricePerPersonPerDay))||Number(accommodationPricePerPersonPerDay)<=0)){
+      output.textContent='Для цього населеного пункту введіть вартість проживання на одну особу за добу.';
+      return;
+    }
     if (!placeSlug) { output.textContent = 'Спершу оберіть населений пункт зі списку.'; return; }
     output.textContent = 'Перевіряємо чинність ставки для цього періоду…';
     try {
-      const response = await fetch('/api/tourist-tax/calculate', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ placeSlug, start, days, guestGroups, exemption }) });
+      const response = await fetch('/api/tourist-tax/calculate', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ placeSlug, start, days, guestGroups, accommodationPricePerPersonPerDay, exemption }) });
       const result = await response.json();
       const messages = {
         AMBIGUOUS_PLACE: 'Оберіть населений пункт зі списку, щоб використати його місцеві дані.',
@@ -103,6 +119,10 @@ if (form) {
         SOURCE_CONFLICT: 'У джерелах є розбіжність. Точну суму тимчасово не показуємо.',
         INVALID_INPUT: 'Перевірте дату, розрахункові доби та кількість гостей.'
       };
+      if (result.state === 'PLACE_UNAVAILABLE') {
+        output.textContent = 'Для цього населеного пункту розрахунок поки недоступний. Спробуйте обрати інше місто з підтвердженою ставкою.';
+        return;
+      }
       if (!response.ok) throw new Error('Request failed');
       if (result.state === 'VERIFIED_RESULT') {
         output.replaceChildren();
@@ -112,7 +132,8 @@ if (form) {
         output.append(amount, document.createTextNode(` · ${groups} · ${result.days} розрахункових діб. Інформаційний розрахунок${result.exemptionReviewRequired ? ' до перевірки можливої пільги' : ''}.`));
         const source = document.createElement('a'); source.href = result.sourceUrl; source.rel = 'noopener'; source.textContent = 'Першоджерело місцевої ставки';
         output.append(document.createElement('br'), source, document.createTextNode(` · перевірено ${result.checkedAt}`));
-      } else output.textContent = messages[result.state] || 'Не вдалося виконати перевірку. Спробуйте пізніше.';
+      } else if(result.state==='RATE_THRESHOLD_AMBIGUOUS') output.textContent=`Місцеве рішення не дає однозначно визначити ставку для ціни рівно ${new Intl.NumberFormat('uk-UA').format(result.thresholdUah)} грн. Уточніть тариф у міській раді або податкового агента.`;
+      else output.textContent = messages[result.state] || 'Не вдалося виконати перевірку. Спробуйте пізніше.';
     } catch { output.textContent = 'Не вдалося зв’язатися з калькулятором. Спробуйте ще раз пізніше.'; }
   });
 }

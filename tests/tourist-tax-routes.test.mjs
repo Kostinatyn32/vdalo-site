@@ -4,6 +4,7 @@ import {Readable} from 'node:stream';
 
 process.env.VERCEL='1';
 const {default:server}=await import('../server.mjs');
+const {touristTaxPlaces,touristTaxCityRoutes,canIndexTouristTaxPlace}=await import('../versions/v1/tourist-tax-data.mjs');
 
 async function request(url,method='GET'){
   const req={url,method,headers:{},on(){},once(){},resume(){}};
@@ -21,10 +22,40 @@ test('hub, city, assets and sitemap resolve through the actual app router',async
   const hub=await request('/tourist-tax/');
   assert.equal(hub.status,200);
   assert.match(hub.body,/Туристичний збір в Україні/);
+  assert.ok(hub.body.indexOf('class="tt-infographic"')<hub.body.indexOf('id="tt-calculator"'));
+  assert.ok(hub.body.indexOf('id="tt-calculator"')<hub.body.indexOf('class="tt-section tt-directory"'));
+  assert.ok(hub.body.lastIndexOf('class="tt-sources"')>hub.body.indexOf('class="tt-seo-content"'));
+  assert.match(hub.body,/tax\.gov\.ua\/rishennya-mistsevih-rad-/);
+  assert.match(hub.body,/rada\/show\/v0011201-11/);
+  assert.match(hub.body,/Реквізити для оплати залежать від громади/);
   const city=await request('/tourist-tax/lutsk/');
   assert.equal(city.status,200);
   assert.match(city.body,/index,follow/);
   assert.match(city.body,/Розрахуйте туристичний збір/);
+  assert.match(city.body,/tax\.gov\.ua\/rishennya-mistsevih-rad-/);
+  assert.match(city.body,/Ставку звірено 14 жовтня 2026 року/);
+  assert.match(city.body,/Наступна планова перевірка джерел: до 1 грудня 2026 року/);
+  assert.match(city.body,/а не гарантія незмінності ставки/);
+  for(const slug of ['sumy','vinnytsya','pivdenne','ternopil','zaporizhzhya','rivne','chernihiv','kolomyya','ivano-frankivsk','chernivtsi','lviv','cherkasy','berehove','uzhhorod','slavsko']){
+    const verifiedCity=await request(`/tourist-tax/${slug}/`);
+    assert.equal(verifiedCity.status,200);
+    assert.match(verifiedCity.body,/name="robots" content="index,follow"/);
+    assert.match(verifiedCity.body,/Розрахуйте туристичний збір/);
+    assert.match(verifiedCity.body,/Ставку звірено 14 жовтня 2026 року/);
+    assert.match(verifiedCity.body,/Наступна планова перевірка джерел: до 1 грудня 2026 року/);
+  }
+  const pendingCity=await request('/tourist-tax/aktove/');
+  assert.equal(pendingCity.status,404,'unreleased settlements should not have public pages');
+  assert.doesNotMatch(pendingCity.body,/noindex/i);
+  assert.doesNotMatch(pendingCity.body,/0,3\s*%|24,00|80,00/);
+  for(const slug of ['kyyiv','bukovel','bar']){
+    const unreleased=await request(`/tourist-tax/${slug}/`);
+    assert.equal(unreleased.status,404,`${slug} is not approved for the current release wave`);
+    assert.doesNotMatch(unreleased.body,/noindex/i);
+  }
+  const hubConfig=JSON.parse(hub.body.match(/<script type="application\/json" id="tourist-tax-config">([^<]+)<\/script>/)[1]);
+  assert.deepEqual(hubConfig.publicPlaces.map(place=>place.slug).sort(),['berehove','cherkasy','chernihiv','chernivtsi','ivano-frankivsk','kolomyya','lutsk','lviv','pivdenne','rivne','slavsko','sumy','ternopil','uzhhorod','vinnytsya','zaporizhzhya']);
+  assert.doesNotMatch(hub.body,/tourist-tax\/(?:kyyiv|bukovel|bar|aktove)\//);
   const css=await request('/tourist-tax-assets/tourist-tax.css');
   assert.equal(css.status,200);
   assert.match(css.headers['Content-Type'],/text\/css/);
@@ -36,6 +67,26 @@ test('hub, city, assets and sitemap resolve through the actual app router',async
   assert.equal(sitemap.status,200);
   assert.match(sitemap.body,/https:\/\/www\.vdalo\.tech\/tourist-tax\//);
   assert.match(sitemap.body,/tourist-tax\/lutsk/);
+  assert.doesNotMatch(sitemap.body,/tourist-tax\/aktove/);
+  const citySitemapEntries=[...sitemap.body.matchAll(/<loc>https:\/\/www\.vdalo\.tech\/tourist-tax\/[^<]+<\/loc>/g)];
+  assert.equal(citySitemapEntries.length,16,'only verified city routes should appear in the city sitemap');
+  for(const slug of ['sumy','vinnytsya','pivdenne','ternopil','zaporizhzhya','rivne','chernihiv','kolomyya','ivano-frankivsk','chernivtsi','lviv','cherkasy','berehove','uzhhorod','slavsko'])assert.match(sitemap.body,new RegExp(`tourist-tax/${slug}/`));
+  for(const place of touristTaxPlaces.filter(place=>!canIndexTouristTaxPlace(place)))assert.doesNotMatch(sitemap.body,new RegExp(`tourist-tax/${place.slug}/`),`sitemap contains unreleased place: ${place.slug}`);
+});
+
+test('only released city routes resolve through the actual app router',async()=>{
+  for(const place of touristTaxPlaces){
+    const response=await request(place.route);
+    if(canIndexTouristTaxPlace(place)){
+      assert.equal(response.status,200,`released route failed: ${place.route}`);
+      assert.match(response.body,/<link rel="canonical" href="https:\/\/www\.vdalo\.tech/);
+      assert.match(response.body,/name="robots" content="index,follow"/);
+      assert.match(response.body,/class="tt-seo-content"/,`city SEO block missing: ${place.slug}`);
+    }else{
+      assert.equal(response.status,404,`unreleased route should be unavailable: ${place.route}`);
+      assert.doesNotMatch(response.body,/noindex/i);
+    }
+  }
 });
 
 test('calculation API accepts same-origin minimal inputs and fails closed',async()=>{
@@ -50,6 +101,18 @@ test('calculation API accepts same-origin minimal inputs and fails closed',async
   assert.equal(calculation.status,200);
   assert.equal(calculation.body.state,'VERIFIED_RESULT');
   assert.equal(calculation.body.totalCents,'25941');
+  const ternopilPayload={...body,placeSlug:'ternopil',start:'2026-10-10',end:undefined,nights:undefined,days:2,guestGroups:[{category:'domestic',guests:1}],accommodationPricePerPersonPerDay:'300.00'};
+  const ternopilResponse=await send({payload:JSON.stringify(ternopilPayload)});
+  assert.equal(ternopilResponse.status,200);
+  assert.equal(ternopilResponse.body.state,'VERIFIED_RESULT');
+  assert.equal(ternopilResponse.body.totalCents,'2594');
+  const ambiguousTernopil=await send({payload:JSON.stringify({...ternopilPayload,accommodationPricePerPersonPerDay:'320'})});
+  assert.equal(ambiguousTernopil.status,200,'ambiguous boundary is a safe user-facing calculation state, not an HTTP error');
+  assert.equal(ambiguousTernopil.body.state,'RATE_THRESHOLD_AMBIGUOUS');
+  const pending={...body,placeSlug:'aktove'};
+  const pendingResponse=await send({payload:JSON.stringify(pending)});
+  assert.equal(pendingResponse.status,404);
+  assert.equal(pendingResponse.body.state,'PLACE_UNAVAILABLE');
   assert.equal((await send({origin:'https://attacker.example'})).status,403);
   assert.equal((await send({contentType:'text/plain'})).status,415);
   assert.equal((await send({method:'GET'})).status,405);

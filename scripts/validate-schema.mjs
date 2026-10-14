@@ -17,6 +17,10 @@ const [render, cases, blog, editorial, secondPass, pms, pmsChoice, tools, seo, l
   import('../versions/v1/sitemap.mjs'),
 ]);
 const { applySitewideSchema } = await import('../versions/v1/schema.mjs');
+const [touristTax,touristTaxData] = await Promise.all([
+  import('../versions/v1/tourist-tax.mjs'),
+  import('../versions/v1/tourist-tax-data.mjs'),
+]);
 const origin = 'https://www.vdalo.tech';
 const serviceRoutes = new Set(['/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation']);
 const renderers = new Map([
@@ -36,8 +40,10 @@ const renderers = new Map([
   ['/tools/', () => tools.renderToolsIndex()],
   ['/tools/pms-checklist/', () => tools.renderPmsChecklist()],
   ['/tools/hotel-profitability-calculator/', () => tools.renderHotelProfitabilityCalculator()],
+  ['/tourist-tax/', () => touristTax.renderTouristTaxHub()],
+  ...touristTaxData.touristTaxCityRoutes().map(path => [path, () => touristTax.renderTouristTaxCity(path.split('/').filter(Boolean).at(-1))]),
 ]);
-const sitemapRoutes = sitemap.getPublicSitemapRoutes({seoRoutes:seo.seoRoutes(),caseSlugs:cases.caseSlugs,pmsArticle:pms.pmsArticle,pmsChoiceArticle:pmsChoice.pmsChoiceArticle,editorialArticles:editorial.editorialArticles,secondPassArticles:secondPass.secondPassArticles});
+const sitemapRoutes = sitemap.getPublicSitemapRoutes({seoRoutes:seo.seoRoutes(),caseSlugs:cases.caseSlugs,pmsArticle:pms.pmsArticle,pmsChoiceArticle:pmsChoice.pmsChoiceArticle,editorialArticles:editorial.editorialArticles,secondPassArticles:secondPass.secondPassArticles,touristTaxRoutes:['/tourist-tax/',...touristTaxData.touristTaxCityRoutes()]});
 const routes = sitemapRoutes.map(path => [path, renderers.get(path)]);
 const indexableRoutes = new Set(routes.map(([path]) => path));
 const errors = [];

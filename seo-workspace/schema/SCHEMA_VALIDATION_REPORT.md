@@ -1,8 +1,8 @@
 # JSON-LD local validation report
 
-- Date: 2026-10-13
-- Rendered indexable routes: 38
-- Passed routes: 38
+- Date: 2026-10-14
+- Rendered indexable routes: 56
+- Passed routes: 56
 - Errors: 0
 - Method: direct server-template rendering, centralized schema transformation, JSON parsing, node-ID/reference checks, page-type checks, and content-policy checks.
 - External Google Rich Results Test and Schema.org Validator: not run; local changes are not deployed and those validators need public URLs.
