@@ -17,6 +17,7 @@ export function getPublicSitemapRoutes({ seoRoutes, caseSlugs, pmsArticle, pmsCh
     ...editorialArticles.map(article => article.slug),
     ...secondPassArticles.map(article => article.slug),
     '/tools/',
+    '/tools/qr-studio/',
     '/tools/pms-checklist/',
     '/tools/hotel-profitability-calculator/',
     ...touristTaxRoutes,

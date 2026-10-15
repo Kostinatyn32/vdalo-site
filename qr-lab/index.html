@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="theme-color" content="#39233E" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://www.vdalo.tech/tools/qr-studio/" />
+    <title>QR-генератор для готелю й ресторану | VDALO</title>
+    <meta name="description" content="Створюйте QR-коди для бронювання, Wi-Fi, меню ресторану й сторінки гостя. Додавайте логотип, кольори та фото. Завантажуйте PNG, SVG, PDF." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="VDALO" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:title" content="QR-генератор для готелю й ресторану | VDALO" />
+    <meta property="og:description" content="QR-коди для Wi-Fi, бронювання, ресторанного меню та інформації для гостей. Створюйте й оформлюйте у браузері." />
+    <meta property="og:url" content="https://www.vdalo.tech/tools/qr-studio/" />
+    <meta property="og:image" content="https://www.vdalo.tech/tools/qr-studio/qr-studio-hotel-banner.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1536" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:alt" content="Телефон і гостьова картка на столі в готельному ресторані" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QR-генератор для готелю й ресторану | VDALO" />
+    <meta name="twitter:description" content="Створіть QR для Wi-Fi, бронювання, меню та сторінки гостя. Додайте логотип і завантажте файл для друку." />
+    <meta name="twitter:image" content="https://www.vdalo.tech/tools/qr-studio/qr-studio-hotel-banner.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <script>if (location.protocol === 'file:') document.documentElement.classList.add('file-preview');</script>
+  </head>
+  <body>
+    <div class="file-warning" role="status"><strong>Цей HTML-файл відкрито напряму, тому генератор не може запустити потрібні модулі.</strong> Щоб створювати QR-коди, відкрийте робочу HTTPS-версію за посиланням у відповіді Codex. Відкриття файлу через подвійне натискання показує лише макет.</div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="VDALO QR Studio, на початок"><img class="brand-logo" src="./vdalo-wordmark.png" alt="VDALO®" width="2172" height="724" /></a>
+      <div class="header-context"><span class="status-dot" aria-hidden="true"></span> QR Studio <span class="header-divider">/</span> Інструменти для готелю</div>
+      <a class="header-link" href="https://www.vdalo.tech/" target="_blank" rel="noreferrer">vdalo.tech <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <nav class="breadcrumbs app-shell" aria-label="Навігаційний ланцюжок"><a href="/">Головна</a><span>/</span><a href="/tools/">Інструменти для готелю</a><span>/</span><span aria-current="page">QR Studio</span></nav>
+    <main id="top" class="app-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-copy">
+          <p class="eyebrow"><span class="eyebrow-line"></span> QR-ГЕНЕРАТОР ДЛЯ ГОТЕЛІВ І РЕСТОРАНІВ</p>
+          <h1 id="page-title">QR-коди для готелю:<br /><em>Wi-Fi й меню</em></h1>
+          <p class="intro-lead">Створіть QR для сторінки бронювання, гостьового Wi-Fi, меню ресторану або інструкцій для гостей. Додайте логотип і стиль закладу та підготуйте код до друку просто у браузері.</p>
+          <div class="intro-points" aria-label="Переваги">
+            <span><b aria-hidden="true">✓</b> Створюється у браузері</span>
+            <span><b aria-hidden="true">✓</b> PNG, JPG, WebP, SVG і PDF</span>
+          </div>
+        </div>
+        <div class="intro-art">
+          <img class="hero-photo" src="./qr-studio-hotel-banner.png" alt="Смартфон і картка для гостей на столі в готельному ресторані" width="1536" height="1024" fetchpriority="high" />
+          <div class="hero-photo-caption"><span>QR ДЛЯ ГОСТЬОВОГО СЕРВІСУ</span><strong>Від бронювання до відгуку</strong></div>
+        </div>
+      </section>
+
+      <section class="studio" aria-labelledby="studio-title">
+        <div class="studio-heading"><div><p class="eyebrow">ВАШ КОД</p><h2 id="studio-title">Що відкриє QR-код?</h2></div><span class="step-label"><span>01</span> Налаштуйте вміст</span></div>
+        <div class="studio-layout">
+          <form id="generator-form" class="generator-form">
+            <fieldset class="usecase-fieldset">
+              <legend>Для чого потрібен QR-код?</legend>
+              <div class="usecase-grid" role="group" aria-label="Готельні сценарії QR-коду">
+                <button class="usecase-card is-active" type="button" data-preset="booking" aria-pressed="true"><span class="usecase-icon" aria-hidden="true">↗</span><span><strong>Бронювання</strong><small>Дати й ціни</small></span></button>
+                <button class="usecase-card" type="button" data-preset="wifi" aria-pressed="false"><span class="usecase-icon" aria-hidden="true">⌁</span><span><strong>Wi-Fi</strong><small>Доступ до мережі</small></span></button>
+                <button class="usecase-card" type="button" data-preset="menu" aria-pressed="false"><span class="usecase-icon" aria-hidden="true">☷</span><span><strong>Меню ресторану</strong><small>Страви й напої</small></span></button>
+                <button class="usecase-card" type="button" data-preset="guest" aria-pressed="false"><span class="usecase-icon" aria-hidden="true">⌂</span><span><strong>Сторінка гостя</strong><small>Правила й інструкції</small></span></button>
+                <button class="usecase-card" type="button" data-preset="review" aria-pressed="false"><span class="usecase-icon" aria-hidden="true">☆</span><span><strong>Відгук</strong><small>Оцінка перебування</small></span></button>
+                <button class="usecase-card" type="button" data-preset="reception" aria-pressed="false"><span class="usecase-icon" aria-hidden="true">☏</span><span><strong>Рецепція</strong><small>Контакти й допомога</small></span></button>
+              </div>
+              <p class="usecase-note" id="usecase-note" aria-live="polite">Вставте посилання на власну сторінку бронювання. Гість відкриє її камерою телефона.</p>
+            </fieldset>
+            <fieldset class="mode-fieldset">
+              <legend>Оберіть тип інформації</legend>
+              <div class="mode-tabs" role="tablist" aria-label="Тип QR-коду">
+                <button class="mode-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="mode-panel" id="tab-url" data-mode="url"><span class="mode-icon" aria-hidden="true">↗</span><span>Посилання</span></button>
+                <button class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="mode-panel" id="tab-wifi" data-mode="wifi"><span class="mode-icon wifi-icon" aria-hidden="true">⌁</span><span>Wi-Fi</span></button>
+                <button class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="mode-panel" id="tab-text" data-mode="text"><span class="mode-icon" aria-hidden="true">T</span><span>Текст</span></button>
+              </div>
+            </fieldset>
+            <div class="form-panel" id="mode-panel" role="tabpanel" aria-labelledby="tab-url">
+              <div class="field-group" data-fields="url">
+                <label for="url-value" id="url-label">Посилання для бронювання</label>
+                <input id="url-value" type="text" inputmode="url" autocomplete="url" placeholder="https://hotel.ua/booking" />
+                <p class="field-hint" id="url-hint">Використайте повне посилання на форму або сторінку бронювання.</p>
+              </div>
+              <div class="field-group is-hidden" data-fields="wifi" hidden>
+                <label for="wifi-name">Назва мережі</label><input id="wifi-name" type="text" autocomplete="off" placeholder="Hotel Guest Wi-Fi" maxlength="128" />
+                <div class="field-split"><div><label for="wifi-password">Пароль мережі</label><div class="password-wrap"><input id="wifi-password" type="password" autocomplete="new-password" placeholder="Введіть пароль" maxlength="64" /><button type="button" id="toggle-password" class="show-password" aria-label="Показати пароль" aria-pressed="false">◉</button></div></div><div><label for="wifi-security">Захист мережі</label><select id="wifi-security"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Без пароля</option></select></div></div>
+                <p class="field-hint">Введіть пароль саме від гостьової мережі. WPA/WPA2 приймає 8–63 друковані латинські символи або 64 шістнадцяткові знаки, WEP має інші вимоги. Пароль буде доступний кожному, хто сканує QR.</p>
+              </div>
+              <div class="field-group is-hidden" data-fields="text" hidden>
+                <label for="text-value">Текст для гостей</label><textarea id="text-value" rows="4" maxlength="800" placeholder="Наприклад: Сніданок подають щодня з 8:00 до 10:30 на першому поверсі."></textarea>
+                <div class="textarea-meta"><span class="field-hint">Короткий текст легше сканується й відкривається.</span><span id="text-count">0 / 800</span></div>
+              </div>
+            </div>
+            <p class="static-qr-note"><span aria-hidden="true">ⓘ</span> QR-код містить вибрані дані. Якщо змінити посилання, пароль або текст, потрібно створити новий код.</p>
+            <details class="qr-customizer" open>
+              <summary><span><strong>Оформлення QR</strong><small>Кольори, форма, логотип і фото</small></span><span class="customizer-chevron" aria-hidden="true">⌄</span></summary>
+              <div class="customizer-content">
+                <div class="customizer-section">
+                  <h3>Стиль коду</h3>
+                  <div class="customizer-grid">
+                    <label class="custom-field">Колір коду<div class="color-control"><input id="qr-foreground" type="color" value="#39233e" aria-label="Колір модулів QR"><input id="qr-foreground-hex" type="text" value="#39233e" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="HEX-код кольору QR"></div></label>
+                    <label class="custom-field">Фон картки<div class="color-control"><input id="qr-background" type="color" value="#ffffff" aria-label="Колір фону QR"><input id="qr-background-hex" type="text" value="#ffffff" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="HEX-код фону QR"></div></label>
+                    <label class="custom-field">Форма модулів<select id="qr-module-shape"><option value="square">Квадрат</option><option value="rounded">Заокруглені</option><option value="dots">Крапки</option></select></label>
+                    <label class="custom-field">Форма маркерів<select id="qr-eye-shape"><option value="square">Квадратна</option><option value="rounded">Заокруглена</option><option value="circle">Кругла</option></select></label>
+                  </div>
+                </div>
+                <div class="customizer-section">
+                  <h3>Логотип у центрі</h3>
+                  <div class="customizer-grid">
+                    <label class="custom-field upload-field">Завантажити логотип<input id="qr-logo" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG або WebP до 2 МБ</small></label>
+                    <label class="custom-field">Плашка логотипу<select id="qr-logo-shape"><option value="rounded">Заокруглена</option><option value="circle">Кругла</option><option value="square">Квадратна</option></select></label>
+                  </div>
+                  <div class="range-row"><label for="qr-logo-size">Розмір логотипу</label><input id="qr-logo-size" type="range" min="8" max="18" value="12"><output id="qr-logo-size-value" for="qr-logo-size">12%</output></div>
+                  <button class="text-button" type="button" id="qr-logo-remove" hidden>Прибрати логотип</button>
+                </div>
+                <div class="customizer-section">
+                  <h3>Фото й підпис</h3>
+                  <div class="customizer-grid">
+                    <label class="custom-field upload-field">Фото фону картки<input id="qr-photo" type="file" accept="image/png,image/jpeg,image/webp"><small>Фото буде тлом; QR залишиться на контрастній картці. До 2 МБ.</small></label>
+                    <label class="custom-field">Заголовок на картці<input id="qr-title" type="text" maxlength="36" placeholder="Наприклад, Wi-Fi для гостей"></label>
+                    <label class="custom-field">Підпис під кодом<input id="qr-subtitle" type="text" maxlength="48" placeholder="Відскануйте камерою телефона"></label>
+                  </div>
+                  <button class="text-button" type="button" id="qr-photo-remove" hidden>Прибрати фото</button>
+                </div>
+                <p class="customizer-note" id="qr-scan-note" role="status">Для кращого сканування залишайте високий контраст і невеликий логотип. Завжди перевіряйте готовий файл камерою.</p>
+              </div>
+            </details>
+            <div class="form-footer"><p class="privacy-note"><span aria-hidden="true">◈</span> Дані залишаються у вашому браузері й не надсилаються на сервер.</p><button class="primary-button" id="create-qr" type="submit">Створити QR-код <span aria-hidden="true">→</span></button></div>
+            <p class="form-error" id="generator-error" role="alert" tabindex="-1" hidden></p>
+          </form>
+
+          <aside class="result-panel" aria-labelledby="result-title">
+            <div class="result-top"><div><p class="eyebrow">ПОПЕРЕДНІЙ ПЕРЕГЛЯД</p><h3 id="result-title">Ваш QR-код</h3></div><span id="result-status" class="result-status"><i></i> Очікує дані</span></div>
+            <div class="qr-stage" id="generator-preview" aria-live="polite"><div class="qr-placeholder" id="qr-placeholder"><div class="placeholder-code" aria-hidden="true"><span>▦</span><span>▦</span><span>▦</span><span>▦</span><span>▦</span><span>▦</span><span>▦</span><span>▦</span><span>▦</span></div><span>Ваш код з’явиться тут</span></div></div>
+            <p class="result-caption" id="result-caption">Скануйте камерою телефона, щоб перевірити вміст.</p>
+            <div class="export-options"><label for="export-size">Розмір файлу</label><select id="export-size"><option value="512">512 × 512 px</option><option value="1024" selected>1024 × 1024 px</option><option value="2048">2048 × 2048 px</option></select><span>Для JPG, PNG, WebP і PDF</span></div>
+            <div class="download-actions"><button class="download-button" type="button" data-generator-export="png" disabled><span class="file-icon">PNG</span><span>Завантажити PNG</span><span class="download-arrow" aria-hidden="true">↓</span></button><button class="download-button" type="button" data-generator-export="jpg" disabled><span class="file-icon file-icon-jpg">JPG</span><span>Завантажити JPG</span><span class="download-arrow" aria-hidden="true">↓</span></button><button class="download-button" type="button" data-generator-export="webp" disabled><span class="file-icon file-icon-webp">WEBP</span><span>Завантажити WebP</span><span class="download-arrow" aria-hidden="true">↓</span></button><button class="download-button" type="button" data-generator-export="svg" disabled><span class="file-icon file-icon-svg">SVG</span><span>Завантажити SVG</span><span class="download-arrow" aria-hidden="true">↓</span></button><button class="download-button" type="button" data-generator-export="pdf" disabled><span class="file-icon file-icon-pdf">PDF</span><span>Завантажити PDF</span><span class="download-arrow" aria-hidden="true">↓</span></button></div>
+            <p class="export-status" id="export-status" role="status" aria-live="polite"></p>
+            <p class="print-tip"><span aria-hidden="true">✳</span> SVG масштабується без втрати якості. Для друку підійдуть SVG або PDF.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="qr-vdalo-connect" aria-labelledby="qr-vdalo-connect-title">
+        <div class="connect-heading">
+          <p class="eyebrow"><span class="eyebrow-line"></span> НАСТУПНИЙ КРОК ДЛЯ БРОНЮВАННЯ</p>
+          <h2 id="qr-vdalo-connect-title">Хочете бачити бронювання з QR у VDALO?</h2>
+          <p>QR-код відкриває потрібну сторінку. Щоб нова бронь з’явилася у календарі й шахматці VDALO, код має вести на налаштовану сторінку або віджет бронювання VDALO.</p>
+        </div>
+        <div class="connect-flow" aria-label="Шлях від QR-коду до календаря бронювань VDALO">
+          <article class="connect-card"><span class="connect-step">01</span><span class="connect-icon" aria-hidden="true">▦</span><h3>Гість сканує QR</h3><p>На рецепції, у номері, на сайті або в рекламному матеріалі.</p></article>
+          <span class="connect-arrow" aria-hidden="true">→</span>
+          <article class="connect-card"><span class="connect-step">02</span><span class="connect-icon" aria-hidden="true">↗</span><h3>Обирає дати й номер</h3><p>QR веде на вашу сторінку або віджет прямого бронювання VDALO.</p></article>
+          <span class="connect-arrow" aria-hidden="true">→</span>
+          <article class="connect-card connect-card-result"><span class="connect-step">03</span><span class="connect-icon" aria-hidden="true">▤</span><h3>Команда бачить бронь</h3><p>Після налаштування бронювання відображається у календарі та шахматці VDALO.</p></article>
+        </div>
+        <p class="connect-note"><strong>Для інших QR-сценаріїв:</strong> Wi-Fi, меню чи сторінка гостя відкривають відповідну інформацію. Щоб замовлення з меню або побажання гостя з’являлися у VDALO, потрібна окрема форма чи інтеграція.</p>
+        <div class="connect-bottom">
+          <p><strong>Важливо:</strong> статичний QR сам не передає дані в PMS. Він зберігає посилання, а бронювання створює сторінка або віджет, на який веде гість. Синхронізація з каналами залежить від налаштованих інтеграцій.</p>
+          <a class="connect-cta" href="/contact">Обговорити QR-бронювання з VDALO <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="how-it-works" aria-label="Як створити QR-код">
+        <div class="how-step"><span class="how-number">01</span><div><h3>Оберіть інформацію</h3><p>Посилання, Wi-Fi або корисна нотатка для гостя.</p></div></div>
+        <span class="step-connector" aria-hidden="true"></span>
+        <div class="how-step"><span class="how-number">02</span><div><h3>Створіть і перевірте</h3><p>Перегляньте код і переконайтеся, що він веде куди треба.</p></div></div>
+        <span class="step-connector" aria-hidden="true"></span>
+        <div class="how-step"><span class="how-number">03</span><div><h3>Завантажте файл</h3><p>Додайте QR до картки номера, листа або вказівника.</p></div></div>
+      </section>
+
+      <section class="seo-content" aria-labelledby="qr-hotel-guide">
+        <div class="seo-intro"><p class="eyebrow"><span class="eyebrow-line"></span> QR-СЕРВІС ДЛЯ ГОСТЕЙ</p><h2 id="qr-hotel-guide">QR-коди для готелю, ресторану та апартаментів</h2><p>Один QR-код допомагає гостю швидко знайти потрібну інформацію: від пароля Wi-Fi до меню чи сторінки бронювання. Створіть код під конкретний сценарій, оформіть його у стилі закладу та розмістіть там, де він стане у пригоді.</p></div>
+        <div class="seo-grid">
+          <article class="seo-card"><span class="seo-card-number">01</span><h3>Бронювання номерів і прямих заїздів</h3><p>Розмістіть QR на візитці, рекламному матеріалі, у номері або на рецепції. Гість перейде на вашу форму прямого бронювання, сторінку з вільними датами чи сайт готелю. QR-генератор кодує надану адресу, а самі бронювання обробляє ваша система або сайт.</p></article>
+          <article class="seo-card"><span class="seo-card-number">02</span><h3>Wi-Fi без переписування пароля</h3><p>Введіть назву мережі й пароль, щоб створити QR для підключення до гостьового Wi-Fi. Його можна розмістити у номері, на стійці рецепції чи в зоні очікування. Оскільки пароль міститься в коді, використовуйте гостьову мережу та змінюйте QR після зміни пароля.</p></article>
+          <article class="seo-card"><span class="seo-card-number">03</span><h3>Меню ресторану, кафе або сніданків</h3><p>Створіть QR-посилання на онлайн-меню ресторану, бару, room service або сніданків. Гість відкриє меню камерою смартфона. Щоб не передруковувати картки після кожної зміни страв, підтримуйте актуальне меню за тією самою вебадресою.</p></article>
+          <article class="seo-card"><span class="seo-card-number">04</span><h3>Сторінка гостя та інструкції заселення</h3><p>Ведіть відвідувача на сторінку з правилами проживання, часом заїзду й виїзду, маршрутом до об’єкта, інструкцією самостійного заселення, паркуванням, контактами та відповідями на часті запитання. Такий QR підійде готелю, апартаментам, хостелу, котеджу або глемпінгу.</p></article>
+          <article class="seo-card"><span class="seo-card-number">05</span><h3>Контакт із рецепцією та відгуки</h3><p>Додайте QR на сторінку контактів, форму звернення, електронну пошту чи телефон. Для збору відгуків використайте посилання на профіль закладу або власну форму. Перевірте кінцеву адресу на смартфоні до того, як надрукуєте код для всіх номерів.</p></article>
+          <article class="seo-card"><span class="seo-card-number">06</span><h3>Фірмове оформлення та файли для друку</h3><p>Задайте кольори, форму модулів і маркерів, додайте логотип або фото та підпис для гостя. Завантажте PNG, JPG чи WebP для цифрових матеріалів або SVG і PDF для макета та друку. На кожному варіанті збережіть достатній контраст і вільне поле навколо коду.</p></article>
+        </div>
+        <div class="seo-process"><div><p class="eyebrow">ЯК ПІДГОТУВАТИ КОД</p><h3>Виберіть місце, сценарій і формат</h3></div><ol><li><strong>Визначте дію гостя.</strong> Наприклад, під’єднатися до Wi-Fi, відкрити меню чи зв’язатися з рецепцією.</li><li><strong>Вкажіть правильні дані.</strong> Для посилання використайте повну адресу з HTTPS, для Wi-Fi перевірте назву мережі та пароль.</li><li><strong>Оформіть і перевірте.</strong> Збережіть читабельний контраст, створіть код і проскануйте його кількома телефонами.</li><li><strong>Завантажте потрібний файл.</strong> PNG зручний для швидкого використання, SVG і PDF краще масштабуються у макетах для друку.</li></ol></div>
+        <div class="seo-technical"><h3>Що варто знати перед використанням QR-коду</h3><p>Цей генератор створює статичний QR-код у браузері. Посилання, текст або дані Wi-Fi записуються безпосередньо в код, а логотип і оформлення додаються до зображення. QR-код не змінює адресу після друку, не створює сторінку меню чи форму бронювання, не синхронізує доступність номерів і не збирає статистику сканувань. Якщо адресу або пароль змінено, створіть і надрукуйте новий код. Файли готуються на пристрої, введені дані не надсилаються на сервер.</p></div>
+        <section class="qr-faq" aria-labelledby="qr-faq-title"><p class="eyebrow">ЧАСТІ ЗАПИТАННЯ</p><h2 id="qr-faq-title">Як використовувати QR-коди в готелі</h2>
+          <details><summary>Чи створює генератор сторінку меню або бронювання?</summary><p>Ні. Він створює QR-код для вашого посилання. Онлайн-меню, форма бронювання або гостьова сторінка мають бути створені на сайті чи у сервісі, яким користується ваш заклад.</p></details>
+          <details><summary>Чи можна підключити гостя до Wi-Fi без введення пароля?</summary><p>Так. Виберіть сценарій Wi-Fi, введіть точну назву мережі й пароль та створіть QR. Камера телефона може запропонувати підключення. Пароль міститься у коді, тому не розміщуйте його у відкритому доступі, якщо мережа призначена лише для гостей.</p></details>
+          <details><summary>Чи можна змінити адресу після того, як QR уже надруковано?</summary><p>У статичному коді адреса збережена безпосередньо. Якщо змінити адресу сторінки, створіть новий QR і замініть друковані матеріали. Щоб залишити сам код незмінним, підтримуйте цільову сторінку доступною за тією самою адресою.</p></details>
+          <details><summary>Який формат обрати для друку?</summary><p>SVG масштабується без втрати чіткості, а PDF зручно передавати у друкарню. PNG підходить для більшості цифрових матеріалів. Після друку перевірте сканування на фактичному розмірі, освітленні та папері.</p></details>
+          <details><summary>Чи підійде генератор для апартаментів, хостелів і глемпінгів?</summary><p>Так. QR можна розмістити у квартирі, номері, котеджі, на рецепції, у ресторані або спільній зоні. Створіть окремі коди для різних посилань і підпишіть їх так, щоб гостю одразу була зрозуміла наступна дія.</p></details>
+        </section>
+        <div class="seo-related"><span>Пов’язані інструменти VDALO</span><a href="/tools/">Інструменти для готелю</a><a href="/hotel-check-in">Заїзд і заселення</a><a href="/hotel-booking-calendar">Календар бронювань</a><a href="/guest-communication">Комунікація з гостями</a></div>
+      </section>
+
+      <details class="lab-details" hidden>
+        <summary><span><span class="lab-summary-icon" aria-hidden="true">⌘</span><span><strong>Технічний стенд</strong><small>Порівняння QR-рушіїв і контрольні сценарії</small></span></span><span class="summary-chevron" aria-hidden="true">⌄</span></summary>
+        <div class="lab-content">
+          <header class="lab-header"><p class="eyebrow">ІЗОЛЬОВАНИЙ ЛОКАЛЬНИЙ СТЕНД</p><h2>Порівняння QR-рушіїв</h2><p>Три бібліотеки генерують той самий вміст локально у браузері. Результати не надсилаються на сервер.</p></header>
+          <section class="controls" aria-labelledby="payload-title"><div class="control-head"><div><p class="eyebrow">ОДНАКОВІ ВХІДНІ ДАНІ</p><h2 id="payload-title">Тестовий сценарій</h2></div><label class="select-label" for="scenario">Сценарій<select id="scenario"><option value="short">Коротке HTTPS-посилання</option><option value="utm">Довге посилання з UTM</option><option value="ukrainian">Український текст</option><option value="idn">IDN-домен</option><option value="wifi">Wi-Fi з пробілами та спецсимволами</option><option value="empty">Порожнє значення</option><option value="long">Наддовгий текст понад ліміт QR</option></select></label></div><label class="payload-label" for="payload">Вміст QR<textarea id="payload" rows="3" spellcheck="false"></textarea></label><div class="control-actions"><label class="toggle"><input id="style-toggle" type="checkbox" /> Перевірити брендовані крапки</label><button id="generate" class="primary">Згенерувати в трьох рушіях</button></div><p id="privacy-note" class="small-note">Лише синтетичні тестові значення. Не вставляйте реальні паролі Wi-Fi чи персональні дані.</p></section>
+          <section class="engine-grid" aria-label="Результати порівняння"><article class="engine-card" data-engine="styling"><div class="engine-title"><div><p class="eyebrow">A</p><h2>QR Code Styling</h2></div><span class="engine-state">Очікує запуску</span></div><div class="preview" id="preview-styling" aria-label="Попередній перегляд QR Code Styling"></div><div class="metrics" id="metrics-styling"></div><div class="scan-state" id="scan-styling" aria-live="polite">Сканування ще не виконано</div><div class="button-row"><button data-export="styling" data-format="png">PNG</button><button data-export="styling" data-format="svg">SVG</button><button data-export="styling" data-format="pdf">PDF</button></div></article><article class="engine-card" data-engine="qrcode"><div class="engine-title"><div><p class="eyebrow">B</p><h2>node-qrcode</h2></div><span class="engine-state">Очікує запуску</span></div><div class="preview" id="preview-qrcode" aria-label="Попередній перегляд node-qrcode"></div><div class="metrics" id="metrics-qrcode"></div><div class="scan-state" id="scan-qrcode" aria-live="polite">Сканування ще не виконано</div><div class="button-row"><button data-export="qrcode" data-format="png">PNG</button><button data-export="qrcode" data-format="svg">SVG</button><button data-export="qrcode" data-format="pdf">PDF</button></div></article><article class="engine-card" data-engine="nayuki"><div class="engine-title"><div><p class="eyebrow">C</p><h2>Nayuki QR Code Generator</h2></div><span class="engine-state">Очікує запуску</span></div><div class="preview" id="preview-nayuki" aria-label="Попередній перегляд Nayuki QR Code Generator"></div><div class="metrics" id="metrics-nayuki"></div><div class="scan-state" id="scan-nayuki" aria-live="polite">Сканування ще не виконано</div><div class="button-row"><button data-export="nayuki" data-format="png">PNG</button><button data-export="nayuki" data-format="svg">SVG</button><button data-export="nayuki" data-format="pdf">PDF</button></div></article></section>
+          <section class="log-panel" aria-labelledby="log-title"><div class="control-head"><div><p class="eyebrow">КЕЙСИ Й ВИМІРЮВАННЯ</p><h2 id="log-title">Журнал перевірки</h2></div><button id="run-matrix">Прогнати тестову матрицю</button></div><div class="table-wrap"><table><thead><tr><th>Сценарій</th><th>QR Styling</th><th>node-qrcode</th><th>Nayuki</th><th>Обидва сканери</th></tr></thead><tbody id="matrix-results"><tr><td colspan="5">Ще немає результатів. Запустіть генерацію, щоб додати контрольний рядок.</td></tr></tbody></table></div><p id="lab-status" role="status" aria-live="polite"></p></section>
+          <footer class="lab-footer">Це дослідницький стенд для TASK 00 та TASK 01. Він не підключений до PMS, не створює динамічних посилань і не є частиною публічного сайту.</footer>
+        </div>
+      </details>
+    </main>
+    <footer class="site-footer"><a class="brand" href="#top" aria-label="VDALO QR Studio, на початок"><img class="brand-logo" src="./vdalo-wordmark.png" alt="VDALO®" width="2172" height="724" /></a><span>QR Studio <span class="footer-separator">·</span> Інструменти для готельного сервісу</span><span class="footer-local"><i></i> Локальна генерація</span></footer>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

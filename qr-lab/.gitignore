@@ -1,0 +1,5 @@
+# Test PDFs embed the host's Windows Arial font, so keep them local only.
+/results/vdalo-qr-*.pdf
+
+.vercel
+.env*

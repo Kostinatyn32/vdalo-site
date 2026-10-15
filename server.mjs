@@ -114,6 +114,21 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://www.vdalo.tech'}),'v1'));
   if(pathname==='/authors/oleh-stepeniev/'){res.writeHead(308,{Location:'/authors/oleh-stepeniev'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/authors/oleh-stepeniev')return send(res,200,prefix(renderAuthorPage(),'v1'));
+  if(pathname==='/tools/qr-studio'){res.writeHead(308,{Location:`/tools/qr-studio/${url.search}`,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname.startsWith('/tools/qr-studio/')){
+   const qrDist=path.resolve(root,'qr-lab','dist');
+   const relativePath=pathname.slice('/tools/qr-studio/'.length)||'index.html';
+   const filename=path.resolve(qrDist,relativePath);
+   if(!filename.startsWith(`${qrDist}${path.sep}`))return send(res,404,'Не знайдено.');
+   try{
+    const data=await readFile(filename);
+    if(filename===path.join(qrDist,'index.html'))return sendCompressed(req,res,200,data,'text/html; charset=utf-8');
+    const extension=path.extname(filename).toLowerCase();
+    const cache=/\.[a-f0-9]{8,}\./i.test(filename)?'public, max-age=31536000, immutable':'public, max-age=604800';
+    res.writeHead(200,{'Content-Type':types[extension]||'application/octet-stream','Cache-Control':cache,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'});
+    return res.end(req.method==='HEAD'?undefined:data);
+   }catch(error){if(error.code!=='ENOENT')throw error;return send(res,404,'Не знайдено.');}
+  }
   if(pathname==='/tools'){res.writeHead(308,{Location:'/tools/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/tools/')return send(res,200,prefix(renderToolsIndex(),'v1'));
   if(pathname==='/tools/pms-checklist'){res.writeHead(308,{Location:'/tools/pms-checklist/'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
