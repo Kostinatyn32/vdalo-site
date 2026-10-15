@@ -32,7 +32,7 @@ import {applySitewideSchema} from './versions/v1/schema.mjs';
 import {getPublicSitemapRoutes} from './versions/v1/sitemap.mjs';
 import {renderTouristTaxHub,renderTouristTaxCity,handleTouristTaxCalculation} from './versions/v1/tourist-tax.mjs';
 import {renderTouristTaxFunnel} from './microlandings/tourist-tax-funnel.mjs';
-import {touristTaxCityRoutes} from './versions/v1/tourist-tax-data.mjs';
+import {touristTaxCityRoutes,getTouristTaxPlace,getTouristTaxRule} from './versions/v1/tourist-tax-data.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
@@ -43,27 +43,46 @@ const faviconLink='<link rel="icon" href="/v1/assets/favicon.svg" type="image/sv
 const touristTaxRoutes=['/tourist-tax/',...touristTaxCityRoutes()];
 const publicSitemapRoutes=getPublicSitemapRoutes({seoRoutes:seoRoutes(),caseSlugs,pmsArticle,pmsChoiceArticle,editorialArticles,secondPassArticles,touristTaxRoutes});
 const indexableSchemaRoutes=new Set(publicSitemapRoutes);
-function withCampaignSocialMetadata(html){
- // Funnel pages stay noindex; add share previews without adding search schema to campaign URLs.
- if(!/<meta\s+name=["']robots["'][^>]*content=["'][^"']*\bnoindex\b/i.test(html)||/<meta\s+property=["']og:title["']/i.test(html))return html;
+function sitemapXml(){
+ const entries=publicSitemapRoutes.map(route=>{
+  const citySlug=route.match(/^\/tourist-tax\/([a-z0-9-]+)\/$/)?.[1];
+  const place=citySlug?getTouristTaxPlace(citySlug):null;
+  const lastmod=place?getTouristTaxRule(place)?.checkedAt:null;
+  return `<url><loc>https://www.vdalo.tech${route}</loc>${lastmod?`<lastmod>${lastmod}</lastmod>`:''}</url>`;
+ }).join('');
+ return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries}</urlset>`;
+}
+function withSocialMetadata(html){
  const title=html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim()||'VDALO';
  const description=html.match(/<meta\s+name=["']description["'][^>]*content=["']([^"']*)["']/i)?.[1]?.trim()||'';
  const canonical=html.match(/<link\s+rel=["']canonical["'][^>]*href=["']([^"']*)["']/i)?.[1]||`https://www.vdalo.tech${html.match(/<body[^>]*data-route=["']([^"']+)["']/i)?.[1]||''}`;
- const social=`<meta property="og:type" content="website"><meta property="og:site_name" content="VDALO"><meta property="og:locale" content="uk_UA"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://www.vdalo.tech/v1/assets/og-1200x630.png"><meta property="og:image:alt" content="VDALO для власників і команд готелів"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="https://www.vdalo.tech/v1/assets/og-1200x630.png">`;
- return html.replace(/<\/head>/i,`${social}</head>`);
+ const shorten=(value,max)=>value.length>max?`${value.slice(0,max-1).replace(/\s+\S*$/,'')}…`:value;
+ const defaults=[
+  ['property','og:type','website'],['property','og:site_name','VDALO'],['property','og:locale','uk_UA'],
+  ['property','og:title',shorten(title,70)],['property','og:description',shorten(description,200)],['property','og:url',canonical],
+  ['property','og:image','https://www.vdalo.tech/v1/assets/og-1200x630.png'],['property','og:image:alt','VDALO для власників і команд готелів'],
+  ['name','twitter:card','summary_large_image'],['name','twitter:title',shorten(title,70)],
+  ['name','twitter:description',shorten(description,200)],['name','twitter:image','https://www.vdalo.tech/v1/assets/og-1200x630.png'],
+ ];
+ const missing=defaults.filter(([attribute,name])=>!new RegExp(`<meta\\b(?=[^>]*\\b${attribute}=["']${name}["'])`,'i').test(html))
+  .map(([attribute,name,value])=>`<meta ${attribute}="${name}" content="${value}">`).join('');
+ return missing?html.replace(/<\/head>/i,`${missing}</head>`):html;
 }
 function withTagManager(html){
- const withSocial=withCampaignSocialMetadata(html);
+ const withSocial=withSocialMetadata(html);
  const withFavicon=withSocial.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+(/<link\b[^>]*\brel=["'][^"']*\bicon\b[^"']*["'][^>]*>/i.test(withSocial)?'':faviconLink));
  const withHead=withFavicon.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
  return withHead.replace(/<body(?:\s[^>]*)?>/i,opening=>opening+gtmBody);
 }
 function send(res,status,text,type='text/html; charset=utf-8',method='GET'){
  const body=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(text,res._schemaPath||'',indexableSchemaRoutes)):text;
- res.writeHead(status,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(method==='HEAD'?undefined:body);
+ const publicHtml=type.toLowerCase().startsWith('text/html')&&res._allowPublicCache&&indexableSchemaRoutes.has(res._schemaPath);
+ res.writeHead(status,{'Content-Type':type,'Cache-Control':publicHtml?'public, max-age=0, s-maxage=300, stale-while-revalidate=86400':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY'});res.end(method==='HEAD'?undefined:body);
 }
 function sendCompressed(req,res,status,data,type,cache='no-store'){
- const source=type.toLowerCase().startsWith('text/html')?withTagManager(applySitewideSchema(Buffer.isBuffer(data)?data.toString('utf8'):data,res._schemaPath||'',indexableSchemaRoutes)):data;
+ const isHtml=type.toLowerCase().startsWith('text/html');
+ const source=isHtml?withTagManager(applySitewideSchema(Buffer.isBuffer(data)?data.toString('utf8'):data,res._schemaPath||'',indexableSchemaRoutes)):data;
+ if(isHtml&&res._allowPublicCache&&indexableSchemaRoutes.has(res._schemaPath))cache='public, max-age=0, s-maxage=300, stale-while-revalidate=86400';
  const body=Buffer.isBuffer(source)?source:Buffer.from(source);
  const compressed=body.length>=1024&&/\bgzip\b/.test(req.headers['accept-encoding']||'');
  res.writeHead(status,{'Content-Type':type,'Cache-Control':cache,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY','Vary':'Accept-Encoding',...(compressed?{'Content-Encoding':'gzip'}:{})});
@@ -87,11 +106,15 @@ function sendVideo(req,res,data){
  res.end(req.method==='HEAD'?undefined:body);
 }
 function prefix(html,version){return html.replace(/\b(src|href|action|poster)="\/([^\"]*)"/g,(match,attribute,path)=>{if(path.startsWith('/')||path.startsWith('v1/')||path.startsWith('v2/')||path.startsWith('v3/'))return match;if(attribute==='href'&&(/^(?:$|#|privacy(?:\/|$)|offer(?:\/|$)|refunds?(?:\/|$)|cases(?:\/|$)|blog(?:\/|$)|authors(?:\/|$)|tools(?:\/|$)|solutions(?:\/|$)|integrations(?:\/|$)|pricing(?:\/|$)|hotel-booking-calendar(?:\/|$)|hotel-check-in(?:\/|$)|hotel-operations(?:\/|$)|guest-communication(?:\/|$)|hotel-automation(?:\/|$)|about(?:\/|$)|contact(?:\/|$)|tourist-tax(?:\/|$)|registration(?:\/|$))/.test(path)))return match;return `${attribute}="/${version}/${path}"`;});}
+function renderNotFound(){
+ return `<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Сторінку не знайдено | VDALO</title><meta name="robots" content="noindex,follow"><link rel="stylesheet" href="/v1/site.css"></head><body><header class="site-header"><a href="/" aria-label="VDALO, на головну"><img src="/v1/assets/vdalo-canonical-496.png" width="124" height="41" alt="VDALO"></a></header><main id="main" class="wrap" style="min-height:65vh;display:grid;align-content:center;gap:1rem"><p class="eyebrow">VDALO · 404</p><h1>Сторінку не знайдено</h1><p>Можливо, адресу змінено. Перейдіть на головну або відкрийте довідник туристичного збору.</p><p><a class="button primary" href="/">На головну</a> <a class="button outline" href="/tourist-tax/">Туристичний збір</a></p></main></body></html>`;
+}
 const server=http.createServer(async(req,res)=>{
  try{
   const url=new URL(req.url,'http://localhost');
   const pathname=decodeURIComponent(url.pathname);
   res._schemaPath=pathname;
+  res._allowPublicCache=req.method==='GET'&&!url.search;
   // Keep the original payment endpoint working for pages opened under /v1.
   // Some checkout links still submit to /v1/api/payments/* instead of /api/payments/*.
   const paymentPath=pathname.startsWith('/v1/api/payments/')?pathname.slice(3):pathname;
@@ -167,7 +190,8 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/refunds')return send(res,200,prefix(renderRefundPage(),'v1'));
   if(pathname==='/')return sendCompressed(req,res,200,prefix(firstPage({origin:'https://www.vdalo.tech',full:true}),'v1'),'text/html; charset=utf-8');
   if(pathname==='/robots.txt')return send(res,200,'User-agent: *\nAllow: /\nSitemap: https://www.vdalo.tech/sitemap.xml\n','text/plain; charset=utf-8');
-  if(pathname==='/sitemap.xml')return send(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${publicSitemapRoutes.map(route=>`<url><loc>https://www.vdalo.tech${route}</loc></url>`).join('')}</urlset>`,'application/xml; charset=utf-8');
+  if(pathname==='/sitemap.xml')return send(res,200,sitemapXml(),'application/xml; charset=utf-8');
+  if(pathname==='/llms.txt')return send(res,200,`# VDALO\n\n> Українська платформа для керування готельними бронюваннями та щоденними процесами.\n\n## Основні сторінки\n\n${publicSitemapRoutes.map(route=>`- https://www.vdalo.tech${route}`).join('\n')}\n\n## Дані про сайт\n\n- Мова основного сайту: українська.\n- Довідник туристичного збору містить лише опубліковані сторінки з перевіреними ставками.\n- Перед застосуванням ставки звіряйте місцеве рішення та офіційні джерела на відповідній сторінці.\n- XML sitemap: https://www.vdalo.tech/sitemap.xml\n`,'text/plain; charset=utf-8');
   if(pathname==='/funnel')return send(res,200,renderDirectory());
   if(pathname==='/funnel/privacy')return send(res,200,renderFunnelPrivacy());
   if(pathname==='/q/') {res.writeHead(308,{Location:'/q'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
@@ -199,7 +223,7 @@ const server=http.createServer(async(req,res)=>{
    const data=await readFile(filename);res.writeHead(200,{'Content-Type':types[path.extname(filename)],'Cache-Control':'public, max-age=300','X-Content-Type-Options':'nosniff'});return res.end(req.method==='HEAD'?undefined:data);
   }
   const route=pathname.match(/^\/(v1|v2|v3)(\/.*)?$/);
-  if(!route)return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');
+  if(!route)return send(res,404,renderNotFound());
   const version=route[1],relative=route[2]||'/';
   if(!route[2]){res.writeHead(307,{Location:`/${version}/`});return res.end();}
   if(version!=='v1' && !(version==='v3' && (/^\/assets\/[a-zA-Z0-9_.-]+$/.test(relative)||relative==='/editorial.css')))return send(res,404,'Сторінку не знайдено.','text/plain; charset=utf-8');

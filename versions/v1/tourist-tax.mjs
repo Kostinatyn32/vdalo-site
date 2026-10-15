@@ -83,8 +83,30 @@ const cityComparisonPairs = {
 
 function cityComparisonDescription(rule) {
   if (rule?.rateSchedule) return 'ставка визначається за ціновим діапазоном вартості проживання на одну особу за добу';
-  if (!rule?.rates) return 'для розрахунку використовуються підтверджене місцеве правило та зазначений період його дії';
-  return `для внутрішнього туризму діє ставка ${decimalLabel(rule.rates.domestic).replace(/,00$/)}%, для в’їзного ${decimalLabel(rule.rates.inbound).replace(/,00$/)}%`;
+  if (!Number.isFinite(rule?.rates?.domestic)||!Number.isFinite(rule?.rates?.inbound)) return 'для розрахунку використовуються підтверджене місцеве правило та зазначений період його дії';
+  return `для внутрішнього туризму діє ставка ${decimalLabel(rule.rates.domestic).replace(/,00$/,'')}%, для в’їзного ${decimalLabel(rule.rates.inbound).replace(/,00$/,'')}%`;
+}
+
+function publicTaxCopy(value) {
+  const source=String(value??'');
+  const result=source
+    .replace(/Чому ставка відрізняється від переданого Excel/gi,'Чому відрізняються довідкові ставки')
+    .replace(/Що робити з іншими ставками в Excel/gi,'Як узгодити розбіжності у ставках')
+    .replace(/Кандидатну Excel-ставку/gi,'Альтернативну ставку')
+    .replace(/наданій робочій таблиці/gi,'попередньому довідковому наборі')
+    .replace(/робочій таблиці ставок/gi,'попередньому довідковому наборі ставок')
+    .replace(/переданому Excel/gi,'попередньому довідковому наборі')
+    .replace(/переданого Excel/gi,'попередніх довідкових даних')
+    .replace(/наданий Excel/gi,'попередній довідковий набір')
+    .replace(/робочого Excel/gi,'попереднього довідкового набору')
+    .replace(/робочий Excel/gi,'попередній довідковий набір')
+    .replace(/Excel-ставк([ауиою])/gi,(_match,ending)=>`альтернативн${({а:'а',у:'у',и:'і',о:'у',ю:'у'})[ending.toLocaleLowerCase('uk-UA')]||'у'} ставк${ending.toLocaleLowerCase('uk-UA')}`)
+    .replace(/Excel-кандидат/gi,'альтернативне значення ставки')
+    .replace(/розбіжність з Excel/gi,'розбіжність з попередніми довідковими даними')
+    .replace(/з Excel/gi,'з попередніми довідковими даними')
+    .replace(/в Excel/gi,'у попередніх довідкових даних')
+    .replace(/Excel/gi,'попередні довідкові дані');
+  return /^\p{Lu}/u.test(source)&&/^\p{Ll}/u.test(result)?result[0].toLocaleUpperCase('uk-UA')+result.slice(1):result;
 }
 
 function cityComparisonLinks(place) {
@@ -106,8 +128,8 @@ function citySeoBlock(place) {
     const communityName=community?.officialName??community?.name??'відповідної територіальної громади';
     return `<section class="tt-seo-content" aria-labelledby="tt-city-seo-title"><p class="tt-eyebrow">ПРАКТИЧНИЙ ДОВІДНИК · ${h(place.region.toLocaleUpperCase('uk-UA'))}</p><h2 id="tt-city-seo-title">${h(block.title)}</h2><p>Для громади «${h(communityName)}» знайдено офіційне підтвердження ставки, але сторінка ще не пройшла повну перевірку первинного рішення, періоду дії та відповідності даних конкретному населеному пункту. Суму не показуємо, доки не звіримо весь набір доказів.</p><h3>Чому калькулятор поки недоступний</h3><p>Калькулятор вмикається лише після звірки місцевого рішення та його змін, строку дії ставки, категорій туризму й відповідності адреси громаді. Це не дозволяє застосувати ставку поза підтвердженим правилом.</p><h3>Що перевірити перед нарахуванням</h3><p>Звірте адресу об’єкта, коди населеного пункту й громади за офіційним КАТОТТГ, повний текст рішення ради з додатками та змінами, а також період проживання. Стаття 268 ПКУ пов’язує ставку з рішенням відповідної місцевої ради.</p>${cityComparisonLinks(place)}</section>`;
   }
-  const sections=block.sections.map(section=>`<h3>${h(section.heading)}</h3>${section.paragraphs.map(paragraph=>`<p>${h(paragraph)}</p>`).join('')}`).join('');
-  return `<section class="tt-seo-content" aria-labelledby="tt-city-seo-title"><p class="tt-eyebrow">ПРАКТИЧНИЙ ДОВІДНИК · ${h(place.region.toLocaleUpperCase('uk-UA'))}</p><h2 id="tt-city-seo-title">${h(block.title)}</h2><p>${h(block.intro)}</p>${sections}${cityComparisonLinks(place)}</section>`;
+  const sections=block.sections.map(section=>`<h3>${h(publicTaxCopy(section.heading))}</h3>${section.paragraphs.map(paragraph=>`<p>${h(publicTaxCopy(paragraph))}</p>`).join('')}`).join('');
+  return `<section class="tt-seo-content" aria-labelledby="tt-city-seo-title"><p class="tt-eyebrow">ПРАКТИЧНИЙ ДОВІДНИК · ${h(place.region.toLocaleUpperCase('uk-UA'))}</p><h2 id="tt-city-seo-title">${h(publicTaxCopy(block.title))}</h2><p>${h(publicTaxCopy(block.intro))}</p>${sections}${cityComparisonLinks(place)}</section>`;
 }
 
 function citySources(place, rule) {
@@ -188,7 +210,7 @@ export function renderTouristTaxCity(slug) {
   );
   const hasEditorialConflictNote=(place.editorial?.seoBlock?.sections??[]).some(section=>/excel|робочій таблиці/i.test(`${section.heading??''} ${(section.paragraphs??[]).join(' ')}`));
   const workbookConflictNote=hasWorkbookRateConflict&&!hasEditorialConflictNote
-    ? `<p class="tt-rate-caveat"><strong>* Відмінність із робочою таблицею ставок.</strong> У переданому Excel зазначено ${h(decimalLabel(workbookRates.domestic).replace(/,00$/,''))}% / ${h(decimalLabel(workbookRates.inbound).replace(/,00$/,''))}%. ${isBanded?'Для цього міста офіційне джерело задає тарифні діапазони за ціною проживання однієї особи за добу, тому плоскі значення Excel не використовуються.':'Для цього довідкового розрахунку використовуємо '+h(decimalLabel(rule.rates.domestic).replace(/,00$/,''))+'% / '+h(decimalLabel(rule.rates.inbound).replace(/,00$/,''))+'% з офіційного джерела, наведеного нижче.'} Excel є робочою базою, а не підтвердженням ставки.</p>`
+    ? `<p class="tt-rate-caveat"><strong>* Значення у джерелах відрізняються.</strong> Попередні довідкові дані містять ${h(decimalLabel(workbookRates.domestic).replace(/,00$/,''))}% / ${h(decimalLabel(workbookRates.inbound).replace(/,00$/,''))}%. ${isBanded?'Офіційне джерело задає кілька тарифів залежно від ціни проживання однієї особи за добу. Калькулятор застосовує відповідний ціновий діапазон.':'Для розрахунку на цій сторінці використано '+h(decimalLabel(rule.rates.domestic).replace(/,00$/,''))+'% / '+h(decimalLabel(rule.rates.inbound).replace(/,00$/,''))+'% із підтвердженого офіційного джерела, наведеного нижче.'}</p>`
     : '';
   const rateCards=isBanded
     ? ['domestic','inbound'].map((category,index)=>{
@@ -223,7 +245,7 @@ export function renderTouristTaxCity(slug) {
     : `${h(decimalLabel(rule.rates.domestic).replace(/,00$/,''))}% для внутрішнього та ${h(decimalLabel(rule.rates.inbound).replace(/,00$/,''))}% для гостей, які прибули з-за кордону від мінімальної зарплати на 1 січня податкового року за кожну особу й розрахункову добу. Ставки діють з ${dateLabel(rule.effectiveFrom)}.`;
   const publicationBasis=rule.publicationBasisText||`Ставки встановлено рішенням міської ради №${h(rule.decisionNumber)} від ${dateLabel(rule.decisionDate)}. Вони діють з ${dateLabel(rule.effectiveFrom)}.`;
   const content = `<main class="tt-main"><nav class="tt-breadcrumb" aria-label="Навігаційний ланцюжок"><a href="/tourist-tax/">Туристичний збір в Україні</a><span aria-current="page">${h(place.name)}</span></nav><section class="tt-city-hero"><p class="tt-eyebrow">${h(place.region)} · ${h(place.district)}</p><h1>Туристичний збір ${h(placeLocativePhrase(place))} у 2026 році</h1><p class="tt-lead">${rateLead}</p><div class="tt-rate-grid">${rateCards}</div><p class="tt-updated">${h(publicationBasis)}</p>${workbookConflictNote}</section>${calculator(place)}${calculationSection}<section class="tt-section"><h2>Кому нараховують збір і коли перевіряти пільгу</h2><p>Стаття 268 Податкового кодексу визначає платників збору, правила справляння та випадки, коли особа не є платником. Серед передбачених законом категорій є, зокрема, діти до 18 років, окремі особи у відрядженні під час проживання у визначених законом об’єктах, а також інші категорії зі статті 268.2.2.</p><p>Калькулятор не встановлює право на пільгу й не збирає підтвердні документи. Якщо є можлива підстава для звільнення, її слід перевірити з податковим агентом та за актуальним текстом закону.</p></section><section class="tt-method"><h2>Поширені запитання</h2><details><summary>Які ставки туристичного збору діють ${h(placeLocativePhrase(place))}?</summary><p>${faqRates}</p></details><details><summary>Як рахуються доби проживання?</summary><p>Податковий кодекс визначає добу як 24 години між двома послідовними розрахунковими годинами. Звірте період проживання з годинами, встановленими вашим об’єктом.</p></details><details><summary>Чи враховує калькулятор пільги?</summary><p>Ні. Він показує орієнтовну суму до врахування можливого звільнення. Підставу й документи перевірте з податковим агентом.</p></details><details><summary>Чи можна використовувати результат для звітності?</summary><p>Використовуйте його для попередньої оцінки. Для обліку та декларації застосовуйте фактичні дані проживання, чинні першоджерела, документи та вимоги податкового законодавства.</p></details></section>${citySeoBlock(place)}${citySources(place,rule)}<p class="tt-article-link"><a href="/tourist-tax/">Повернутися до довідника туристичного збору →</a></p>${sourcesPanel()}</main>`;
-  return shell({title:place.editorial.title+' | VDALO',description:place.editorial.description,canonical:place.route,robots:'index,follow',content,config:{placeSlug:place.slug,calculationState:'READY'}});
+  return shell({title:publicTaxCopy(place.editorial.title)+' | VDALO',description:publicTaxCopy(place.editorial.description),canonical:place.route,robots:'index,follow',content,config:{placeSlug:place.slug,calculationState:'READY'}});
 }
 
 export function calculateTouristTax({placeSlug, start, end, days, nights, guests, category, guestGroups, accommodationPricePerPersonPerDay, exemption='none'}, places=touristTaxPlaces, communities=touristTaxCommunities) {

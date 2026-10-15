@@ -156,6 +156,8 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
       '@id': ORGANIZATION_ID,
       name: 'VDALO',
       url: ORIGIN,
+      description: 'Програмне забезпечення VDALO допомагає готелям керувати бронюваннями, номерним фондом і щоденними процесами.',
+      areaServed: { '@type': 'Country', name: 'Україна' },
       logo: { '@type': 'ImageObject', '@id': `${LOGO_URL}#logo`, url: LOGO_URL },
     },
     {
