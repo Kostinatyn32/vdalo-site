@@ -1,0 +1,1 @@
+The VDALO site is routed by the application server. QR Studio is available at /tools/qr-studio/.
