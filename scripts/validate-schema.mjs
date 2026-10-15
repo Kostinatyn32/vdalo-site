@@ -22,6 +22,7 @@ const [touristTax,touristTaxData] = await Promise.all([
   import('../versions/v1/tourist-tax-data.mjs'),
 ]);
 const origin = 'https://www.vdalo.tech';
+const qrStudioHtml = await readFile(new URL('../qr-lab/index.html', import.meta.url), 'utf8');
 const serviceRoutes = new Set(['/hotel-booking-calendar','/hotel-check-in','/hotel-operations','/guest-communication','/hotel-automation']);
 const renderers = new Map([
   ['/', () => render.renderPage({ origin, full: true })],
@@ -38,6 +39,7 @@ const renderers = new Map([
   ...editorial.editorialArticles.map(item => [item.slug, () => editorial.renderEditorialArticle(item.slug)]),
   ...secondPass.secondPassArticles.map(item => [item.slug, () => secondPass.renderSecondPassArticle(item.slug)]),
   ['/tools/', () => tools.renderToolsIndex()],
+  ['/tools/qr-studio/', () => qrStudioHtml],
   ['/tools/pms-checklist/', () => tools.renderPmsChecklist()],
   ['/tools/hotel-profitability-calculator/', () => tools.renderHotelProfitabilityCalculator()],
   ['/tourist-tax/', () => touristTax.renderTouristTaxHub()],
@@ -87,7 +89,7 @@ for (const [path, renderHtml] of routes) {
   if (!byId.has(`${origin}/#organization`)) errors.push(`${path}: missing shared Organization node`);
   for (const node of graph) {
     const nodeTypes = typesOf(node);
-    if (['SoftwareApplication','FAQPage','AggregateRating','Review','Offer'].some(type => nodeTypes.has(type))) errors.push(`${path}: unsupported/unsubstantiated schema type ${[...nodeTypes].join(',')}`);
+    if ((nodeTypes.has('SoftwareApplication') && path !== '/tools/qr-studio/') || ['FAQPage','AggregateRating','Review','Offer'].some(type => nodeTypes.has(type))) errors.push(`${path}: unsupported/unsubstantiated schema type ${[...nodeTypes].join(',')}`);
     for (const key of ['isPartOf','publisher','provider','mainEntity','mainEntityOfPage']) {
       const ref = node[key]?.['@id'];
       if (ref && ref.startsWith(`${origin}/`) && !byId.has(ref) && !ref.endsWith('#organization')) errors.push(`${path}: dangling ${key} reference ${ref}`);
@@ -124,9 +126,21 @@ for (const [path, renderHtml] of routes) {
     if (!service) errors.push(`${path}: missing Service entity`);
     else if (service.provider?.['@id'] !== `${origin}/#organization`) errors.push(`${path}: Service provider reference is invalid`);
   }
+  if (path === '/tools/qr-studio/') {
+    const application = graph.find(node => typesOf(node).has('SoftwareApplication'));
+    if (!application) errors.push(`${path}: missing SoftwareApplication entity`);
+    else if (application.provider?.['@id'] !== `${origin}/#organization` || application.isAccessibleForFree !== true || application.featureList?.length < 4) errors.push(`${path}: incomplete SoftwareApplication details`);
+    const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] || '';
+    const description = html.match(/<meta\b[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i)?.[1] || '';
+    const robots = html.match(/<meta\b[^>]*name=["']robots["'][^>]*content=["']([^"']*)["']/i)?.[1] || '';
+    if (!/qr/i.test(title) || title.length > 60) errors.push(`${path}: title is missing the QR topic or exceeds 60 characters`);
+    if (!description || description.length > 160) errors.push(`${path}: meta description is missing or exceeds 160 characters`);
+    if (/noindex/i.test(robots)) errors.push(`${path}: QR Studio should be indexable`);
+    if (!html.includes('og:image') || !html.includes('qr-studio-social-card.png')) errors.push(`${path}: missing page-specific social image`);
+  }
   const crumb = graph.find(node => typesOf(node).has('BreadcrumbList'));
   if (crumb && (!Array.isArray(crumb.itemListElement) || crumb.itemListElement.some((item,index) => !Number.isInteger(item.position) || !item.name || (index < crumb.itemListElement.length - 1 && !item.item)))) errors.push(`${path}: malformed BreadcrumbList`);
-  rows.push({ path, type: expectedType(path), canonical, graphNodes: graph.length, hasArticle: Boolean(graph.find(node => typesOf(node).has('BlogPosting') || typesOf(node).has('Article'))), hasService: Boolean(graph.find(node => typesOf(node).has('Service'))), hasBreadcrumb: Boolean(crumb) });
+  rows.push({ path, type: expectedType(path), canonical, graphNodes: graph.length, hasArticle: Boolean(graph.find(node => typesOf(node).has('BlogPosting') || typesOf(node).has('Article'))), hasService: Boolean(graph.find(node => typesOf(node).has('Service'))), hasSoftware: Boolean(graph.find(node => typesOf(node).has('SoftwareApplication'))), hasBreadcrumb: Boolean(crumb) });
 }
 
 if (new Set(routes.map(([path]) => path)).size !== routes.length) errors.push('Route matrix includes duplicates.');
@@ -134,7 +148,7 @@ const appIcon = await readFile(new URL('../versions/v1/public/assets/vdalo-app-i
 if (!/viewBox=["']0 0 512 512["']/.test(appIcon)) errors.push('Organization logo app icon is missing its square 512 by 512 viewBox.');
 const outputDir = new URL('../seo-workspace/schema/', import.meta.url);
 await mkdir(outputDir, { recursive: true });
-const csv = ['path,page_type,canonical,graph_nodes,article,service,breadcrumb', ...rows.map(row => [row.path,row.type,row.canonical,row.graphNodes,row.hasArticle,row.hasService,row.hasBreadcrumb].map(value => `"${String(value).replace(/"/g,'""')}"`).join(','))].join('\n') + '\n';
+const csv = ['path,page_type,canonical,graph_nodes,article,service,software,breadcrumb', ...rows.map(row => [row.path,row.type,row.canonical,row.graphNodes,row.hasArticle,row.hasService,row.hasSoftware,row.hasBreadcrumb].map(value => `"${String(value).replace(/"/g,'""')}"`).join(','))].join('\n') + '\n';
 await writeFile(new URL('SCHEMA_PAGE_MATRIX.csv', outputDir), csv, 'utf8');
 const report = `# JSON-LD local validation report\n\n- Date: ${new Date().toISOString().slice(0,10)}\n- Rendered indexable routes: ${routes.length}\n- Passed routes: ${rows.length}\n- Errors: ${errors.length}\n- Method: direct server-template rendering, centralized schema transformation, JSON parsing, node-ID/reference checks, page-type checks, and content-policy checks.\n- External Google Rich Results Test and Schema.org Validator: not run; local changes are not deployed and those validators need public URLs.\n\n## Results\n\n${errors.length ? errors.map(error => `- FAIL: ${error}`).join('\n') : 'All local assertions passed.'}\n`;
 await writeFile(new URL('SCHEMA_VALIDATION_REPORT.md', outputDir), report, 'utf8');

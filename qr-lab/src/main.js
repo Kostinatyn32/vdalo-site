@@ -9,7 +9,23 @@ const scenarios = {
   empty: '',
   long: `VDALO QR payload capacity test ${'готель бронювання інструкції '.repeat(180)}`,
 };
-if (new URLSearchParams(location.search).get('lab') === '1') {
+const heroSampleQr = document.querySelector('#hero-sample-qr');
+if (heroSampleQr) {
+  import('qr-code-styling').then(({ default: QRCodeStyling }) => {
+    const sample = new QRCodeStyling({
+      width: 240, height: 240, type: 'svg', data: new URL('/tools/qr-studio/', location.origin).href,
+      margin: 8, qrOptions: { errorCorrectionLevel: 'H' },
+      dotsOptions: { color: '#39233e', type: 'rounded' },
+      cornersSquareOptions: { color: '#39233e', type: 'extra-rounded' },
+      cornersDotOptions: { color: '#d72f79', type: 'dot' },
+      backgroundOptions: { color: '#ffffff' },
+    });
+    sample.append(heroSampleQr);
+  }).catch(() => {
+    heroSampleQr.setAttribute('aria-label', 'Приклад QR-коду VDALO');
+  });
+}
+if (import.meta.env.DEV && new URLSearchParams(location.search).get('lab') === '1') {
   const technicalStand = document.querySelector('.lab-details');
   if (technicalStand) technicalStand.hidden = false;
 }
@@ -19,6 +35,11 @@ const payloadInput = document.querySelector('#payload');
 const scenarioSelect = document.querySelector('#scenario');
 const labStatus = document.querySelector('#lab-status');
 let lastScenario = '';
+
+function trackQrStudioEvent(event, details = {}) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event, tool_name: 'qr_studio', ...details });
+}
 
 scenarioSelect.addEventListener('change', () => {
   payloadInput.value = scenarios[scenarioSelect.value];
@@ -85,6 +106,7 @@ document.querySelectorAll('[data-preset]').forEach(button => button.addEventList
   });
   if (generatorMode !== preset.mode) document.querySelector(`[data-mode="${preset.mode}"]`).click();
   generatorUseCase = button.dataset.preset;
+  trackQrStudioEvent('qr_studio_use_case_select', { qr_use_case: generatorUseCase });
   if (preset.mode === 'url') {
     document.querySelector('#url-label').textContent = preset.label;
     document.querySelector('#url-hint').textContent = preset.hint;
@@ -98,9 +120,16 @@ document.querySelectorAll('[data-preset]').forEach(button => button.addEventList
   generatorError.hidden = true;
 }));
 
+document.querySelectorAll('[data-preset-link]').forEach(link => link.addEventListener('click', () => {
+  const presetButton = document.querySelector(`[data-preset="${link.dataset.presetLink}"]`);
+  if (presetButton) presetButton.click();
+}));
+
 document.querySelectorAll('[data-mode]').forEach(tab => tab.addEventListener('click', () => {
+  const modeChanged = generatorMode !== tab.dataset.mode;
   if (generatorMode !== tab.dataset.mode) invalidateGeneratorOutput();
   generatorMode = tab.dataset.mode;
+  if (modeChanged) trackQrStudioEvent('qr_studio_content_type_select', { qr_content_type: generatorMode });
   document.querySelectorAll('[data-mode]').forEach(item => {
     const active = item === tab;
     item.classList.toggle('is-active', active);
@@ -170,7 +199,15 @@ document.querySelectorAll('[data-generator-export]').forEach(button => button.ad
   const size = document.querySelector('#export-size').value;
   exportStatus.textContent = 'Готуємо файл…';
   exportFile('nayuki', format)
-    .then(filename => { exportStatus.textContent = filename ? `Файл ${filename} підготовлено.` : ''; })
+    .then(filename => {
+      exportStatus.textContent = filename ? `Файл ${filename} підготовлено.` : '';
+      if (filename) trackQrStudioEvent('qr_studio_download', {
+        qr_format: format,
+        qr_size_px: Number(size),
+        qr_content_type: generatorMode,
+        qr_use_case: generatorUseCase || 'custom',
+      });
+    })
     .catch(error => {
       generatorError.textContent = error.message || 'Не вдалося підготувати файл. Спробуйте інший формат або розмір.';
       generatorError.hidden = false;
@@ -313,6 +350,10 @@ generatorForm.addEventListener('submit', async event => {
     generatorStatus.innerHTML = '<i></i> Створюємо';
     const output = await createStyledOutput(value);
     showGeneratorOutput(output, value);
+    trackQrStudioEvent('qr_studio_generate', {
+      qr_content_type: generatorMode,
+      qr_use_case: generatorUseCase || 'custom',
+    });
   } catch (error) {
     generatorError.textContent = error.message || 'Не вдалося створити QR-код. Перевірте введені дані й спробуйте ще раз.';
     generatorError.hidden = false;

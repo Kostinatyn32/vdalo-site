@@ -6,6 +6,28 @@ const root=path.dirname(fileURLToPath(import.meta.url));
 const assetNames=new Set(['vdalo-videos.css','vdalo-videos.js','vdalo-videos-more.js','vdalo-videos-fx.js','vdalo-videos-top5.js','vdalo-videos-funnels.js','s-qr.mp4','night.mp4','t-ob-collide.mp4','p-pricing.mp4','m-mobile.mp4','t-tax-docs-pile.mp4','t-tax-reports.mp4','art/staff-checkin.webp','art/night-answers.webp','art/channel-sync.webp','art/direct-bookings.webp','art/power-mobile.webp']);
 const codeMap={1:'p-overbook',2:'p-calls',3:'p-cash',4:'p-shift',5:'p-commission',6:'p-notebook',7:'p-review',8:'p-vacation',9:'p-reports',10:'p-pricing',11:'m-price',12:'m-setup',13:'m-allinone',14:'m-day',15:'m-features',16:'m-trial',17:'m-ukraine',18:'m-mobile',19:'m-guest',20:'m-compare',21:'list',22:'phone',23:'night',24:'f-excel',25:'f-tears',26:'f-twoguests',27:'f-siren',28:'f-domino',29:'f-explode',30:'f-flood',31:'f-noshow',32:'f-burnout',33:'f-queue',34:'t-docs-pile',35:'t-docs-race',36:'t-booking-copy',37:'t-booking-clicks',38:'t-guest-lobby',39:'t-guest-chat',40:'t-ob-collide',41:'t-ob-countdown',42:'t-night-repeat',43:'t-night-sleep',44:'s-vacancy',45:'s-newbie',46:'s-three',47:'b-share',48:'b-budget',49:'b-pnl',50:'e-dark',51:'e-fuel',52:'e-guests',53:'s-qr',54:'n-timeline',55:'o-7eur',56:'b-budget',57:'e-dark',58:'p-commission'};
 const top={53:{funnel:'staff',video:'s-qr',calc:1},54:{funnel:'nights',video:'n-timeline',calc:2},55:{funnel:'overbook',video:'o-7eur',calc:3},47:{funnel:'commission',video:'b-share',calc:4},50:{funnel:'blackout',video:'e-dark',calc:5}};
+const campaignMetadata={
+ 47:{title:'Прямі звернення та бронювання для готелю | VDALO',description:'Коротке відео про прямі звернення гостей і роботу з бронюваннями. Знайдіть наступний крок для свого готелю.'},
+ 50:{title:'Робота готелю під час відключень світла | VDALO',description:'Коротке відео про доступ до бронювань і робочої інформації з телефона під час перебоїв електропостачання.'},
+ 53:{title:'Підготовка до заїзду та заселення гостей | VDALO',description:'Коротке відео про підготовку до заїзду, дані гостей і ручні дії на рецепції. Залиште запит на обговорення тесту.'},
+ 54:{title:'Інструкції для гостей і нічні запитання | VDALO',description:'Коротке відео про інформацію для гостей до заїзду та повторні запитання, які відволікають команду готелю.'},
+ 55:{title:'Бронювання з каналів і ризик овербукінгу | VDALO',description:'Коротке відео про звірку бронювань із різних каналів і контроль доступності номерів.'}
+};
+const topicMetadata={
+ overbook:{title:'Бронювання й контроль номерів у готелі | VDALO',description:'Коротке відео про звірку бронювань, доступність номерів і роботу з кількома каналами.'},
+ staff:{title:'Заселення гостей і робота рецепції | VDALO',description:'Коротке відео про підготовку до заїзду, ручні дії команди та роботу рецепції.'},
+ nights:{title:'Інструкції для гостей і нічні запитання | VDALO',description:'Коротке відео про інформацію для гостей до заїзду та повторні нічні звернення.'},
+ blackout:{title:'Щоденна робота готелю під час відключень | VDALO',description:'Коротке відео про доступ до робочої інформації та керування готелем під час відключень.'},
+ commission:{title:'Прямі запити й канали бронювання готелю | VDALO',description:'Коротке відео про прямі звернення гостей, канали бронювання та пов’язані витрати.'},
+ tax:{title:'Документи й туристичний збір у готелі | VDALO',description:'Коротке відео про документи, облік туристичного збору та підготовку квартальної звітності.'}
+};
+const calculatorMetadata={
+ 1:{title:'Підготовка до заїзду: оцініть ручну роботу | VDALO',description:'Оцініть час на підготовку до заїзду та заселення гостей за даними свого готелю.'},
+ 2:{title:'Запитання гостей: оцініть час команди | VDALO',description:'Порахуйте, скільки часу команда витрачає на повторні повідомлення та інструкції для гостей.'},
+ 3:{title:'Бронювання та овербукінг: оцініть процес | VDALO',description:'Оцініть час на звірку бронювань і контроль номерів у різних каналах.'},
+ 4:{title:'Прямі звернення гостей: оцініть процес | VDALO',description:'Оцініть час на обробку прямих запитів гостей і ведення бронювань.'},
+ 5:{title:'Керування готелем із телефона | VDALO',description:'Оцініть, як команда отримує доступ до бронювань і робочої інформації з телефона.'}
+};
 const funnelFor={...Object.fromEntries([1,2,3,4,5,6,7,8,9,10].map(x=>[x,'overbook'])),...Object.fromEntries([11,12,13,14,15,16,17,18,19,20].map(x=>[x,'staff'])),...Object.fromEntries([21,22,23,42,43].map(x=>[x,'nights'])),...Object.fromEntries([24,25,26,27,28,29,30,31,32,33].map(x=>[x,'blackout'])),...Object.fromEntries([34,35,36,37,40,41].map(x=>[x,'overbook'])),...Object.fromEntries([38,39,44,45,46].map(x=>[x,'staff'])),...Object.fromEntries([47,48,49,58].map(x=>[x,'commission'])),...Object.fromEntries([50,51,52,57].map(x=>[x,'blackout']))};
 const attachQuizContext=`if(params.get('utm_campaign')==='hotel_quiz'){try{const quiz=JSON.parse(sessionStorage.getItem('vdalo-quiz-context')||'null');const quizRoute=location.pathname.replace(/\\/$/,'')||'/';if(quiz&&quiz.recommendation_route===quizRoute){data.quiz_answers=quiz;data.quiz_landing_route=quizRoute;}}catch{}}`;
 
@@ -15,7 +37,9 @@ function common(html,title,description,canonical='/go'){
 }
 export async function renderVideoLanding(params,pathname){
  const match=pathname.match(/^\/(?:go\/)?(\d{1,3})\/?$/),raw=Number(match?.[1]||params.get('c')||0),code=codeMap[raw]?raw:53,video=params.get('v')||codeMap[code],funnel=top[code]?.funnel||funnelFor[code]||'staff';
- let html=common(await template('calculator-template.html'),'VDALO: автоматизація готелю за 15 секунд','Подивіться коротке відео про процеси у готелі та залиште запит на 14-денний тест VDALO.',pathname);
+ const metadata=campaignMetadata[code]||topicMetadata[[3,9,34,35].includes(code)?'tax':funnel]||{title:'Рішення для щоденної роботи готелю | VDALO',description:'Коротке відео про робочі процеси готелю. Перегляньте матеріал і залиште запит на обговорення тесту VDALO.'};
+ let html=common(await template('calculator-template.html'),metadata.title,metadata.description,pathname);
+ html=html.replace('document.title = `VDALO: ${cfg.eyebrow.toLowerCase()}: порахуйте`;',`document.title = ${JSON.stringify(metadata.title)};`);
  html=html.replaceAll('Безкоштовно, без картки. Доступ: одразу після реєстрації.','Тест без оплати й картки. Залиште контакти: узгодимо налаштування та дату старту.');
  for (const [from,to] of [['14 днів VDALO: почніть із QR-заселення','Запросити тест VDALO: QR-заселення'],['14 днів VDALO: налаштуйте повідомлення гостям','Запросити тест VDALO: менше нічних дзвінків'],['14 днів VDALO: підключіть Booking і Airbnb','Запросити тест VDALO: синхронізація бронювань'],['14 днів VDALO: запустіть прямі бронювання','Запросити тест VDALO: більше прямих бронювань'],['14 днів VDALO: готель у вашому телефоні','Запросити тест VDALO: керування з телефона']]) html=html.replaceAll(from,to);
  html=html.replace('<script src="/sms-trial-assets/top5/vdalo-videos-funnels.js?v=7"></script>','<script src="/sms-trial-assets/top5/vdalo-videos-top5.js?v=7"></script>\n<script src="/sms-trial-assets/top5/vdalo-videos-funnels.js?v=7"></script>');
@@ -77,7 +101,9 @@ export async function renderVideoLanding(params,pathname){
 }
 export async function renderCalculator(params,pathname){
  const m=pathname.match(/^\/k([1-5])\/?$/),id=Number(m?.[1]||params.get('k')||1);
- let html=common(await template('video-template.html'),'VDALO: розрахунок для вашого готелю','Порахуйте час і кошти, які можна вивільнити завдяки автоматизації процесів у готелі.',`/k${id}`);
+ const metadata=calculatorMetadata[id];
+ let html=common(await template('video-template.html'),metadata.title,metadata.description,`/k${id}`);
+ html=html.replace('document.title = `VDALO: ${cfg.eyebrow.toLowerCase()}: порахуйте`;',`document.title = ${JSON.stringify(metadata.title)};`);
  html=html.replace('<a class="k-logo" href="https://www.vdalo.tech/" aria-label="VDALO: головна"><i></i>VDALO</a>','<a class="k-logo" href="https://www.vdalo.tech/" aria-label="VDALO: головна"><img src="/v1/assets/vdalo-canonical-496.png?v=2" width="168" height="56" alt="VDALO"></a>').replace('.k-logo i{width:9px;height:9px;border-radius:50%;background:var(--pink)}','.k-logo img{display:block;width:auto;height:34px;object-fit:contain}');
  html=html.replace('14 днів безкоштовно · Без картки · Доступ одразу','14 днів тесту без оплати · Без картки · Після заявки узгодимо підключення').replace('Доступ до VDALO: одразу, на 14 днів безкоштовно','Подайте запит на 14-денний тест: команда VDALO узгодить наступний крок').replace('Без картки: після тесту обираєте тариф: або просто не продовжуєте','Без оплати за тестовий період. Умови підключення підтвердить команда VDALO').replace('Що буде після реєстрації','Що буде після запиту').replace('Отримати доступ на 14 днів','Запросити тест на 14 днів').replace('Безкоштовно, без картки. Доступ: одразу після реєстрації.','Запит на тест без оплати й банківської картки. Після надсилання ми зв’яжемося з вами.').replace('Без картки. Після 14 днів: тариф від 390 грн/міс, або просто не продовжуєте. Натискаючи кнопку, ви погоджуєтесь з умовами та обробкою даних.','Надсилаючи форму, ви погоджуєтесь на обробку даних для відповіді на запит. <a href="/privacy">Політика конфіденційності</a>.').replace('<h2>Доступ відкрито!</h2>\n      <p>Дані для входу: на вашому e-mail. 14 днів VDALO: безкоштовно.</p>\n      <!-- TODO(Codex): if registration returns a session or login URL, redirect there instead of showing this screen -->\n      <a class="go-link" id="go-login" href="https://www.vdalo.tech/">Увійти в VDALO →</a>','<h2>Запит надіслано</h2><p>Ми отримали ваші контакти й зв’яжемося з вами щодо тестового періоду.</p>');
  // K-page code picks the requested calculator while leaving the URL and attribution intact.

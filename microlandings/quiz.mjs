@@ -23,8 +23,8 @@ export function renderQuizPage(params=new URLSearchParams()){
 <head>
  <meta charset="utf-8">
  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
- <title>Знайдіть, що впорядкувати у роботі вашого готелю | VDALO</title>
- <meta name="description" content="Дайте відповідь на 5 коротких запитань і дізнайтеся, який процес у вашому готелі чи садибі варто впорядкувати насамперед.">
+ <title>Де готель втрачає гроші й нерви? Квіз VDALO</title>
+ <meta name="description" content="Відповідайте на 5 коротких запитань про бронювання, заселення та щоденну роботу. Отримайте рекомендацію, з чого почати у вашому готелі чи садибі.">
  <meta name="robots" content="noindex,nofollow">
  <link rel="canonical" href="https://www.vdalo.tech/q">
  <meta name="theme-color" content="#fbf7f4">

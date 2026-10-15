@@ -36,14 +36,26 @@ import {touristTaxCityRoutes} from './versions/v1/tourist-tax-data.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 if(!process.env.VERCEL && existsSync(path.join(root,'.env')) && process.loadEnvFile)process.loadEnvFile(path.join(root,'.env'));
-const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4'};
+const types={'.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.mp4':'video/mp4','.json':'application/json; charset=utf-8','.woff2':'font/woff2'};
 const gtmHead=`<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PKDT7MMT');</script>`;
 const gtmBody=`<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PKDT7MMT" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
+const faviconLink='<link rel="icon" href="/v1/assets/favicon.svg" type="image/svg+xml">';
 const touristTaxRoutes=['/tourist-tax/',...touristTaxCityRoutes()];
 const publicSitemapRoutes=getPublicSitemapRoutes({seoRoutes:seoRoutes(),caseSlugs,pmsArticle,pmsChoiceArticle,editorialArticles,secondPassArticles,touristTaxRoutes});
 const indexableSchemaRoutes=new Set(publicSitemapRoutes);
+function withCampaignSocialMetadata(html){
+ // Funnel pages stay noindex; add share previews without adding search schema to campaign URLs.
+ if(!/<meta\s+name=["']robots["'][^>]*content=["'][^"']*\bnoindex\b/i.test(html)||/<meta\s+property=["']og:title["']/i.test(html))return html;
+ const title=html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim()||'VDALO';
+ const description=html.match(/<meta\s+name=["']description["'][^>]*content=["']([^"']*)["']/i)?.[1]?.trim()||'';
+ const canonical=html.match(/<link\s+rel=["']canonical["'][^>]*href=["']([^"']*)["']/i)?.[1]||`https://www.vdalo.tech${html.match(/<body[^>]*data-route=["']([^"']+)["']/i)?.[1]||''}`;
+ const social=`<meta property="og:type" content="website"><meta property="og:site_name" content="VDALO"><meta property="og:locale" content="uk_UA"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="https://www.vdalo.tech/v1/assets/og-1200x630.png"><meta property="og:image:alt" content="VDALO для власників і команд готелів"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="https://www.vdalo.tech/v1/assets/og-1200x630.png">`;
+ return html.replace(/<\/head>/i,`${social}</head>`);
+}
 function withTagManager(html){
- const withHead=html.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
+ const withSocial=withCampaignSocialMetadata(html);
+ const withFavicon=withSocial.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+(/<link\b[^>]*\brel=["'][^"']*\bicon\b[^"']*["'][^>]*>/i.test(withSocial)?'':faviconLink));
+ const withHead=withFavicon.replace(/<head(?:\s[^>]*)?>/i,opening=>opening+gtmHead);
  return withHead.replace(/<body(?:\s[^>]*)?>/i,opening=>opening+gtmBody);
 }
 function send(res,status,text,type='text/html; charset=utf-8',method='GET'){

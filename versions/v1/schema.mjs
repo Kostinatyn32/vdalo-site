@@ -13,6 +13,7 @@ const servicePages = new Set([
   '/guest-communication',
   '/hotel-automation',
 ]);
+const softwarePages = new Set(['/tools/qr-studio/']);
 
 function readMeta(html, selector) {
   const match = html.match(selector);
@@ -137,6 +138,9 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
     const serviceId = `${canonical}#service`;
     webpage.mainEntity = { '@id': serviceId };
   }
+  if (softwarePages.has(pathname)) {
+    webpage.mainEntity = { '@id': `${canonical}#software` };
+  }
 
   const graph = [
     {
@@ -165,6 +169,27 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
       url: canonical,
       provider: { '@id': ORGANIZATION_ID },
       mainEntityOfPage: { '@id': `${canonical}#webpage` },
+      inLanguage: 'uk',
+    });
+  }
+  if (softwarePages.has(pathname)) {
+    graph.push({
+      '@type': 'SoftwareApplication',
+      '@id': `${canonical}#software`,
+      name: 'QR Studio VDALO',
+      url: canonical,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web browser',
+      description,
+      isAccessibleForFree: true,
+      featureList: [
+        'Створення QR-кодів для вебпосилань, Wi-Fi та текстової інформації',
+        'Оформлення кольорів, форми модулів і маркерів QR-коду',
+        'Додавання логотипу, фонової фотографії та підпису',
+        'Завантаження PNG, JPG, WebP, SVG і PDF у різних розмірах',
+        'Локальне створення коду у браузері без передавання введених даних на сервер',
+      ],
+      provider: { '@id': ORGANIZATION_ID },
       inLanguage: 'uk',
     });
   }
