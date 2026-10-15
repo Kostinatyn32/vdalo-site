@@ -28,6 +28,7 @@ const renderers = new Map([
   ['/', () => render.renderPage({ origin, full: true })],
   ...seo.seoRoutes().map(path => [path, () => seo.renderSeoPage(path)]),
   ['/authors/oleh-stepeniev', () => author.renderAuthorPage()],
+  ['/authors', () => author.renderAuthorsDirectory()],
   ['/privacy', () => legacyServer.privacyPage()],
   ['/offer', () => legal.renderOfferPage()],
   ['/refunds', () => legal.renderRefundPage()],
@@ -62,7 +63,7 @@ function expectedType(path) {
   if (path === '/about') return 'AboutPage';
   if (path === '/contact') return 'ContactPage';
   if (path === '/authors/oleh-stepeniev') return 'ProfilePage';
-  if (['/solutions','/integrations','/blog','/cases','/tools/'].includes(path)) return 'CollectionPage';
+  if (['/solutions','/integrations','/blog','/cases','/tools/','/authors'].includes(path)) return 'CollectionPage';
   return 'WebPage';
 }
 

@@ -11,6 +11,7 @@ path,page_type,canonical,graph_nodes,article,service,software,breadcrumb
 "/registration","WebPage","https://www.vdalo.tech/registration","3","false","false","false","false"
 "/about","AboutPage","https://www.vdalo.tech/about","3","false","false","false","false"
 "/contact","ContactPage","https://www.vdalo.tech/contact","3","false","false","false","false"
+"/authors","CollectionPage","https://www.vdalo.tech/authors","4","false","false","false","true"
 "/authors/oleh-stepeniev","ProfilePage","https://www.vdalo.tech/authors/oleh-stepeniev","5","false","false","false","true"
 "/privacy","WebPage","https://www.vdalo.tech/privacy","3","false","false","false","false"
 "/offer","WebPage","https://www.vdalo.tech/offer","3","false","false","false","false"

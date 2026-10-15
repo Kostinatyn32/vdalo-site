@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { renderPage } from '../versions/v1/render.mjs';
 import { renderCaseList, renderCase, caseData } from '../versions/v1/cases.mjs';
 import { renderBlogPage } from '../versions/v1/blog.mjs';
-import { renderAuthorPage } from '../versions/v1/author-page.mjs';
+import { renderAuthorPage, renderKostiantynAuthorPage, renderAuthorsDirectory } from '../versions/v1/author-page.mjs';
 import { renderEditorialArticle, editorialArticles } from '../versions/v1/article-library.mjs';
 import { renderSecondPassArticle, secondPassArticles } from '../versions/v1/article-second-pass.mjs';
 import { renderPmsArticle, pmsArticle } from '../versions/v1/article-pms.mjs';
@@ -13,15 +13,23 @@ import { renderToolsIndex, renderPmsChecklist, renderHotelProfitabilityCalculato
 import { renderSeoPage, seoRoutes } from '../versions/v1/seo-pages.mjs';
 import { renderOfferPage, renderRefundPage } from '../versions/v1/legal.mjs';
 import { privacyPage } from '../versions/v1/server.mjs';
+import { renderTouristTaxHub, renderTouristTaxCity } from '../versions/v1/tourist-tax.mjs';
+import { touristTaxCityRoutes } from '../versions/v1/tourist-tax-data.mjs';
+import { renderTouristTaxFunnel } from '../microlandings/tourist-tax-funnel.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const qrStudioHtml = readFileSync(path.join(root, 'qr-lab', 'dist', 'index.html'), 'utf8');
 const pages = new Map([
-  ['/', renderPage({ origin: 'https://www.vdalo.tech', full: true, schemaType: 'SoftwareApplication' })],
+  ['/', renderPage({ origin: 'https://www.vdalo.tech', full: true })],
   ['/cases', renderCaseList()], ['/blog', renderBlogPage({ origin: 'https://www.vdalo.tech' })],
-  ['/authors/oleh-stepeniev', renderAuthorPage()], ['/privacy', privacyPage()],
+  ['/authors', renderAuthorsDirectory()], ['/authors/oleh-stepeniev', renderAuthorPage()],
+  ['/authors/kostiantyn-tripailo', renderKostiantynAuthorPage()], ['/privacy', privacyPage()],
   ['/offer', renderOfferPage()], ['/refunds', renderRefundPage()],
   ['/tools/', renderToolsIndex()], ['/tools/pms-checklist/', renderPmsChecklist()],
+  ['/tools/qr-studio/', qrStudioHtml],
   ['/tools/hotel-profitability-calculator/', renderHotelProfitabilityCalculator()],
+  ['/tourist-tax/', renderTouristTaxHub()], ['/tourist-tax/start', renderTouristTaxFunnel()],
+  ...touristTaxCityRoutes().map(route => [route, renderTouristTaxCity(route.split('/').filter(Boolean).at(-1))]),
   [pmsArticle.slug, renderPmsArticle()], [pmsChoiceArticle.slug, renderPmsChoiceArticle()],
 ]);
 for (const route of seoRoutes()) pages.set(route, renderSeoPage(route));
@@ -65,8 +73,8 @@ for (const [route, html] of pages) {
         .map(node => node?.['@type']).filter(Boolean);
     } catch { return []; }
   });
-  if (route === '/' && !schemaTypes.includes('SoftwareApplication')) errors.push(`${route}: expected SoftwareApplication structured data on the product homepage`);
-  if (route !== '/' && schemaTypes.includes('SoftwareApplication')) errors.push(`${route}: SoftwareApplication schema is not appropriate as inherited page-level markup`);
+  if (route === '/' && !schemaTypes.includes('WebPage')) errors.push(`${route}: missing WebPage structured data on the homepage`);
+  if (route !== '/' && route !== '/tools/qr-studio/' && schemaTypes.includes('SoftwareApplication')) errors.push(`${route}: SoftwareApplication schema is not appropriate as inherited page-level markup`);
   for (const href of html.matchAll(/<a\b[^>]*\shref="([^"]+)"/gi)) {
     const value = href[1];
     if ((value.startsWith('/') && !value.startsWith('//')) || value.startsWith('https://www.vdalo.tech/')) {

@@ -6,6 +6,7 @@ import {pmsArticle} from '../versions/v1/article-pms.mjs';
 import {pmsChoiceArticle} from '../versions/v1/article-pms-choice.mjs';
 import {seoRoutes} from '../versions/v1/seo-pages.mjs';
 import {offers} from '../microlandings/content.mjs';
+import {touristTaxCityRoutes} from '../versions/v1/tourist-tax-data.mjs';
 
 const base = process.env.AUDIT_BASE_URL || 'http://127.0.0.1:4450';
 let inProcessServer = null;
@@ -60,8 +61,9 @@ const routes = [...new Set([
   '/privacy', '/offer', '/refunds', '/cases', ...caseSlugs,
   '/blog', pmsArticle.slug, pmsChoiceArticle.slug,
   ...editorialArticles.map(article => article.slug), ...secondPassArticles.map(article => article.slug),
-  ...seoRoutes(), '/authors/oleh-stepeniev', '/tools/', '/tools/pms-checklist/',
+  ...seoRoutes(), '/authors', '/authors/oleh-stepeniev', '/authors/kostiantyn-tripailo', '/tools/', '/tools/qr-studio/', '/tools/pms-checklist/',
   '/tools/hotel-profitability-calculator/', ...campaignRoutes,
+  '/tourist-tax/', '/tourist-tax/start', ...touristTaxCityRoutes(),
   '/robots.txt', '/sitemap.xml',
 ])];
 const campaignRouteSet = new Set(campaignRoutes);
@@ -79,6 +81,11 @@ for (const route of routes) {
   }
   const type = response.headers.get('content-type') || '';
   const html = await response.text();
+  if (route === '/authors') {
+    for (const [name, profile] of [['Олег Степенєв', '/authors/oleh-stepeniev'], ['Костянтин Тріпайло', '/authors/kostiantyn-tripailo']]) {
+      if (!html.includes(name) || !html.includes(`href="${profile}"`)) errors.push(`/authors: missing visible profile link for ${name}`);
+    }
+  }
   if (route === '/robots.txt') {
     if (!html.includes('Sitemap: https://www.vdalo.tech/sitemap.xml')) errors.push('/robots.txt: sitemap pointer does not use canonical host');
     continue;
@@ -87,7 +94,8 @@ for (const route of routes) {
     if (!/<loc>https:\/\/www\.vdalo\.tech\//i.test(html)) errors.push('/sitemap.xml: locations do not use canonical host');
     if (/<loc>https:\/\/vdalo\.tech\//i.test(html)) errors.push('/sitemap.xml: contains non-canonical host locations');
     const sitemapPaths = new Set([...html.matchAll(/<loc>(https:\/\/www\.vdalo\.tech[^<]*)<\/loc>/gi)].map(match => new URL(match[1]).pathname));
-    const expectedIndexableRoutes = routes.filter(path => !campaignRouteSet.has(path) && !['/robots.txt', '/sitemap.xml'].includes(path));
+    const noindexRoutes = new Set(['/authors/kostiantyn-tripailo', '/tourist-tax/start']);
+    const expectedIndexableRoutes = routes.filter(path => !campaignRouteSet.has(path) && !noindexRoutes.has(path) && !['/robots.txt', '/sitemap.xml'].includes(path));
     for (const path of expectedIndexableRoutes) if (!sitemapPaths.has(path)) errors.push(`/sitemap.xml: missing indexable route ${path}`);
     for (const path of sitemapPaths) if (campaignRouteSet.has(path)) errors.push(`/sitemap.xml: campaign/noindex route should not be included: ${path}`);
     continue;
@@ -126,8 +134,8 @@ for (const route of routes) {
     }
     catch { errors.push(`${route}: invalid JSON-LD`); }
   }
-  if (route === '/' && !schemaTypesOnPage.includes('SoftwareApplication')) errors.push(`${route}: missing homepage SoftwareApplication schema`);
-  if (route !== '/' && schemaTypesOnPage.includes('SoftwareApplication')) errors.push(`${route}: unexpected SoftwareApplication schema`);
+  if (route === '/' && !schemaTypesOnPage.includes('WebPage')) errors.push(`${route}: missing homepage WebPage schema`);
+  if (route !== '/' && route !== '/tools/qr-studio/' && schemaTypesOnPage.includes('SoftwareApplication')) errors.push(`${route}: unexpected SoftwareApplication schema`);
   for (const match of html.matchAll(/<(?:img|source|video)\b[^>]*\s(?:src|srcset|poster)="([^"]+)"/gi)) {
     const raw = match[1].split(',')[0].trim().split(/\s+/)[0];
     if (!raw || raw.startsWith('data:') || raw.startsWith('https://')) continue;
@@ -156,8 +164,9 @@ for (const name of ['staff-checkin.webp', 'night-answers.webp', 'channel-sync.we
 }
 
 const redirectCases = new Map([
-  ['/blog/', '/blog'], ['/cases/', '/cases'],
+  ['/blog/', '/blog'], ['/cases/', '/cases'], ['/authors/', '/authors'],
   ['/authors/oleh-stepeniev/', '/authors/oleh-stepeniev'],
+  ['/authors/kostiantyn-tripailo/', '/authors/kostiantyn-tripailo'],
   ['/tools', '/tools/'], ['/tools/pms-checklist', '/tools/pms-checklist/'],
   ['/tools/hotel-profitability-calculator', '/tools/hotel-profitability-calculator/'],
   ['/cases/hotel-ai-reception', '/cases/night-self-checkin-germany'], ['/go/', '/go'],

@@ -26,7 +26,7 @@ import {handlePmsReport} from './versions/v1/pms-report.mjs';
 import {renderSeoPage,seoRoutes} from './versions/v1/seo-pages.mjs';
 import {homeCssBundle,siteCssBundle} from './versions/v1/assets.mjs';
 import {renderOfferPage,renderRefundPage} from './versions/v1/legal.mjs';
-import {renderAuthorPage} from './versions/v1/author-page.mjs';
+import {renderAuthorPage,renderKostiantynAuthorPage,renderAuthorsDirectory} from './versions/v1/author-page.mjs';
 import {handleWayForPay} from './payments/wayforpay.mjs';
 import {applySitewideSchema} from './versions/v1/schema.mjs';
 import {getPublicSitemapRoutes} from './versions/v1/sitemap.mjs';
@@ -124,8 +124,12 @@ const server=http.createServer(async(req,res)=>{
   if(pathname==='/cases')return send(res,200,prefix(renderCaseList(),'v1'));
   if(caseSlugs.includes(pathname))return send(res,200,prefix(renderCase(pathname.slice('/cases/'.length)),'v1'));
   if(pathname==='/blog')return send(res,200,prefix(renderBlogPage({origin:'https://www.vdalo.tech'}),'v1'));
+  if(pathname==='/authors/'){res.writeHead(308,{Location:'/authors'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/authors')return send(res,200,prefix(renderAuthorsDirectory(),'v1'));
   if(pathname==='/authors/oleh-stepeniev/'){res.writeHead(308,{Location:'/authors/oleh-stepeniev'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname==='/authors/oleh-stepeniev')return send(res,200,prefix(renderAuthorPage(),'v1'));
+  if(pathname==='/authors/kostiantyn-tripailo/'){res.writeHead(308,{Location:'/authors/kostiantyn-tripailo'+url.search,'Cache-Control':'public, max-age=300'});return res.end();}
+  if(pathname==='/authors/kostiantyn-tripailo')return send(res,200,prefix(renderKostiantynAuthorPage(),'v1'));
   if(pathname==='/tools/qr-studio'){res.writeHead(308,{Location:`/tools/qr-studio/${url.search}`,'Cache-Control':'public, max-age=300'});return res.end();}
   if(pathname.startsWith('/tools/qr-studio/')){
    const qrDist=path.resolve(root,'qr-lab','dist');

@@ -5,7 +5,7 @@ const AUTHOR_URL = `${ORIGIN}/authors/oleh-stepeniev`;
 const AUTHOR_ID = `${AUTHOR_URL}#person`;
 const LOGO_URL = `${ORIGIN}/v1/assets/vdalo-app-icon.svg`;
 
-const collectionPages = new Set(['/solutions', '/integrations', '/blog', '/cases', '/tools/']);
+const collectionPages = new Set(['/solutions', '/integrations', '/blog', '/cases', '/tools/', '/authors']);
 const servicePages = new Set([
   '/hotel-booking-calendar',
   '/hotel-check-in',
@@ -49,7 +49,7 @@ function existingNodes(html) {
 function pageType(pathname) {
   if (pathname === '/about') return 'AboutPage';
   if (pathname === '/contact') return 'ContactPage';
-  if (pathname === '/authors/oleh-stepeniev') return 'ProfilePage';
+  if (/^\/authors\/[^/]+$/.test(pathname)) return 'ProfilePage';
   if (collectionPages.has(pathname)) return 'CollectionPage';
   return 'WebPage';
 }
@@ -88,7 +88,14 @@ function articleNode(nodes, pathname, canonical, title, description, image) {
     delete article.datePublished;
     article.author = { '@type': 'Person', '@id': AUTHOR_ID, name: 'Олег Степенєв', url: AUTHOR_URL };
   } else if (source.author) {
-    article.author = { '@type': 'Person', '@id': AUTHOR_ID, name: 'Олег Степенєв', url: AUTHOR_URL };
+    const sourceAuthor = Array.isArray(source.author) ? source.author[0] : source.author;
+    const authorUrl = sourceAuthor.url || (sourceAuthor['@id'] || '').replace(/#person$/, '');
+    article.author = {
+      ...sourceAuthor,
+      '@type': 'Person',
+      ...(authorUrl ? { '@id': `${authorUrl}#person`, url: authorUrl } : { '@id': AUTHOR_ID, url: AUTHOR_URL }),
+      name: sourceAuthor.name || 'Олег Степенєв',
+    };
   }
   return article;
 }
@@ -96,7 +103,8 @@ function articleNode(nodes, pathname, canonical, title, description, image) {
 function personNode(nodes) {
   const person = nodes.find(node => nodeTypes(node).has('Person'));
   if (!person) return null;
-  return { ...person, '@id': person['@id'] || AUTHOR_ID, '@type': 'Person', name: person.name || 'Олег Степенєв', url: person.url || AUTHOR_URL };
+  const personUrl = person.url || (person['@id'] || '').replace(/#person$/, '') || AUTHOR_URL;
+  return { ...person, '@id': person['@id'] || `${personUrl}#person`, '@type': 'Person', name: person.name || 'Автор VDALO', url: personUrl };
 }
 
 function canonicalFor(html, pathname) {
@@ -119,7 +127,7 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
   const image = readMeta(html, /<meta\b[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i);
   const oldNodes = existingNodes(html);
   const article = articleNode(oldNodes, pathname, canonical, h1 || title, description, image);
-  const author = pathname === '/authors/oleh-stepeniev' ? personNode(oldNodes) : null;
+  const author = /^\/authors\/[^/]+$/.test(pathname) ? personNode(oldNodes) : null;
   const breadcrumb = visibleBreadcrumb(html);
 
   const webpage = {
@@ -133,7 +141,7 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
   };
   if (image) webpage.primaryImageOfPage = { '@type': 'ImageObject', url: image };
   if (article) webpage.mainEntity = { '@id': `${canonical}#article` };
-  if (author) webpage.mainEntity = { '@id': AUTHOR_ID };
+  if (author) webpage.mainEntity = { '@id': author['@id'] };
   if (servicePages.has(pathname)) {
     const serviceId = `${canonical}#service`;
     webpage.mainEntity = { '@id': serviceId };

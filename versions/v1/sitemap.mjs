@@ -5,6 +5,7 @@ export function getPublicSitemapRoutes({ seoRoutes, caseSlugs, pmsArticle, pmsCh
   return [
     '/',
     ...orderedSeoRoutes,
+    '/authors',
     '/authors/oleh-stepeniev',
     '/privacy',
     '/offer',
