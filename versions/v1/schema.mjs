@@ -155,9 +155,16 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
       '@type': 'Organization',
       '@id': ORGANIZATION_ID,
       name: 'VDALO',
+      legalName: 'Фізична особа-підприємець Проценко Марта Олександрівна',
       url: ORIGIN,
       description: 'Програмне забезпечення VDALO допомагає готелям керувати бронюваннями, номерним фондом і щоденними процесами.',
       areaServed: { '@type': 'Country', name: 'Україна' },
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+380939082254',
+        contactType: 'customer support',
+        availableLanguage: ['Ukrainian'],
+      },
       logo: { '@type': 'ImageObject', '@id': `${LOGO_URL}#logo`, url: LOGO_URL },
     },
     {
