@@ -63,7 +63,7 @@ function expectedType(path) {
   if (path === '/about') return 'AboutPage';
   if (path === '/contact') return 'ContactPage';
   if (path === '/authors/oleh-stepeniev') return 'ProfilePage';
-  if (['/solutions','/integrations','/blog','/cases','/tools/','/authors'].includes(path)) return 'CollectionPage';
+  if (['/solutions','/integrations','/blog','/cases','/tools/','/authors','/tourist-tax/'].includes(path)) return 'CollectionPage';
   return 'WebPage';
 }
 

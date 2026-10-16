@@ -438,7 +438,8 @@ test('Uzhhorod and Slavsko use the signed 2026 universal Form 6 rates and disclo
     assert.ok(rule.supportingSources.some(source=>source.url.includes('tax.gov.ua/data/material/')));
     const html=renderTouristTaxCity(slug);
     assert.match(html,/Зірочка до ставки/);
-    assert.match(html,/Excel/);
+    assert.match(html,/попередніми довідковими даними/);
+    assert.doesNotMatch(html,/Excel/i,'internal workbook names should not appear on public city pages');
   }
 });
 
@@ -457,7 +458,8 @@ test('every published city with an Excel rate mismatch marks the public rate and
     const html=renderTouristTaxCity(place.slug);
     assert.ok(html,`published city page should render: ${place.slug}`);
     assert.match(html,/<strong>[^<]*%\*<\/strong>/,`verified rate should carry an asterisk: ${place.slug}`);
-    assert.match(html,/Excel/,`page should explain the workbook discrepancy: ${place.slug}`);
+    assert.doesNotMatch(html,/Excel/i,`internal workbook names should not appear publicly: ${place.slug}`);
+    assert.match(html,/попередн.{0,40}довідков|значення у джерелах відрізняються|ставки.*відрізняються|форма ДПС/i,`page should explain the source discrepancy: ${place.slug}`);
     if(place.slug!=='uzhhorod'&&place.slug!=='slavsko')assert.match(html,/офіційного джерела|офіційне джерело|тарифні діапазони/i,`page should explain the selected official value/model: ${place.slug}`);
   }
 });

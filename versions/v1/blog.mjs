@@ -45,7 +45,7 @@ const content=`<main id="main" class="blog-page"><section class="blog-hero"><div
 
 export function renderBlogPage({origin=''}={}) {
   let html=renderPage({origin,full:false});
-  html=html.replace(/<title>[\s\S]*?<\/title>/, '<title>Блог для готелів: статті, кейси й практичні інструкції | VDALO</title>');
+  html=html.replace(/<title>[\s\S]*?<\/title>/, '<title>Блог для готелів: статті, кейси й інструкції | VDALO</title>');
   html=html.replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="Статті, кейси й інструкції для готельєрів: PMS, бронювання, QR-коди, досвід гостей, туристичний збір і автоматизація.">');
   html=html.replace(/<meta name="robots" content="[^"]*">/, '<meta name="robots" content="index,follow">');
   html=html.replace(/<meta property="og:title" content="[^"]*">/, '<meta property="og:title" content="Блог для готелів: статті, кейси й інструкції | VDALO">');

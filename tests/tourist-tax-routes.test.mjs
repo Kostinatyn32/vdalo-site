@@ -46,12 +46,14 @@ test('hub, city, assets and sitemap resolve through the actual app router',async
   }
   const pendingCity=await request('/tourist-tax/aktove/');
   assert.equal(pendingCity.status,404,'unreleased settlements should not have public pages');
-  assert.doesNotMatch(pendingCity.body,/noindex/i);
+  assert.match(pendingCity.body,/name="robots" content="noindex,follow"/,'branded 404 pages should stay out of search results');
+  assert.match(pendingCity.body,/Сторінку не знайдено/);
   assert.doesNotMatch(pendingCity.body,/0,3\s*%|24,00|80,00/);
   for(const slug of ['kyyiv','bukovel','bar']){
     const unreleased=await request(`/tourist-tax/${slug}/`);
     assert.equal(unreleased.status,404,`${slug} is not approved for the current release wave`);
-    assert.doesNotMatch(unreleased.body,/noindex/i);
+    assert.match(unreleased.body,/name="robots" content="noindex,follow"/);
+    assert.match(unreleased.body,/Сторінку не знайдено/);
   }
   const hubConfig=JSON.parse(hub.body.match(/<script type="application\/json" id="tourist-tax-config">([^<]+)<\/script>/)[1]);
   assert.deepEqual(hubConfig.publicPlaces.map(place=>place.slug).sort(),['berehove','cherkasy','chernihiv','chernivtsi','ivano-frankivsk','kolomyya','lutsk','lviv','pivdenne','rivne','slavsko','sumy','ternopil','uzhhorod','vinnytsya','zaporizhzhya']);
@@ -82,9 +84,13 @@ test('only released city routes resolve through the actual app router',async()=>
       assert.match(response.body,/<link rel="canonical" href="https:\/\/www\.vdalo\.tech/);
       assert.match(response.body,/name="robots" content="index,follow"/);
       assert.match(response.body,/class="tt-seo-content"/,`city SEO block missing: ${place.slug}`);
+      const title=response.body.match(/<title>([^<]+)<\/title>/)?.[1]||'';
+      assert.ok(title.length<=65,`city title should stay concise: ${place.slug} (${title.length} chars)`);
+      assert.match(title,/Туристичний збір .* 2026: ставки \| VDALO/);
     }else{
       assert.equal(response.status,404,`unreleased route should be unavailable: ${place.route}`);
-      assert.doesNotMatch(response.body,/noindex/i);
+      assert.match(response.body,/name="robots" content="noindex,follow"/);
+      assert.match(response.body,/Сторінку не знайдено/);
     }
   }
 });

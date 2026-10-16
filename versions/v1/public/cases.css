@@ -2,6 +2,7 @@
 .ds2 .case-index-hero h1,.ds2 .hotel-case-hero h1{max-width:880px;margin:0;font-size:clamp(48px,7vw,82px);line-height:1.04;letter-spacing:-.055em;color:var(--plum)}
 .ds2 .case-index-lead,.ds2 .case-lead{max-width:760px;margin:24px 0 0;color:var(--muted);font-size:19px;line-height:1.7}
 .ds2 .case-index-list{padding-top:64px}
+.ds2 .case-index-seo{padding:0 0 80px}.ds2 .case-index-seo-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.72fr);gap:clamp(28px,5vw,72px);padding:clamp(24px,4vw,42px);border:1px solid var(--border);border-radius:24px;background:#faf7f9}.ds2 .case-index-seo h2{max-width:680px;margin:0;color:var(--plum);font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-.04em}.ds2 .case-index-seo-inner>div>p:not(.eyebrow){max-width:720px;color:var(--muted);font-size:16px;line-height:1.7}.ds2 .case-index-seo-inner aside{align-self:center;padding:26px;border:1px solid var(--border);border-radius:18px;background:#fff}.ds2 .case-index-seo-inner aside h3{margin:0;color:var(--plum);font-size:22px;line-height:1.2}.ds2 .case-index-seo-inner aside ul{padding-left:20px;color:var(--muted);line-height:1.6}.ds2 .case-index-seo-inner aside li{margin:0 0 9px;padding-left:3px}.ds2 .case-index-seo-inner aside li::marker{color:var(--pink)}.ds2 .case-index-seo-inner aside p{color:var(--muted);font-size:14px;line-height:1.6}.ds2 .case-index-seo-inner aside a{color:var(--plum);font-weight:650;text-underline-offset:3px}.ds2 .case-index-seo-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:4px}
 .ds2 .case-card{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:48px;align-items:center;padding:42px;border:1px solid var(--border);border-radius:24px;background:#fff;box-shadow:0 18px 50px #39233e08}
 .ds2 .case-card h2{max-width:700px;margin:0;font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-.04em}
 .ds2 .case-card-copy>p:not(.eyebrow){max-width:690px;color:var(--muted);font-size:16px;line-height:1.7;margin:18px 0 24px}
@@ -71,3 +72,4 @@
 .ds2 .case-card h2{font-size:clamp(30px,3.5vw,42px)}
 .ds2 .case-section h2{font-size:clamp(32px,4vw,50px)}
 @media(max-width:600px){.ds2 .case-index-hero h1,.ds2 .hotel-case-hero h1{font-size:clamp(36px,9.5vw,52px)}.ds2 .case-card h2{font-size:29px}.ds2 .case-section h2{font-size:32px}}
+@media(max-width:760px){.ds2 .case-index-seo{padding-bottom:52px}.ds2 .case-index-seo-inner{grid-template-columns:1fr;gap:22px;padding:24px 18px;border-radius:18px}.ds2 .case-index-seo-inner aside{padding:20px}}

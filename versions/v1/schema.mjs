@@ -5,7 +5,7 @@ const AUTHOR_URL = `${ORIGIN}/authors/oleh-stepeniev`;
 const AUTHOR_ID = `${AUTHOR_URL}#person`;
 const LOGO_URL = `${ORIGIN}/v1/assets/vdalo-app-icon.svg`;
 
-const collectionPages = new Set(['/solutions', '/integrations', '/blog', '/cases', '/tools/', '/authors']);
+const collectionPages = new Set(['/solutions', '/integrations', '/blog', '/cases', '/tools/', '/authors', '/tourist-tax/']);
 const servicePages = new Set([
   '/hotel-booking-calendar',
   '/hotel-check-in',
@@ -65,6 +65,25 @@ function visibleBreadcrumb(html) {
     if (name && (href || entries.length)) entries.push({ '@type': 'ListItem', position: entries.length + 1, name, ...(href ? { item: href } : {}) });
   }
   return entries.length > 1 ? { '@type': 'BreadcrumbList', itemListElement: entries } : null;
+}
+
+function visibleCityDirectory(html, pathname) {
+  if (pathname !== '/tourist-tax/') return null;
+  const list = html.match(/<ul\b[^>]*class=["'][^"']*tt-seo-city-links[^"']*["'][^>]*>([\s\S]*?)<\/ul>/i)?.[1];
+  if (!list) return null;
+  const itemListElement = [...list.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].map((match, index) => {
+    const name = decodeHtml(match[2].replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim());
+    const url = new URL(decodeHtml(match[1]), ORIGIN).href;
+    return { '@type': 'ListItem', position: index + 1, name, url };
+  });
+  if (!itemListElement.length) return null;
+  return {
+    '@type': 'ItemList',
+    '@id': `${ORIGIN}${pathname}#city-directory`,
+    name: 'Опубліковані сторінки ставок туристичного збору за містами України',
+    numberOfItems: itemListElement.length,
+    itemListElement,
+  };
 }
 
 function articleNode(nodes, pathname, canonical, title, description, image) {
@@ -142,6 +161,8 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
   if (image) webpage.primaryImageOfPage = { '@type': 'ImageObject', url: image };
   if (article) webpage.mainEntity = { '@id': `${canonical}#article` };
   if (author) webpage.mainEntity = { '@id': author['@id'] };
+  const cityDirectory = visibleCityDirectory(html, pathname);
+  if (cityDirectory) webpage.mainEntity = { '@id': cityDirectory['@id'] };
   if (servicePages.has(pathname)) {
     const serviceId = `${canonical}#service`;
     webpage.mainEntity = { '@id': serviceId };
@@ -212,6 +233,7 @@ export function applySitewideSchema(html, pathname, indexableRoutes) {
   }
   if (author) graph.push(author);
   if (article) graph.push(article);
+  if (cityDirectory) graph.push(cityDirectory);
   if (breadcrumb) graph.push(breadcrumb);
 
   const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
