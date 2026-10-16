@@ -1,0 +1,11 @@
+[Unit]
+Description=Run VDALO site updater every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+AccuracySec=5s
+Unit=vdalo-site-update.service
+
+[Install]
+WantedBy=timers.target

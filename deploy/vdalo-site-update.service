@@ -1,0 +1,13 @@
+[Unit]
+Description=VDALO site: pull, build, swap containers
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+Slice=builds.slice
+ExecStart=/opt/vdalo/deploy/vdalo-site-update.sh
+Nice=10
+IOSchedulingClass=best-effort

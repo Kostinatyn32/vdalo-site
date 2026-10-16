@@ -1,0 +1,64 @@
+# ponytail: один compose, два сервіси (prod + staging). Caddy — на хості.
+# Контейнери read-only, non-root, без мережевого доступу назовні крім потрібного.
+services:
+  site:
+    image: vdalo/site:${SITE_TAG:-main}
+    container_name: vdalo-site
+    restart: unless-stopped
+    read_only: true
+    user: "1000:1000"
+    env_file:
+      - /opt/vdalo/site.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: "4185"
+    ports:
+      - "127.0.0.1:8080:4185"
+    tmpfs:
+      - /tmp:size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        reservations:
+          memory: 512M
+        limits:
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  site-staging:
+    image: vdalo/site:${STAGING_TAG:-staging}
+    container_name: vdalo-site-staging
+    restart: unless-stopped
+    read_only: true
+    user: "1000:1000"
+    env_file:
+      - /opt/vdalo/site-staging.env
+    environment:
+      HOST: 0.0.0.0
+      PORT: "4185"
+    ports:
+      - "127.0.0.1:8081:4185"
+    tmpfs:
+      - /tmp:size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    deploy:
+      resources:
+        reservations:
+          memory: 256M
+        limits:
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

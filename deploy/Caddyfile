@@ -1,0 +1,62 @@
+# ponytail: Caddy — HTTPS автомат, proxy to local containers, preserves Host and X-Forwarded-*.
+# До перемикання DNS: new.vdalo.tech → site (prod копія), staging.vdalo.tech → site-staging.
+# Після перемикання — додати vdalo.tech і www.vdalo.tech у цей же файл.
+
+{
+	email ops@vdalo.tech
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+(common_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+new.vdalo.tech {
+	import common_headers
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+	log {
+		output file /var/log/caddy/new.vdalo.tech.log {
+			roll_size 10mb
+			roll_keep 5
+		}
+	}
+}
+
+staging.vdalo.tech {
+	import common_headers
+	encode zstd gzip
+	basic_auth {
+		# Set with:
+		#   caddy hash-password
+		# then paste into /opt/vdalo/staging-basicauth.conf and uncomment the import.
+		# staging {$STAGING_BASIC_HASH}
+	}
+	reverse_proxy 127.0.0.1:8081 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+	log {
+		output file /var/log/caddy/staging.vdalo.tech.log {
+			roll_size 10mb
+			roll_keep 3
+		}
+	}
+}
+
+# Health endpoint for local checks (Caddy-level, before proxying).
+:80 {
+	@acme path /.well-known/acme-challenge/*
+	respond @acme 404
+	respond /healthz 200
+}
