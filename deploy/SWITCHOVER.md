@@ -10,9 +10,11 @@
 - [ ] Форми з `https://new.vdalo.tech/*` приймаються (див. нижче — пункт про CORS/Origin).
 - [ ] WayForPay-кабінет: `WFP_MERCHANT_DOMAIN=www.vdalo.tech` і сайт на Hetzner для оплат нічого не потребує змінювати в кабінеті (адреса платежів лишається та сама — продакшн).
 
-## Крок 1. Знизити TTL за добу
+## Крок 1. Знизити TTL за добу — тільки якщо вже є трафік
 
 У EuroDNS за записами `A @` і `CNAME www` виставити TTL 300 (5 хв). За 24 год кеші резолверів оновляться і можна перемикати швидко.
+
+На момент першого перемикання сайт ще не активний (реклами й кампаній нема), тож цей крок можна пропустити й перемикати одразу з новими записами з TTL 300 — відкат усе одно буде ~5 хв (бо старі записи не кешовані ніким).
 
 ## Крок 2. Поміняти записи
 
@@ -82,7 +84,7 @@ nano /opt/vdalo/site.env
 # додати: VDALO_FUNNEL_WEBHOOK_URL=…, VDALO_LEAD_WEBHOOK_URL=…,
 #         VDALO_TRIAL_WEBHOOK_URL=…, VDALO_AUDIT_WEBHOOK_URL=…,
 #         за потреби VDALO_WEBHOOK_BEARER_TOKEN=…
-cd /opt/vdalo && sudo -u deploy docker compose -f deploy/compose.yml up -d --no-deps site
+sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps --wait site
 ```
 
 Повторити curl `POST /api/funnel/leads` з 4.3; очікується 200 + `{ok:true,leadId:…}`; К2 підтверджує, що запит прийшов.

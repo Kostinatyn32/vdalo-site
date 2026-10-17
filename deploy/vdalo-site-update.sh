@@ -25,6 +25,10 @@ echo "---- $(date -u +%FT%TZ) check ----"
 
 [[ -d "$REPO/.git" ]] || { echo "repo missing at $REPO"; exit 0; }
 
+# Git ops run as deploy (repo and worktrees are deploy-owned). Build/docker
+# commands stay as root for systemd-run / builds.slice.
+GIT_AS_DEPLOY=(sudo -u deploy -H git -C "$REPO")
+
 # One-time migration from v1 state file.
 for b in main staging; do
   if [[ -f "$STATE/last-$b" && ! -f "$STATE/last-seen-$b" ]]; then
@@ -74,14 +78,13 @@ run_update() {
   local tag_name
   [[ "$branch" == "main" ]] && tag_name=SITE_TAG || tag_name=STAGING_TAG
 
-  cd "$REPO"
   local new
   if [[ -n "${VDALO_TEST_FORCE_SHA:-}" ]]; then
     new="$VDALO_TEST_FORCE_SHA"
     echo "[$branch] VDALO_TEST_FORCE_SHA=$new (test override)"
   else
-    git fetch --quiet origin "$branch" || { echo "fetch $branch failed"; return 0; }
-    new=$(git rev-parse "origin/$branch")
+    "${GIT_AS_DEPLOY[@]}" fetch --quiet origin "$branch" || { echo "fetch $branch failed"; return 0; }
+    new=$("${GIT_AS_DEPLOY[@]}" rev-parse "origin/$branch")
   fi
   local last_seen=""; [[ -f "$last_seen_file" ]] && last_seen=$(cat "$last_seen_file")
   local last_ok=""; [[ -f "$last_ok_file" ]] && last_ok=$(cat "$last_ok_file")
@@ -89,8 +92,8 @@ run_update() {
   echo "[$branch] $last_seen -> $new (last-ok: ${last_ok:-none})"
 
   local wt=/opt/vdalo/releases/"$branch"-"$new"
-  rm -rf "$wt"
-  git worktree add --detach "$wt" "$new"
+  "${GIT_AS_DEPLOY[@]}" worktree remove --force "$wt" 2>/dev/null || rm -rf "$wt"
+  "${GIT_AS_DEPLOY[@]}" worktree add --detach "$wt" "$new"
 
   # Pre-flight: deploy/ absent in this SHA.
   if [[ ! -f "$wt/deploy/Dockerfile" ]]; then
@@ -100,7 +103,7 @@ run_update() {
       echo "no deploy/Dockerfile in $branch@$new; infra PR not merged yet, silent skip"
     fi
     echo "$new" >"$last_seen_file"
-    git worktree remove --force "$wt"
+    "${GIT_AS_DEPLOY[@]}" worktree remove --force "$wt" 2>/dev/null || rm -rf "$wt"
     return 0
   fi
 
@@ -117,7 +120,7 @@ run_update() {
     echo "[$branch] build/test failed for $new"
     "$ALERT" deploy-failed "build/test failed on $branch@$new"
     echo "$new" >"$last_seen_file"
-    git worktree remove --force "$wt"
+    "${GIT_AS_DEPLOY[@]}" worktree remove --force "$wt" 2>/dev/null || rm -rf "$wt"
     return 1
   fi
 
@@ -128,7 +131,7 @@ run_update() {
     echo "[$branch] compose up failed (tag=$compose_tag)"
     rollback_to_last_ok "$branch" "$image_tag" "$service" "$last_ok" "$container_name" "compose-up on $new"
     echo "$new" >"$last_seen_file"
-    git worktree remove --force "$wt"
+    "${GIT_AS_DEPLOY[@]}" worktree remove --force "$wt" 2>/dev/null || rm -rf "$wt"
     return 1
   fi
 
@@ -143,7 +146,7 @@ run_update() {
     echo "[$branch] smoke failed (rc=$smoke_rc)"
     rollback_to_last_ok "$branch" "$image_tag" "$service" "$last_ok" "$container_name" "smoke on $new"
     echo "$new" >"$last_seen_file"
-    git worktree remove --force "$wt"
+    "${GIT_AS_DEPLOY[@]}" worktree remove --force "$wt" 2>/dev/null || rm -rf "$wt"
     return 1
   fi
 

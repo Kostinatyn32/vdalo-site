@@ -36,6 +36,10 @@ sudo systemctl start vdalo-site-update.service
 sudo /opt/vdalo/deploy/rollback.sh <7-char-sha> main
 sudo /opt/vdalo/deploy/rollback.sh <7-char-sha> staging
 
+# Перезапуск контейнера без ребілда (напр. після правки /opt/vdalo/site.env):
+sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps --wait site
+sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps --wait site-staging
+
 # Smoke-тест
 bash /opt/vdalo/deploy/vdalo-smoke.sh http://127.0.0.1:8080   # prod
 bash /opt/vdalo/deploy/vdalo-smoke.sh http://127.0.0.1:8081   # staging
@@ -46,10 +50,14 @@ sudo tail -f /var/log/vdalo/alerts.log
 docker logs --tail 100 vdalo-site        # або vdalo-site-staging
 ```
 
+## Інфра-правки (deploy/*) — окремим потоком
+
+Якщо правка в `deploy/*` (Dockerfile, compose, Caddy, скрипти бутстрапу, автооновлювач, env-шаблон) — гілка `infra/*` → PR до `main`, зливає Oleg. Не через `staging`: staging — для правок сайту, щоб Костянтин їх дивився на `staging.vdalo.tech`.
+
 ## Куди НЕ пхатися
 
 - Не комітити `.env`, `/opt/vdalo/site*.env`, ключі WFP/Resend/webhook — вони живуть ЛИШЕ в `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` на сервері (600 deploy:deploy). У git — тільки `deploy/env.example` з назвами змінних, без значень.
-- Не пушити у `main` напряму — тільки через PR зі `staging`.
+- Не пушити у `main` напряму — тільки через PR (сайт — зі `staging`; інфра — з `infra/*`).
 - Не вмикати Vercel-деплой у головну гілку після перемикання DNS (там нічого не живе, крім коду).
 - `deploy/*` правлять тільки з інфра-боку. Костянтину туди — через окремий PR і погодження з Oleg.
 

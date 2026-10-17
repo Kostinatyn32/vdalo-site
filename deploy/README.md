@@ -23,23 +23,27 @@ sudo bash 04-monitoring.sh
 
 Два файли секретів живуть на сервері, 600 deploy:deploy. Редагує їх deploy напряму (sudo не треба). `sudoedit` НЕ підходить для `/opt/vdalo/*.env`, бо тека `/opt/vdalo` писабельна для deploy — `sudoedit` відмовить із «cannot open a file in a path writable by the user».
 
-- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram. Створюється й заповнюється командою `sudo /usr/local/sbin/vdalo-alerts setup` (прихований ввід токена, chat_id з Telegram getUpdates). Нічого секретного на екран.
-- `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` — змінні сайту за `deploy/env.example`. Створюються з шаблону при бутстрапі:
+- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram. Створюється й заповнюється командою `sudo /usr/local/sbin/vdalo-alerts setup` (прихований ввід токена, chat_id з Telegram getUpdates). Нічого секретного на екран. **Бот ОКРЕМИЙ від бота PMS** — токен PMS сюди не копіюємо, щоб `getUpdates` не конфліктував з їхнім вебхуком; створи новий бот у @BotFather перед запуском setup.
+- `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` — змінні сайту за `deploy/env.example`. На бутстрапі створюються з шаблону, ЯКЩО ще не існують (щоб ніколи не затерти наявні значення):
 
   ```bash
-  sudo install -m 600 -o deploy -g deploy /opt/vdalo/deploy/env.example /opt/vdalo/site.env
-  sudo install -m 600 -o deploy -g deploy /opt/vdalo/deploy/env.example /opt/vdalo/site-staging.env
+  for f in site.env site-staging.env; do
+    [[ -f /opt/vdalo/$f ]] && continue
+    sudo install -m 600 -o deploy -g deploy /opt/vdalo/deploy/env.example /opt/vdalo/$f
+  done
   sudo sed -i 's#^VDALO_SITE_URL=.*#VDALO_SITE_URL=https://staging.vdalo.tech#' /opt/vdalo/site-staging.env
   ```
 
-  Далі власник заходить як deploy і правит напряму:
+  Далі власник заходить як deploy і правит напряму (sudo для цих файлів НЕ підходить):
 
   ```bash
   ssh deploy@178.104.154.106
   nano /opt/vdalo/site.env              # вписати WFP_SECRET_KEY, webhook URL і решту
   nano /opt/vdalo/site-staging.env      # staging — без WFP_SECRET_KEY
-  cd /opt/vdalo && sudo -u deploy docker compose -f deploy/compose.yml up -d --no-deps site site-staging
+  sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps --wait site site-staging
   ```
+
+  compose без `SITE_TAG`/`STAGING_TAG` бере рухомі теги `vdalo/site:main` і `vdalo/site:staging`, які автооновлювач ставить ЛИШЕ після зеленого smoke, тож тут гарантовано піднімуться вже перевірені образи.
 
 Пароль staging basic-auth задає окремо:
 
