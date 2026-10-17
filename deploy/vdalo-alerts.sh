@@ -96,9 +96,10 @@ case "$cmd" in
 Setup VDALO alerts to Telegram.
 
 Before continuing:
-  1. Create a NEW bot in @BotFather (separate from the PMS bot) and copy its token.
-  2. Open the new bot in your Telegram and send it any message (e.g. "hi").
-  3. Paste the token at the next prompt (hidden input).
+  1. У @BotFather мати бота для сповіщень власника (окремий — лише за бажанням;
+     токен поточного бота теж підходить) і скопіювати токен.
+  2. Відкрити цього бота у своєму Telegram і написати йому будь-що («hi»).
+  3. Вставити токен на наступному запиті (прихований ввід).
 MSG
     echo
     printf "Bot token (hidden): "

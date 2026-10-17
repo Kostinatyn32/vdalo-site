@@ -10,7 +10,9 @@ install -d -m 755 /etc/vdalo
 if [[ ! -f /etc/vdalo/alerts.env ]]; then
   install -m 600 -o deploy -g deploy /dev/null /etc/vdalo/alerts.env
   cat >/etc/vdalo/alerts.env <<'EOF'
-# Fill via: sudoedit /etc/vdalo/alerts.env
+# Fill via: sudo /usr/local/sbin/vdalo-alerts setup
+# (The command hides the bot token on input, pulls chat_id from Telegram getUpdates,
+#  writes this file, and sends a test alert. Nothing secret prints to screen.)
 TG_BOT_TOKEN=
 TG_CHAT_ID=
 EOF
