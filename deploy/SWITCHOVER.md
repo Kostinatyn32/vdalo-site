@@ -60,19 +60,21 @@ sudo systemctl enable --now vdalo-external-health.timer
 
 Він тисне `curl https://www.vdalo.tech/` + читає кінець сертифіката (попередження коли < 14 днів до експірації). Безкоштовний зовнішній монітор не підняв: Caddy сам поновлює LE за 30 днів до закінчення, а внутрішній timer покриває обрив процесу/мережі; зовнішню „вся коробка впала" точку (напр., UptimeRobot free) можна додати пізніше одним акаунтом.
 
-**4.3. Форми ДОХОДЯТЬ до вебхука (не просто 200).** Відправка не рівняється прийняттю; треба підтвердження Костянтина, що заявка з Hetzner прийшла туди ж, куди з Vercel (CRM / Telegram / поштова скринька, що він використовує).
+**4.3. Форми й оплата відповідають чесно, не падають 500.** Приймач заявок у PMS ще не під'єднаний (К2 робить). На перемиканні трафіку немає (реклами теж), тож 503 на формах — НЕ стоп-сигнал. Критерій тут простіший: ендпоінти не падають 500, а чесно повертають 503/422.
 
 ```bash
-curl -s -X POST https://www.vdalo.tech/api/funnel/leads \
-  -H 'Content-Type: application/json' \
-  -H 'Origin: https://www.vdalo.tech' \
-  --data '{"name":"TEST Hetzner switchover","contact":"test@example.com","consent":true,"source":"switchover"}'
-# очікується 200 + {ok:true,leadId:…}
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://www.vdalo.tech/api/funnel/leads \
+  -H 'Content-Type: application/json' -H 'Origin: https://www.vdalo.tech' \
+  --data '{"name":"TEST Hetzner","contact":"test@example.com","consent":true}'
+# 503 (вебхук не вписаний) або 422 (валідація) — обидва OK; 500 → стоп, «Відкат за 5 хв».
+
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://www.vdalo.tech/api/payments/checkout \
+  -H 'Content-Type: application/x-www-form-urlencoded' -H 'Origin: https://www.vdalo.tech' \
+  --data 'plan=start&rooms=10&period=month&customerName=t&email=t@example.com&consent=yes&recurringConsent=yes'
+# 503, поки у site.env немає WFP_SECRET_KEY. Після того, як власник впише ключ, має бути 200 (сторінка-форма до WayForPay); у кабінеті WFP НЕ натискати оплату.
 ```
 
-Повторити для `/api/funnels/top5` і решти форм, що є на сайті.
-
-**503 на цьому етапі = зупинити перемикання і зробити «відкат за 5 хв» (нижче).** Це означає, що в `/opt/vdalo/site.env` немає `VDALO_FUNNEL_WEBHOOK_URL` / `VDALO_LEAD_WEBHOOK_URL` або `VDALO_WEBHOOK_BEARER_TOKEN` — тобто заявки з Hetzner нікуди не йдуть, і кожна відвідувацька заявка пропадає.
+**Пізніше, коли К2 дасть URL приймача:** `sudo sudoedit /opt/vdalo/site.env` → додати `VDALO_FUNNEL_WEBHOOK_URL=…`, `VDALO_LEAD_WEBHOOK_URL=…`, `VDALO_TRIAL_WEBHOOK_URL=…`, `VDALO_AUDIT_WEBHOOK_URL=…`, за потреби `VDALO_WEBHOOK_BEARER_TOKEN=…` → `sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps site` → повторити curl вище; очікується 200 + `{ok:true,leadId:…}`; К2 підтверджує, що запит прийшов.
 
 ## Відкат за 5 хв
 
