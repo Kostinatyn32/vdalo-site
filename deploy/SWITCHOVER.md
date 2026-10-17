@@ -74,7 +74,18 @@ curl -s -o /dev/null -w '%{http_code}\n' -X POST https://www.vdalo.tech/api/paym
 # 503, поки у site.env немає WFP_SECRET_KEY. Після того, як власник впише ключ, має бути 200 (сторінка-форма до WayForPay); у кабінеті WFP НЕ натискати оплату.
 ```
 
-**Пізніше, коли К2 дасть URL приймача:** `sudo sudoedit /opt/vdalo/site.env` → додати `VDALO_FUNNEL_WEBHOOK_URL=…`, `VDALO_LEAD_WEBHOOK_URL=…`, `VDALO_TRIAL_WEBHOOK_URL=…`, `VDALO_AUDIT_WEBHOOK_URL=…`, за потреби `VDALO_WEBHOOK_BEARER_TOKEN=…` → `sudo docker compose -f /opt/vdalo/deploy/compose.yml up -d --no-deps site` → повторити curl вище; очікується 200 + `{ok:true,leadId:…}`; К2 підтверджує, що запит прийшов.
+**Пізніше, коли К2 дасть URL приймача:** власник заходить як deploy, редагує `/opt/vdalo/site.env` напряму (600 deploy:deploy; sudo для цього файлу не підходить):
+
+```bash
+ssh deploy@178.104.154.106
+nano /opt/vdalo/site.env
+# додати: VDALO_FUNNEL_WEBHOOK_URL=…, VDALO_LEAD_WEBHOOK_URL=…,
+#         VDALO_TRIAL_WEBHOOK_URL=…, VDALO_AUDIT_WEBHOOK_URL=…,
+#         за потреби VDALO_WEBHOOK_BEARER_TOKEN=…
+cd /opt/vdalo && sudo -u deploy docker compose -f deploy/compose.yml up -d --no-deps site
+```
+
+Повторити curl `POST /api/funnel/leads` з 4.3; очікується 200 + `{ok:true,leadId:…}`; К2 підтверджує, що запит прийшов.
 
 ## Відкат за 5 хв
 

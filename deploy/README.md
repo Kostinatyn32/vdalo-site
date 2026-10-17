@@ -21,17 +21,30 @@ sudo bash 04-monitoring.sh
 
 ## Що потрібно від власника (значень у чаті/git немає)
 
-Файли, у які власник сам впише значення через `sudoedit`:
+Два файли секретів живуть на сервері, 600 deploy:deploy. Редагує їх deploy напряму (sudo не треба). `sudoedit` НЕ підходить для `/opt/vdalo/*.env`, бо тека `/opt/vdalo` писабельна для deploy — `sudoedit` відмовить із «cannot open a file in a path writable by the user».
 
-- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram.
-- `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` — змінні сайту за `deploy/env.example`.
+- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram. Створюється й заповнюється командою `sudo /usr/local/sbin/vdalo-alerts setup` (прихований ввід токена, chat_id з Telegram getUpdates). Нічого секретного на екран.
+- `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` — змінні сайту за `deploy/env.example`. Створюються з шаблону при бутстрапі:
 
-Шаблон одного рядка на кожне:
+  ```bash
+  sudo install -m 600 -o deploy -g deploy /opt/vdalo/deploy/env.example /opt/vdalo/site.env
+  sudo install -m 600 -o deploy -g deploy /opt/vdalo/deploy/env.example /opt/vdalo/site-staging.env
+  sudo sed -i 's#^VDALO_SITE_URL=.*#VDALO_SITE_URL=https://staging.vdalo.tech#' /opt/vdalo/site-staging.env
+  ```
+
+  Далі власник заходить як deploy і правит напряму:
+
+  ```bash
+  ssh deploy@178.104.154.106
+  nano /opt/vdalo/site.env              # вписати WFP_SECRET_KEY, webhook URL і решту
+  nano /opt/vdalo/site-staging.env      # staging — без WFP_SECRET_KEY
+  cd /opt/vdalo && sudo -u deploy docker compose -f deploy/compose.yml up -d --no-deps site site-staging
+  ```
+
+Пароль staging basic-auth задає окремо:
 
 ```bash
-sudo install -m 600 -o deploy -g deploy /dev/null /etc/vdalo/alerts.env && sudoedit /etc/vdalo/alerts.env
-sudo install -m 600 -o deploy -g deploy /dev/null /opt/vdalo/site.env         && sudoedit /opt/vdalo/site.env
-sudo install -m 600 -o deploy -g deploy /dev/null /opt/vdalo/site-staging.env && sudoedit /opt/vdalo/site-staging.env
+sudo /usr/local/sbin/vdalo-staging-auth    # прихований ввід; caddy hash-password → /etc/caddy/staging-auth.conf → reload
 ```
 
 ## Автооновлення
