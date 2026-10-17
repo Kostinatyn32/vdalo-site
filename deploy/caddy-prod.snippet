@@ -1,0 +1,26 @@
+# deploy/caddy-prod.snippet — підготовлений блок для www.vdalo.tech + vdalo.tech.
+# НЕ активовано. Додасться у /etc/caddy/Caddyfile за кроком 3 SWITCHOVER.md.
+# HSTS без includeSubDomains / preload (так, як віддає зараз Vercel), щоб перемикання
+# не змінило поведінку браузерів для інших піддоменів vdalo.tech.
+
+www.vdalo.tech, vdalo.tech {
+	header {
+		Strict-Transport-Security "max-age=63072000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	encode zstd gzip
+	@apex host vdalo.tech
+	redir @apex https://www.vdalo.tech{uri} 308
+	reverse_proxy 127.0.0.1:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+	log {
+		output file /var/log/caddy/www.vdalo.tech.log {
+			roll_size 10mb
+			roll_keep 10
+		}
+	}
+}

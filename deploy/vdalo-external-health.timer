@@ -1,0 +1,11 @@
+[Unit]
+Description=Hit https://www.vdalo.tech/ through Caddy every 5 min after switchover
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Unit=vdalo-external-health.service
+
+[Install]
+WantedBy=timers.target

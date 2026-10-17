@@ -1,0 +1,15 @@
+[Unit]
+Description=VDALO site: pull, build, swap containers
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+# Runs as root so systemd-run can create a transient unit in builds.slice;
+# the actual build runs inside that transient unit, under builds.slice limits.
+Type=oneshot
+User=root
+Group=root
+Slice=builds.slice
+ExecStart=/opt/vdalo/deploy/vdalo-site-update.sh
+Nice=10
+IOSchedulingClass=best-effort
