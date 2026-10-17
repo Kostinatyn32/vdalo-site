@@ -23,7 +23,7 @@ sudo bash 04-monitoring.sh
 
 Два файли секретів живуть на сервері, 600 deploy:deploy. Редагує їх deploy напряму (sudo не треба). `sudoedit` НЕ підходить для `/opt/vdalo/*.env`, бо тека `/opt/vdalo` писабельна для deploy — `sudoedit` відмовить із «cannot open a file in a path writable by the user».
 
-- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram. Створюється й заповнюється командою `sudo /usr/local/sbin/vdalo-alerts setup` (прихований ввід токена, chat_id з Telegram getUpdates). Нічого секретного на екран. **Бот ОКРЕМИЙ від бота PMS** — токен PMS сюди не копіюємо, щоб `getUpdates` не конфліктував з їхнім вебхуком; створи новий бот у @BotFather перед запуском setup.
+- `/etc/vdalo/alerts.env` — `TG_BOT_TOKEN`, `TG_CHAT_ID` для тривог у Telegram. Створюється й заповнюється командою `sudo /usr/local/sbin/vdalo-alerts setup` (прихований ввід токена, chat_id з Telegram getUpdates). Нічого секретного на екран. Можна поставити будь-якого бота, якого власник використовує для своїх сповіщень; окремий від інших систем — за бажанням.
 - `/opt/vdalo/site.env` і `/opt/vdalo/site-staging.env` — змінні сайту за `deploy/env.example`. На бутстрапі створюються з шаблону, ЯКЩО ще не існують (щоб ніколи не затерти наявні значення):
 
   ```bash

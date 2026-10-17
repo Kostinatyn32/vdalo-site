@@ -18,8 +18,10 @@ stty echo
 echo
 [[ -n "$pw" ]] || { echo "empty, abort" >&2; exit 1; }
 
-# Hash via Caddy (reads one line from stdin on recent versions).
-hash=$(printf "%s" "$pw" | caddy hash-password 2>/dev/null | tail -1) || { echo "hash failed" >&2; exit 1; }
+# Hash via Caddy. In Caddy v2.9–v2.10.2 hash-password reads one line from stdin
+# with ReadBytes('\n') — без \n на кінці воно падає з ExitCodeFailedStartup.
+# stderr caddy не глушимо: секрету там немає, зате видно справжню помилку.
+hash=$(printf '%s\n' "$pw" | caddy hash-password | tail -1) || { echo "hash failed" >&2; exit 1; }
 unset pw
 [[ "$hash" =~ ^\$2[aby]\$[0-9]+\$ ]] || { echo "unexpected hash format" >&2; exit 1; }
 
