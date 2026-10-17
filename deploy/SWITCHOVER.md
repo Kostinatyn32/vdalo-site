@@ -49,7 +49,18 @@ curl -I https://vdalo.tech/           # 308 → https://www.vdalo.tech/
 curl -s https://www.vdalo.tech/sitemap.xml | head -5
 ```
 
-**4.2. Форми ДОХОДЯТЬ до вебхука (не просто 200).** Відправка не рівняється прийняттю; треба підтвердження Костянтина, що заявка з Hetzner прийшла туди ж, куди з Vercel (CRM / Telegram / поштова скринька, що він використовує).
+**4.2. Увімкнути зовнішній моніторинг через Caddy + сертифікат.** `health`-таймер бʼє в localhost і не бачить Caddy/DNS/TLS. Додатковий таймер хибить публічно щоп'ять хвилин:
+
+```bash
+sudo cp /opt/vdalo/deploy/vdalo-external-health.service /etc/systemd/system/
+sudo cp /opt/vdalo/deploy/vdalo-external-health.timer   /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now vdalo-external-health.timer
+```
+
+Він тисне `curl https://www.vdalo.tech/` + читає кінець сертифіката (попередження коли < 14 днів до експірації). Безкоштовний зовнішній монітор не підняв: Caddy сам поновлює LE за 30 днів до закінчення, а внутрішній timer покриває обрив процесу/мережі; зовнішню „вся коробка впала" точку (напр., UptimeRobot free) можна додати пізніше одним акаунтом.
+
+**4.3. Форми ДОХОДЯТЬ до вебхука (не просто 200).** Відправка не рівняється прийняттю; треба підтвердження Костянтина, що заявка з Hetzner прийшла туди ж, куди з Vercel (CRM / Telegram / поштова скринька, що він використовує).
 
 ```bash
 curl -s -X POST https://www.vdalo.tech/api/funnel/leads \

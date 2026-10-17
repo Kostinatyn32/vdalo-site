@@ -56,9 +56,7 @@ staging.vdalo.tech {
 	}
 }
 
-# Health endpoint for local checks (Caddy-level, before proxying).
-:80 {
-	@acme path /.well-known/acme-challenge/*
-	respond @acme 404
-	respond /healthz 200
-}
+# Caddy сам слухає :80 для сконфігурованих доменів: редіректить http→https і
+# віддає HTTP-01-challenge ACME на /.well-known/acme-challenge/*. Явного :80 блоку
+# не потрібно — зайвий лише б забрав цей challenge на себе й ламав видачу
+# сертифікатів при додаванні нових імен.

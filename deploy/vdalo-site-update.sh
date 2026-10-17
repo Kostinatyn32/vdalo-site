@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 # ponytail: щохвилини перевіряє main/staging; за новим SHA — build у builds.slice,
-# прогонить тести, валідацію схеми, оновлює контейнер, smoke, за помилки — відкат і тривога.
+# прогонить тести, валідацію схеми, оновлює контейнер, smoke. За помилки — відкат на
+# last-ok і тривога. Рухомий тег vdalo/site:main (і :staging) ставиться лише ПІСЛЯ
+# зеленого smoke, щоб ручний `docker compose up` без змінних не підняв неперевірений образ.
+#
+# Стан у /var/lib/vdalo:
+#   last-seen-<branch>  — SHA, який уже бачили (включно з тихими скіпами)
+#   last-ok-<branch>    — SHA, образ якого реально пройшов smoke (ціль відкату)
+#
+# Test hooks (не ставляться у звичайних запусках, тільки для ручної перевірки):
+#   VDALO_TEST_FORCE_SHA=<sha>          — замість `git rev-parse origin/<branch>` взяти цей SHA
+#   VDALO_TEST_FORCE_SMOKE_EXIT=<rc>    — перевизначити exit code vdalo-smoke.sh
+#   VDALO_TEST_FORCE_COMPOSE_TAG=<tag>  — у compose up підсунути цей тег замість <image_tag>-<new>
 set -euo pipefail
 
 REPO=/opt/vdalo/repo
@@ -14,75 +25,133 @@ echo "---- $(date -u +%FT%TZ) check ----"
 
 [[ -d "$REPO/.git" ]] || { echo "repo missing at $REPO"; exit 0; }
 
+# One-time migration from v1 state file.
+for b in main staging; do
+  if [[ -f "$STATE/last-$b" && ! -f "$STATE/last-seen-$b" ]]; then
+    cp "$STATE/last-$b" "$STATE/last-seen-$b"
+  fi
+done
+
+container_health() {
+  docker inspect "$1" --format '{{.State.Health.Status}}' 2>/dev/null || echo "not-found"
+}
+
+rollback_to_last_ok() {
+  local branch="$1" image_tag="$2" service="$3" last_ok="$4" container_name="$5" reason="$6"
+  local tag_name
+  [[ "$branch" == "main" ]] && tag_name=SITE_TAG || tag_name=STAGING_TAG
+  if [[ -z "$last_ok" ]]; then
+    "$ALERT" deploy-failed "$branch failed ($reason) and no last-ok to roll back to"
+    return 1
+  fi
+  local rb_image="vdalo/site:${image_tag}-${last_ok}"
+  if ! docker image inspect "$rb_image" >/dev/null 2>&1; then
+    "$ALERT" deploy-failed "$branch failed ($reason); rollback image $rb_image missing from host"
+    return 1
+  fi
+  local rb_start; rb_start=$(date +%s)
+  if ! (cd /opt/vdalo && env "${tag_name}=${image_tag}-${last_ok}" docker compose -f deploy/compose.yml up -d --no-deps --wait "$service"); then
+    "$ALERT" deploy-failed "$branch failed ($reason); rollback compose up to $rb_image also failed"
+    return 1
+  fi
+  local rb_sec=$(( $(date +%s) - rb_start ))
+  local health; health=$(container_health "$container_name")
+  if [[ "$health" == "healthy" ]]; then
+    "$ALERT" deploy-failed "$branch failed ($reason); rolled back to ${image_tag}-${last_ok} in ${rb_sec}s, healthy"
+    # Keep moving tag pointing at the known-good image too.
+    docker tag "$rb_image" "vdalo/site:${image_tag}" 2>/dev/null || true
+    return 0
+  fi
+  "$ALERT" deploy-failed "$branch failed ($reason); rollback to ${image_tag}-${last_ok} finished in ${rb_sec}s but health=$health"
+  return 1
+}
+
 run_update() {
   local branch="$1" image_tag="$2" service="$3"
-  local last_file="$STATE/last-$branch"
-  cd "$REPO"
-  git fetch --quiet origin "$branch" || { echo "fetch $branch failed"; return 0; }
-  local new; new=$(git rev-parse "origin/$branch")
-  local last=""; [[ -f "$last_file" ]] && last=$(cat "$last_file")
-  if [[ "$new" == "$last" ]]; then return 0; fi
-  echo "[$branch] $last -> $new"
+  local last_seen_file="$STATE/last-seen-$branch"
+  local last_ok_file="$STATE/last-ok-$branch"
+  local container_name="vdalo-$service"
+  local tag_name
+  [[ "$branch" == "main" ]] && tag_name=SITE_TAG || tag_name=STAGING_TAG
 
-  # Checkout a disposable worktree so we never touch the main one.
+  cd "$REPO"
+  local new
+  if [[ -n "${VDALO_TEST_FORCE_SHA:-}" ]]; then
+    new="$VDALO_TEST_FORCE_SHA"
+    echo "[$branch] VDALO_TEST_FORCE_SHA=$new (test override)"
+  else
+    git fetch --quiet origin "$branch" || { echo "fetch $branch failed"; return 0; }
+    new=$(git rev-parse "origin/$branch")
+  fi
+  local last_seen=""; [[ -f "$last_seen_file" ]] && last_seen=$(cat "$last_seen_file")
+  local last_ok=""; [[ -f "$last_ok_file" ]] && last_ok=$(cat "$last_ok_file")
+  if [[ "$new" == "$last_seen" ]]; then return 0; fi
+  echo "[$branch] $last_seen -> $new (last-ok: ${last_ok:-none})"
+
   local wt=/opt/vdalo/releases/"$branch"-"$new"
   rm -rf "$wt"
   git worktree add --detach "$wt" "$new"
 
-  # If deploy/ is not in this SHA yet (e.g. infra PR not merged), mark seen and skip quietly.
+  # Pre-flight: deploy/ absent in this SHA.
   if [[ ! -f "$wt/deploy/Dockerfile" ]]; then
-    echo "no deploy/Dockerfile in $branch@$new; skipping (likely infra PR not merged yet)"
-    echo "$new" >"$last_file"
+    if [[ -n "$last_ok" ]]; then
+      "$ALERT" deploy-failed "deploy/Dockerfile missing in $branch@$new (regression — still running ${image_tag}-${last_ok})"
+    else
+      echo "no deploy/Dockerfile in $branch@$new; infra PR not merged yet, silent skip"
+    fi
+    echo "$new" >"$last_seen_file"
     git worktree remove --force "$wt"
     return 0
   fi
 
-  # Build + validate inside builds.slice.
+  # Build + tests inside builds.slice. Only SHA-tag now; moving tag goes after smoke.
+  # Tests run INSIDE the freshly built image so we don't need Node on the host.
   if ! systemd-run --quiet --wait --slice=builds.slice --unit="vdalo-build-$branch-$$" \
         --working-directory="$wt" \
         /bin/sh -c "
           set -e
-          docker build -f deploy/Dockerfile -t vdalo/site:$image_tag-$new -t vdalo/site:$image_tag .
-          node --test tests/
-          node scripts/validate-schema.mjs
+          docker build -f deploy/Dockerfile -t vdalo/site:$image_tag-$new .
+          docker run --rm --network=none vdalo/site:$image_tag-$new sh -c 'node --test tests/*.test.mjs'
+          docker run --rm --network=none vdalo/site:$image_tag-$new node scripts/validate-schema.mjs
         "; then
-    echo "build/test failed for $branch@$new"
+    echo "[$branch] build/test failed for $new"
     "$ALERT" deploy-failed "build/test failed on $branch@$new"
+    echo "$new" >"$last_seen_file"
     git worktree remove --force "$wt"
     return 1
   fi
 
-  # Roll new container.
-  local tag_var
-  case "$branch" in
-    main)    tag_var="SITE_TAG=$image_tag-$new" ;;
-    staging) tag_var="STAGING_TAG=$image_tag-$new" ;;
-    *) echo "unknown branch $branch"; return 1 ;;
-  esac
-  if ! (cd /opt/vdalo && env "$tag_var" docker compose -f deploy/compose.yml up -d --no-deps --wait "$service"); then
-    "$ALERT" deploy-failed "compose up failed on $branch@$new"
+  # Compose up (SHA-pinned; test hook can override the tag to force failure).
+  local compose_tag="${image_tag}-${new}"
+  [[ -n "${VDALO_TEST_FORCE_COMPOSE_TAG:-}" ]] && compose_tag="$VDALO_TEST_FORCE_COMPOSE_TAG"
+  if ! (cd /opt/vdalo && env "${tag_name}=${compose_tag}" docker compose -f deploy/compose.yml up -d --no-deps --wait "$service"); then
+    echo "[$branch] compose up failed (tag=$compose_tag)"
+    rollback_to_last_ok "$branch" "$image_tag" "$service" "$last_ok" "$container_name" "compose-up on $new"
+    echo "$new" >"$last_seen_file"
     git worktree remove --force "$wt"
     return 1
   fi
 
-  # --wait already blocked on healthy; still give a moment for warm paths.
+  # Smoke.
   sleep 1
   local port=8080
   [[ "$service" == site-staging ]] && port=8081
-  if ! /opt/vdalo/deploy/vdalo-smoke.sh "http://127.0.0.1:$port"; then
-    echo "smoke failed, rolling back"
-    "$ALERT" deploy-failed "smoke failed on $branch@$new"
-    # Rollback to previous tag if we have one.
-    if [[ -n "$last" ]]; then
-      (cd /opt/vdalo && env "$tag_var=$image_tag-$last" docker compose -f deploy/compose.yml up -d --no-deps "$service") || true
-    fi
+  local smoke_rc=0
+  /opt/vdalo/deploy/vdalo-smoke.sh "http://127.0.0.1:$port" || smoke_rc=$?
+  [[ -n "${VDALO_TEST_FORCE_SMOKE_EXIT:-}" ]] && smoke_rc="$VDALO_TEST_FORCE_SMOKE_EXIT"
+  if [[ "$smoke_rc" -ne 0 ]]; then
+    echo "[$branch] smoke failed (rc=$smoke_rc)"
+    rollback_to_last_ok "$branch" "$image_tag" "$service" "$last_ok" "$container_name" "smoke on $new"
+    echo "$new" >"$last_seen_file"
     git worktree remove --force "$wt"
     return 1
   fi
 
-  echo "$new" >"$last_file"
+  # Green: promote moving tag, update state.
+  docker tag "vdalo/site:${image_tag}-${new}" "vdalo/site:${image_tag}"
+  echo "$new" >"$last_ok_file"
+  echo "$new" >"$last_seen_file"
   "$ALERT" deploy-ok "$branch@$new live"
-  # Keep this release, prune older release worktrees for this branch (keep 3).
   (cd /opt/vdalo/releases && ls -1dt "$branch"-* 2>/dev/null | tail -n +4 | xargs -r rm -rf)
 }
 

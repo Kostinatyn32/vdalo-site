@@ -47,6 +47,27 @@ case "$cmd" in
     check_url site    site    "${SITE_URL:-http://127.0.0.1:8080/}"
     check_url staging staging "${STAGING_URL:-http://127.0.0.1:8081/}"
     ;;
+  external)
+    # Перевірка з публічної точки (крізь Caddy + TLS + DNS). Активується після перемикання.
+    url="${EXTERNAL_URL:-https://www.vdalo.tech/}"
+    if ! curl -fsS -m 15 -o /dev/null "$url"; then
+      should_fire external && notify DOWN "external reach failed at $url"
+    else
+      clear_fire external
+    fi
+    # Строк дії сертифіката (попередження за 14 днів).
+    host=$(echo "$url" | awk -F/ '{print $3}')
+    days=$(echo | openssl s_client -servername "$host" -connect "$host:443" 2>/dev/null \
+             | openssl x509 -noout -enddate 2>/dev/null \
+             | sed 's/notAfter=//' \
+             | xargs -I{} date -d "{}" +%s 2>/dev/null \
+             | awk -v now="$(date +%s)" '{print int(($1-now)/86400)}')
+    if [[ -n "$days" ]] && (( days >= 0 && days < 14 )); then
+      should_fire cert && notify CERT "$host certificate expires in ${days}d"
+    elif [[ -n "$days" ]] && (( days >= 14 )); then
+      clear_fire cert
+    fi
+    ;;
   disk)
     pct=$(df -P / | awk 'NR==2{sub("%","",$5); print $5}')
     if (( pct >= 80 )); then
@@ -110,7 +131,7 @@ ENV
     echo "setup OK; a test alert was sent to the configured chat"
     ;;
   *)
-    echo "usage: $0 {health|disk|deploy-failed MSG|deploy-ok MSG|test|setup}" >&2
+    echo "usage: $0 {health|external|disk|deploy-failed MSG|deploy-ok MSG|test|setup}" >&2
     exit 2
     ;;
 esac

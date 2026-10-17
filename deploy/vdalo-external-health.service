@@ -1,0 +1,7 @@
+[Unit]
+Description=VDALO site external reachability + cert expiry
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/vdalo-alerts external
