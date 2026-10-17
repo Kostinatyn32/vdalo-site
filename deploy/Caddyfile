@@ -1,0 +1,62 @@
+# ponytail: Caddy — HTTPS автомат, proxy to local containers, preserves Host and X-Forwarded-*.
+# До перемикання DNS: new.vdalo.tech → site (prod копія), staging.vdalo.tech → site-staging.
+# Після перемикання — додати блок із deploy/caddy-prod.snippet сюди ж.
+
+{
+	email ops@vdalo.tech
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+(common_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+new.vdalo.tech {
+	import common_headers
+	header X-Robots-Tag "noindex, nofollow"
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+	log {
+		output file /var/log/caddy/new.vdalo.tech.log {
+			roll_size 10mb
+			roll_keep 5
+		}
+	}
+}
+
+staging.vdalo.tech {
+	import common_headers
+	header X-Robots-Tag "noindex, nofollow"
+	encode zstd gzip
+	# Облікові записи імпортуються з окремого файлу, яким керує
+	# `sudo /usr/local/sbin/vdalo-staging-auth`. Хеш у репозиторій не йде.
+	# Поки файл порожній — basic_auth без облікових записів = 401 на будь-який логін.
+	basic_auth {
+		import /etc/caddy/staging-auth.conf
+	}
+	reverse_proxy 127.0.0.1:8081 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+	log {
+		output file /var/log/caddy/staging.vdalo.tech.log {
+			roll_size 10mb
+			roll_keep 3
+		}
+	}
+}
+
+# Caddy сам слухає :80 для сконфігурованих доменів: редіректить http→https і
+# віддає HTTP-01-challenge ACME на /.well-known/acme-challenge/*. Явного :80 блоку
+# не потрібно — зайвий лише б забрав цей challenge на себе й ламав видачу
+# сертифікатів при додаванні нових імен.
