@@ -27,35 +27,54 @@
 
 ## Крок 3. Додати основні домени у Caddyfile
 
-На сервері (deploy заходить, редагує pull-ом з гілки `infra/hetzner` або вручну за потреби):
+На сервері як deploy:
 
-```caddyfile
-www.vdalo.tech, vdalo.tech {
-	import common_headers
-	encode zstd gzip
-	@apex host vdalo.tech
-	redir @apex https://www.vdalo.tech{uri} 308
-	reverse_proxy 127.0.0.1:8080 {
-		header_up Host {host}
-		header_up X-Real-IP {remote_host}
-	}
-	log {
-		output file /var/log/caddy/www.vdalo.tech.log { roll_size 10mb roll_keep 10 }
-	}
-}
+```bash
+sudo bash -c 'cat /opt/vdalo/deploy/caddy-prod.snippet >>/etc/caddy/Caddyfile'
+sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy
 ```
 
-`sudo caddy fmt --overwrite /etc/caddy/Caddyfile && sudo systemctl reload caddy` — Caddy видасть сертифікати Let's Encrypt для `vdalo.tech` і `www.vdalo.tech`.
+Блок `www.vdalo.tech, vdalo.tech {…}` живе в `deploy/caddy-prod.snippet` і НЕ активований до цього моменту. HSTS там `max-age=63072000` без `includeSubDomains` і `preload` — так само, як зараз віддає Vercel, щоб перемикання не змінило поведінку браузерів для інших піддоменів `vdalo.tech`. Включити `includeSubDomains`/`preload` — окремим рішенням пізніше.
+
+Caddy одразу спробує видати сертифікати Let's Encrypt для `www.vdalo.tech` і `vdalo.tech` — за умови, що DNS уже вказує на `178.104.154.106` (крок 2).
 
 ## Крок 4. Перевірити
 
+**4.1. Smoke-GET:**
+
 ```bash
-curl -I https://www.vdalo.tech/
-curl -I https://vdalo.tech/        # має віддати 308 на www
-curl -s -X POST https://www.vdalo.tech/api/funnel/leads -H 'Content-Type: application/json' --data '{"name":"x","contact":"a@b.co","consent":true}'
+curl -I https://www.vdalo.tech/      # 200
+curl -I https://vdalo.tech/           # 308 → https://www.vdalo.tech/
+curl -s https://www.vdalo.tech/sitemap.xml | head -5
 ```
 
-Форма приймається (навіть 503 на відсутній вебхук — це нормально).
+**4.2. Форми ДОХОДЯТЬ до вебхука (не просто 200).** Відправка не рівняється прийняттю; треба підтвердження Костянтина, що заявка з Hetzner прийшла туди ж, куди з Vercel (CRM / Telegram / поштова скринька, що він використовує).
+
+```bash
+curl -s -X POST https://www.vdalo.tech/api/funnel/leads \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://www.vdalo.tech' \
+  --data '{"name":"TEST Hetzner switchover","contact":"test@example.com","consent":true,"source":"switchover"}'
+# очікується 200 + {ok:true,leadId:…}
+```
+
+Повторити для `/api/funnels/top5` і решти форм, що є на сайті.
+
+**503 на цьому етапі = зупинити перемикання і зробити «відкат за 5 хв» (нижче).** Це означає, що в `/opt/vdalo/site.env` немає `VDALO_FUNNEL_WEBHOOK_URL` / `VDALO_LEAD_WEBHOOK_URL` або `VDALO_WEBHOOK_BEARER_TOKEN` — тобто заявки з Hetzner нікуди не йдуть, і кожна відвідувацька заявка пропадає.
+
+## Відкат за 5 хв
+
+Якщо перевірки з кроку 4 не пройшли або сайт поводиться дивно після перемикання, відкочуємо DNS, НЕ видаляючи деплой Vercel (він лишається живим без змін).
+
+| # | Хто | Що |
+|---|---|---|
+| 1 | Контролер за карткою | У EuroDNS повернути попередні записи: `A @ → 216.198.79.1`, `CNAME www → 77dfde48192d38b2.vercel-dns-017.com.` |
+| 2 | Власник | Переконатися, що проєкт Vercel у статусі Ready і домени `vdalo.tech`, `www.vdalo.tech` досі прив'язані до нього. |
+| 3 | Я (ця сесія) | На Hetzner видалити з `/etc/caddy/Caddyfile` блок із `caddy-prod.snippet`, `systemctl reload caddy`, лишити сервер живим із `new.vdalo.tech`/`staging.vdalo.tech`. |
+| 4 | Я | Повідомити у звіті, що саме не пройшло, і запропонувати фікс до наступної спроби. |
+
+TTL уже 300 (крок 1), тож DNS-кеш оновиться за ~5 хв. 7 днів вікна з Vercel у резерві (крок 5) залишаються.
 
 ## Крок 5. Vercel — запасний на 7 днів
 

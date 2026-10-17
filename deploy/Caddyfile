@@ -1,6 +1,6 @@
 # ponytail: Caddy — HTTPS автомат, proxy to local containers, preserves Host and X-Forwarded-*.
 # До перемикання DNS: new.vdalo.tech → site (prod копія), staging.vdalo.tech → site-staging.
-# Після перемикання — додати vdalo.tech і www.vdalo.tech у цей же файл.
+# Після перемикання — додати блок із deploy/caddy-prod.snippet сюди ж.
 
 {
 	email ops@vdalo.tech
@@ -20,6 +20,7 @@
 
 new.vdalo.tech {
 	import common_headers
+	header X-Robots-Tag "noindex, nofollow"
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:8080 {
 		header_up Host {host}
@@ -35,12 +36,13 @@ new.vdalo.tech {
 
 staging.vdalo.tech {
 	import common_headers
+	header X-Robots-Tag "noindex, nofollow"
 	encode zstd gzip
+	# Облікові записи імпортуються з окремого файлу, яким керує
+	# `sudo /usr/local/sbin/vdalo-staging-auth`. Хеш у репозиторій не йде.
+	# Поки файл порожній — basic_auth без облікових записів = 401 на будь-який логін.
 	basic_auth {
-		# Set with:
-		#   caddy hash-password
-		# then paste into /opt/vdalo/staging-basicauth.conf and uncomment the import.
-		# staging {$STAGING_BASIC_HASH}
+		import /etc/caddy/staging-auth.conf
 	}
 	reverse_proxy 127.0.0.1:8081 {
 		header_up Host {host}

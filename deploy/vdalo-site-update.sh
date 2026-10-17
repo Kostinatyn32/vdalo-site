@@ -29,6 +29,14 @@ run_update() {
   rm -rf "$wt"
   git worktree add --detach "$wt" "$new"
 
+  # If deploy/ is not in this SHA yet (e.g. infra PR not merged), mark seen and skip quietly.
+  if [[ ! -f "$wt/deploy/Dockerfile" ]]; then
+    echo "no deploy/Dockerfile in $branch@$new; skipping (likely infra PR not merged yet)"
+    echo "$new" >"$last_file"
+    git worktree remove --force "$wt"
+    return 0
+  fi
+
   # Build + validate inside builds.slice.
   if ! systemd-run --quiet --wait --slice=builds.slice --unit="vdalo-build-$branch-$$" \
         --working-directory="$wt" \
@@ -51,14 +59,14 @@ run_update() {
     staging) tag_var="STAGING_TAG=$image_tag-$new" ;;
     *) echo "unknown branch $branch"; return 1 ;;
   esac
-  if ! (cd /opt/vdalo && env "$tag_var" docker compose -f deploy/compose.yml up -d --no-deps "$service"); then
+  if ! (cd /opt/vdalo && env "$tag_var" docker compose -f deploy/compose.yml up -d --no-deps --wait "$service"); then
     "$ALERT" deploy-failed "compose up failed on $branch@$new"
     git worktree remove --force "$wt"
     return 1
   fi
 
-  # Smoke (10s warmup window).
-  sleep 4
+  # --wait already blocked on healthy; still give a moment for warm paths.
+  sleep 1
   local port=8080
   [[ "$service" == site-staging ]] && port=8081
   if ! /opt/vdalo/deploy/vdalo-smoke.sh "http://127.0.0.1:$port"; then
